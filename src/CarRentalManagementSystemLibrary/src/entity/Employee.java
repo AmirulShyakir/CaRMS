@@ -8,11 +8,14 @@ package entity;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import util.enumeration.EmployeeRoleEnum;
 
 /**
  *
@@ -33,6 +36,9 @@ public class Employee implements Serializable {
     private String password;
     @Column(nullable = false, length = 64, unique = true)
     private String email;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private EmployeeRoleEnum employeeRole;
     
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
@@ -114,6 +120,14 @@ public class Employee implements Serializable {
 
     public void setOutlet(Outlet outlet) {
         this.outlet = outlet;
+    }
+
+    public EmployeeRoleEnum getEmployeeRole() {
+        return employeeRole;
+    }
+
+    public void setEmployeeRole(EmployeeRoleEnum employeeRole) {
+        this.employeeRole = employeeRole;
     }
 
     @Override

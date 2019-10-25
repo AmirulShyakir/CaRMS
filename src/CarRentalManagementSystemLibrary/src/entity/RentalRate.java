@@ -30,7 +30,7 @@ public class RentalRate implements Serializable {
     private Long rentalRateId;
     @Column(nullable = false, length = 64)
     private String rentalRateName;
-    @Column(nullable = false, precision = 19, scale = 4)
+    @Column(nullable = false, precision = 11, scale = 2)
     private BigDecimal ratePerDay;
     
     // validity period if applicable

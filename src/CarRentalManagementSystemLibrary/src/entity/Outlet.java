@@ -7,6 +7,7 @@ package entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,6 +15,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  *
@@ -30,7 +33,12 @@ public class Outlet implements Serializable {
     private String outletName;
     @Column(nullable = false, length = 64)
     private String outletAddress;
-    // need to think how to implement opening hours
+    @Temporal(TemporalType.DATE)
+    @Column(nullable = true)
+    private Date openingHour;
+    @Temporal(TemporalType.DATE)
+    @Column(nullable = false)
+    private Date closingHour;
     
     @OneToMany(mappedBy = "outlet")
     private List<Employee> employees;
@@ -104,6 +112,45 @@ public class Outlet implements Serializable {
             this.employees.remove(employee);
         }
     }
+
+    public Date getOpeningHour() {
+        return openingHour;
+    }
+
+    public void setOpeningHour(Date openingHour) {
+        this.openingHour = openingHour;
+    }
+
+    public Date getClosingHour() {
+        return closingHour;
+    }
+
+    public void setClosingHour(Date closingHour) {
+        this.closingHour = closingHour;
+    }
+
+    public List<Reservation> getReservations() {
+        return reservations;
+    }
+
+    public void setReservations(List<Reservation> reservations) {
+        this.reservations = reservations;
+    }
+    public void addReservation(Reservation reservation)
+    {
+        if(!this.reservations.contains(reservation))
+        {
+            this.reservations.add(reservation);
+        }
+    }
+ 
+    public void removeReservation(Reservation reservation)
+    {
+        if(this.reservations.contains(reservation))
+        {
+            this.reservations.remove(reservation);
+        }
+    }    
 
     @Override
     public int hashCode() {

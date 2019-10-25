@@ -50,7 +50,7 @@ public class Reservation implements Serializable {
     @Column(nullable = false)
     private Outlet returnOutlet;
     
-    @Column(nullable = false, precision = 19, scale = 4)
+    @Column(nullable = false, precision = 11, scale = 2)
     private BigDecimal price;
     
     public Reservation() {
