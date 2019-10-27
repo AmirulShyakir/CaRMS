@@ -26,6 +26,8 @@ public class Customer implements Serializable {
     private String firstName;
     @Column(nullable = false, length = 64)
     private String lastName;
+    @Column(nullable = false, length = 64, unique = true)
+    private String username;
     @Column(nullable = false, length = 64)
     private String password;
     
