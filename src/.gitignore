@@ -27,6 +27,10 @@ CarRentalManagementSystem-ejb/nbproject/private/
 CarRentalManagementSystem-ejb/build/
 CarRentalManagementSystem-ejb/dist/
 
+CarRentalManagementSystem-war/nbproject/private/
+CarRentalManagementSystem-war/build/
+CarRentalManagementSystem-war/dist/
+
 CarRentalManagementSystemReservationClient/nbproject/private/
 CarRentalManagementSystemReservationClient/build/
 CarRentalManagementSystemReservationClient/dist/

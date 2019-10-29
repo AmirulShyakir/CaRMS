@@ -98,6 +98,7 @@ public class MainApp {
     }
 
     private void doLogin() throws InvalidLoginCredentialException {
+        /*
         Scanner scanner = new Scanner(System.in);
         String username = "";
         String password = "";
@@ -113,6 +114,7 @@ public class MainApp {
         } else {
             throw new InvalidLoginCredentialException("Missing login credential!");
         }
+        */
     }
 
     private void doSearchCar() {
