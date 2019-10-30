@@ -32,7 +32,7 @@ public class Partner implements Serializable {
     private String password;
 
     @OneToMany(mappedBy = "partner")
-    private List<Reservation> reservations;
+    private List<RentalReservation> reservations;
     
     public Partner() {
         reservations = new ArrayList<>();
@@ -77,15 +77,15 @@ public class Partner implements Serializable {
         this.password = password;
     }
 
-    public List<Reservation> getReservations() {
+    public List<RentalReservation> getReservations() {
         return reservations;
     }
 
-    public void setReservations(List<Reservation> reservations) {
+    public void setReservations(List<RentalReservation> reservations) {
         this.reservations = reservations;
     }
 
-    public void addReservation(Reservation reservation)
+    public void addReservation(RentalReservation reservation)
     {
         if(!this.reservations.contains(reservation))
         {
@@ -93,7 +93,7 @@ public class Partner implements Serializable {
         }
     }
     
-    public void removeReservation(Reservation reservation)
+    public void removeReservation(RentalReservation reservation)
     {
         if(this.reservations.contains(reservation))
         {

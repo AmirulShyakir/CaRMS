@@ -19,7 +19,7 @@ import javax.persistence.Transient;
  * @author dtjldamien
  */
 @Entity
-public class TransitDriverDispatch implements Serializable {
+public class TransitDriverDispatchRecord implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -41,11 +41,11 @@ public class TransitDriverDispatch implements Serializable {
     @Transient
     private static final int TRANSIT_TIME = 2;
     
-    public TransitDriverDispatch() {
+    public TransitDriverDispatchRecord() {
         
     }   
     
-    public TransitDriverDispatch(Car car, Outlet currentOutlet, Outlet destinationOutlet) {
+    public TransitDriverDispatchRecord(Car car, Outlet currentOutlet, Outlet destinationOutlet) {
         this();
         
         this.car = car;
@@ -53,7 +53,7 @@ public class TransitDriverDispatch implements Serializable {
         this.destinationOutlet = destinationOutlet;
     }
 
-    public TransitDriverDispatch(Long transitDriverDispatchId, Car car, Outlet currentOutlet, Outlet destinationOutlet) {
+    public TransitDriverDispatchRecord(Long transitDriverDispatchId, Car car, Outlet currentOutlet, Outlet destinationOutlet) {
         this();
         
         this.transitDriverDispatchId = transitDriverDispatchId;
@@ -112,10 +112,10 @@ public class TransitDriverDispatch implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the transitDriverDispatchId fields are not set
-        if (!(object instanceof TransitDriverDispatch)) {
+        if (!(object instanceof TransitDriverDispatchRecord)) {
             return false;
         }
-        TransitDriverDispatch other = (TransitDriverDispatch) object;
+        TransitDriverDispatchRecord other = (TransitDriverDispatchRecord) object;
         if ((this.transitDriverDispatchId == null && other.transitDriverDispatchId != null) || (this.transitDriverDispatchId != null && !this.transitDriverDispatchId.equals(other.transitDriverDispatchId))) {
             return false;
         }

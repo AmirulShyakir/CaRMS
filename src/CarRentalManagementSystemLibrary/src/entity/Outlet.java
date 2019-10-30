@@ -14,6 +14,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -43,11 +44,17 @@ public class Outlet implements Serializable {
     @OneToMany(mappedBy = "outlet")
     private List<Employee> employees;
     @OneToMany(mappedBy = "outlet")
-    private List<Reservation> reservations;
+    private List<RentalReservation> reservations;
+    @OneToMany(mappedBy = "outlet")
+    private List<Car> cars;
+    @OneToMany(mappedBy = "outlet")
+    private List<TransitDriverDispatchRecord> transitDriverDispatchRecords;
     
     public Outlet() {
         employees = new ArrayList<>();
         reservations = new ArrayList<>();
+        cars = new ArrayList<>();
+        transitDriverDispatchRecords = new ArrayList<>();
     }
     
     public Outlet(String outletName, String outletAddress) {
@@ -129,14 +136,14 @@ public class Outlet implements Serializable {
         this.closingHour = closingHour;
     }
 
-    public List<Reservation> getReservations() {
+    public List<RentalReservation> getReservations() {
         return reservations;
     }
 
-    public void setReservations(List<Reservation> reservations) {
+    public void setReservations(List<RentalReservation> reservations) {
         this.reservations = reservations;
     }
-    public void addReservation(Reservation reservation)
+    public void addReservation(RentalReservation reservation)
     {
         if(!this.reservations.contains(reservation))
         {
@@ -144,7 +151,7 @@ public class Outlet implements Serializable {
         }
     }
  
-    public void removeReservation(Reservation reservation)
+    public void removeReservation(RentalReservation reservation)
     {
         if(this.reservations.contains(reservation))
         {

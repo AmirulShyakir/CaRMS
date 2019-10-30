@@ -5,13 +5,17 @@
  */
 package entity;
 
+import com.sun.istack.internal.NotNull;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
 /**
@@ -22,51 +26,55 @@ import javax.persistence.ManyToOne;
 public class Car implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long carId;
-    @Column(nullable = false, length = 64, unique = true)
+    @Column(nullable = false, length = 16, unique = true)
+    @NotNull
+//    @Size(max = 16)
     private String licensePlate;
-    @Column(nullable = false, length = 64)
+    @Column(nullable = false, length = 32)
+    @NotNull
+//    @Size(max = 32)
     private String colour;
     @Column(nullable = false)
-    private Boolean rentalStatus; // true means on rental, false means in outlet
-    
-    @ManyToOne(optional = false)
-    @JoinColumn(nullable = false)
-    private Category category;
+    @NotNull
+    private Boolean onRental; // true means on rental, false means in outlet
+
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
     private Model model;
-    @ManyToOne(optional = false)
-    @JoinColumn(nullable = true) // nullable means on rental
+    @ManyToOne(optional = true)
+    @JoinColumn(nullable = true)
     private Outlet outlet;
+    @ManyToMany
+    private List<RentalReservation> rentalReservations;
 
     public Car() {
-        this.rentalStatus = false;
+        this.onRental = false;
+        this.rentalReservations = new ArrayList<>();
     }
 
-    public Car(String licensePlate, String colour, Category category, Model model, Outlet outlet) {
+    public Car(String licensePlate, String colour, Model model, Outlet outlet) {
         this();
-        
+
         this.licensePlate = licensePlate;
         this.colour = colour;
-        this.category = category;
         this.model = model;
         this.outlet = outlet;
     }
-    
-    public Car(Long carId, String licensePlate, String colour, Category category, Model model, Outlet outlet) {
+
+    public Car(Long carId, String licensePlate, String colour, Model model, Outlet outlet) {
         this();
-        
+
         this.carId = carId;
         this.licensePlate = licensePlate;
         this.colour = colour;
-        this.category = category;
         this.model = model;
         this.outlet = outlet;
     }
-    
+
     public Long getCarId() {
         return carId;
     }
@@ -87,20 +95,12 @@ public class Car implements Serializable {
         this.colour = colour;
     }
 
-    public Boolean getRentalStatus() {
-        return rentalStatus;
+    public Boolean getOnRental() {
+        return onRental;
     }
 
-    public void setRentalStatus(Boolean rentalStatus) {
-        this.rentalStatus = rentalStatus;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
+    public void setOnRental(Boolean onRental) {
+        this.onRental = onRental;
     }
 
     public Model getModel() {
@@ -119,10 +119,28 @@ public class Car implements Serializable {
         this.outlet = outlet;
     }
 
-    
-    
     public void setCarId(Long carId) {
         this.carId = carId;
+    }
+
+    public List<RentalReservation> getRentalReservations() {
+        return rentalReservations;
+    }
+
+    public void setRentalReservations(List<RentalReservation> rentalReservations) {
+        this.rentalReservations = rentalReservations;
+    }
+
+    public void addRentalReservation(RentalReservation rentalReservation) {
+        if (!this.rentalReservations.contains(rentalReservation)) {
+            this.rentalReservations.add(rentalReservation);
+        }
+    }
+
+    public void removeRentalReservation(RentalReservation rentalReservation) {
+        if (this.rentalReservations.contains(rentalReservation)) {
+            this.rentalReservations.remove(rentalReservation);
+        }
     }
 
     @Override
@@ -149,5 +167,4 @@ public class Car implements Serializable {
     public String toString() {
         return "entity.Car[ id=" + carId + " ]";
     }
-    
 }

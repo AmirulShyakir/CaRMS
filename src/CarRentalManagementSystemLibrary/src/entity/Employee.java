@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,7 +15,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import util.enumeration.EmployeeRoleEnum;
 
 /**
@@ -39,37 +42,39 @@ public class Employee implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EmployeeRoleEnum employeeRole;
-    
+
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
     private Outlet outlet;
+    @OneToMany(mappedBy = "employee")
+    @Column(nullable = true)
+    private List<TransitDriverDispatchRecord> transitDriverDispatchRecords;
 
     public Employee() {
     }
-    
+
     public Employee(String firstName, String lastName, String password, String email, Outlet outlet) {
         this();
-        
+
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
         this.email = email;
-        
-        setOutlet(outlet);
+        this.outlet = outlet;
     }
- 
+
     public Employee(Long employeeId, String firstName, String lastName, String password, String email, Outlet outlet) {
         this();
-        
+
         this.employeeId = employeeId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
         this.email = email;
-        
+
         setOutlet(outlet);
     }
-    
+
     public Long getEmployeeId() {
         return employeeId;
     }
@@ -93,7 +98,7 @@ public class Employee implements Serializable {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
-    
+
     public String getFullName() {
         return this.firstName + " " + this.lastName;
     }
@@ -130,6 +135,26 @@ public class Employee implements Serializable {
         this.employeeRole = employeeRole;
     }
 
+    public List<TransitDriverDispatchRecord> getTransitDriverDispatchRecords() {
+        return transitDriverDispatchRecords;
+    }
+
+    public void setTransitDriverDispatchRecords(List<TransitDriverDispatchRecord> transitDriverDispatchRecords) {
+        this.transitDriverDispatchRecords = transitDriverDispatchRecords;
+    }
+
+    public void addTransitDriverDispatchRecord(TransitDriverDispatchRecord transitDriverDispatchRecord) {
+        if (!this.transitDriverDispatchRecords.contains(transitDriverDispatchRecord)) {
+            this.transitDriverDispatchRecords.add(transitDriverDispatchRecord);
+        }
+    }
+
+    public void removeTransitDriverDispatchRecord(TransitDriverDispatchRecord transitDriverDispatchRecord) {
+        if (this.transitDriverDispatchRecords.contains(transitDriverDispatchRecord)) {
+            this.transitDriverDispatchRecords.remove(transitDriverDispatchRecord);
+        }
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -154,5 +179,5 @@ public class Employee implements Serializable {
     public String toString() {
         return "entity.EmployeeEntity[ id=" + employeeId + " ]";
     }
-    
+
 }

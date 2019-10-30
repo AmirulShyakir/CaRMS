@@ -5,9 +5,12 @@
  */
 package entity;
 
+import com.sun.istack.internal.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,72 +25,71 @@ import javax.persistence.TemporalType;
  * @author dtjldamien
  */
 @Entity
-public class Reservation implements Serializable {
+public class RentalReservation implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long reservationId;
+    private Long rentalReservationId;
     @Column(nullable = false)
+    @NotNull
     private Car car;
     @Column(nullable = false)
+    @NotNull
     private Customer customer;
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
+    @NotNull
     private Date startDate;
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
+    @NotNull
     private Date endDate;
     @Column(nullable = false)
+    @NotNull
     private Boolean paid;
     @Column(nullable = false, length = 32)
-    private String creditCardNumber;
-    
-    @ManyToOne(optional = false)
-    @Column(nullable = false)
+    @NotNull
     private Outlet pickupOutlet;
-    @ManyToOne(optional = false)    
     @Column(nullable = false)
+    @NotNull
     private Outlet returnOutlet;
-    
     @Column(nullable = false, precision = 11, scale = 2)
+    @NotNull
+//    @DecimalMin("0.00")
+//    @Digits(integer = 9, fraction = 2)
     private BigDecimal price;
-    
-    public Reservation() {
-        
+    @Column(nullable = true)
+    private TransitDriverDispatchRecord transitDriverDispatchRecord;
+    @Column(nullable = true)
+    private Partner partner;
+
+    @ManyToOne
+    @Column(nullable = false)
+    private List<RentalDay> rentalDays;
+
+    public RentalReservation() {
+        this.rentalDays = new ArrayList<>();
     }
 
-    public Reservation(Car car, Customer customer, Date startDate, Date endDate, String creditCardNumber, Outlet pickupOutlet, Outlet returnOutlet) {
+    public RentalReservation(Car car, Customer customer, Date startDate, Date endDate, Outlet pickupOutlet, Outlet returnOutlet) {
         this();
-        
+
         this.car = car;
         this.customer = customer;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.creditCardNumber = creditCardNumber;
         this.pickupOutlet = pickupOutlet;
         this.returnOutlet = returnOutlet;
-    }    
-    
-    public Reservation(Long reservationId, Car car, Customer customer, Date startDate, Date endDate, String creditCardNumber, Outlet pickupOutlet, Outlet returnOutlet) {
-        this();
-        
-        this.reservationId = reservationId;
-        this.car = car;
-        this.customer = customer;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.creditCardNumber = creditCardNumber;
-        this.pickupOutlet = pickupOutlet;
-        this.returnOutlet = returnOutlet;
-    }
-    
-    public Long getReservationId() {
-        return reservationId;
     }
 
-    public void setReservationId(Long reservationId) {
-        this.reservationId = reservationId;
+    public Long getRentalReservationId() {
+        return rentalReservationId;
+    }
+
+    public void setRentalReservationId(Long rentalReservationId) {
+        this.rentalReservationId = rentalReservationId;
     }
 
     public Car getCar() {
@@ -130,14 +132,6 @@ public class Reservation implements Serializable {
         this.paid = paid;
     }
 
-    public String getCreditCardNumber() {
-        return creditCardNumber;
-    }
-
-    public void setCreditCardNumber(String creditCardNumber) {
-        this.creditCardNumber = creditCardNumber;
-    }
-
     public Outlet getPickupOutlet() {
         return pickupOutlet;
     }
@@ -162,21 +156,29 @@ public class Reservation implements Serializable {
         this.price = price;
     }
 
+    public Partner getPartner() {
+        return partner;
+    }
+
+    public void setPartner(Partner partner) {
+        this.partner = partner;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (reservationId != null ? reservationId.hashCode() : 0);
+        hash += (rentalReservationId != null ? rentalReservationId.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the reservationId fields are not set
-        if (!(object instanceof Reservation)) {
+        // TODO: Warning - this method won't work in the case the rentalReservationId fields are not set
+        if (!(object instanceof RentalReservation)) {
             return false;
         }
-        Reservation other = (Reservation) object;
-        if ((this.reservationId == null && other.reservationId != null) || (this.reservationId != null && !this.reservationId.equals(other.reservationId))) {
+        RentalReservation other = (RentalReservation) object;
+        if ((this.rentalReservationId == null && other.rentalReservationId != null) || (this.rentalReservationId != null && !this.rentalReservationId.equals(other.rentalReservationId))) {
             return false;
         }
         return true;
@@ -184,7 +186,6 @@ public class Reservation implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Reservation[ id=" + reservationId + " ]";
+        return "entity.Reservation[ id=" + rentalReservationId + " ]";
     }
-    
 }

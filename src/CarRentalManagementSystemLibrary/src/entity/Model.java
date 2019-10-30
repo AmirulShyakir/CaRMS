@@ -13,6 +13,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 /**
@@ -23,6 +25,7 @@ import javax.persistence.OneToMany;
 public class Model implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long modelId;
@@ -32,10 +35,14 @@ public class Model implements Serializable {
     private String model;
     
     @OneToMany(mappedBy = "model")
-    private List<Car> cars;    
+    private List<Car> cars;   
+    @ManyToOne(optional = true)
+    @JoinColumn(nullable = false)
+    private List<RentalReservation> rentalReservations;
     
     public Model() {
-        this.cars = new ArrayList<Car>();
+        this.cars = new ArrayList<>();
+        this.rentalReservations = new ArrayList<>();        
     }
     
     public Model(String make, String model) {
@@ -117,5 +124,4 @@ public class Model implements Serializable {
     public String toString() {
         return "entity.Model[ id=" + modelId + " ]";
     }
-    
 }
