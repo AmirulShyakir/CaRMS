@@ -47,7 +47,7 @@ public class Employee implements Serializable {
     @Column(nullable = false, length = 64, unique = true)
     @NotNull
     @Size(max = 64)
-    private String email;
+    private String username;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @NotNull
@@ -55,7 +55,7 @@ public class Employee implements Serializable {
 
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
-//    @NotNull
+    @NotNull
     private Outlet outlet;
     @OneToMany(mappedBy = "employee")
     @Column(nullable = true)
@@ -70,7 +70,7 @@ public class Employee implements Serializable {
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
-        this.email = email;
+        this.username = email;
         this.outlet = outlet;
     }
 
@@ -81,7 +81,7 @@ public class Employee implements Serializable {
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
-        this.email = email;
+        this.username = email;
 
         setOutlet(outlet);
     }
@@ -122,12 +122,12 @@ public class Employee implements Serializable {
         this.password = password;
     }
 
-    public String getEmail() {
-        return email;
+    public String getUsername() {
+        return username;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public Outlet getOutlet() {

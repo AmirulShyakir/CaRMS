@@ -31,7 +31,7 @@ public class Outlet implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long outletId;
-    @Column(nullable = false, length = 64)
+    @Column(nullable = false, length = 64, unique = true)
     @NotNull
     @Size(max = 64)
     private String outletName;
