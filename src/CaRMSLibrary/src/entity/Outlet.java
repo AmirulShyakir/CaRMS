@@ -49,34 +49,25 @@ public class Outlet implements Serializable {
     private Date closingHour;
 
     @OneToMany(mappedBy = "outlet")
-    private List<Employee> employees;
-    @OneToMany(mappedBy = "outlet")
-    private List<RentalReservation> reservations;
-    @OneToMany(mappedBy = "outlet")
     private List<Car> cars;
     @OneToMany(mappedBy = "outlet")
+    private List<Employee> employees;
+    @OneToMany(mappedBy = "destinationOutlet")
     private List<TransitDriverDispatchRecord> transitDriverDispatchRecords;
 
     public Outlet() {
-        employees = new ArrayList<>();
-        reservations = new ArrayList<>();
-        cars = new ArrayList<>();
-        transitDriverDispatchRecords = new ArrayList<>();
+        this.cars = new ArrayList<>();
+        this.employees = new ArrayList<>();
+        this.transitDriverDispatchRecords = new ArrayList<>();
     }
 
-    public Outlet(String outletName, String outletAddress) {
+    public Outlet(String outletName, String outletAddress, Date openingHour, Date closingHour) {
         this();
 
         this.outletName = outletName;
         this.outletAddress = outletAddress;
-    }
-
-    public Outlet(Long outletId, String outletName, String outletAddress) {
-        this();
-
-        this.outletId = outletId;
-        this.outletName = outletName;
-        this.outletAddress = outletAddress;
+        this.openingHour = openingHour;
+        this.closingHour = closingHour;
     }
 
     public Long getOutletId() {
@@ -103,26 +94,6 @@ public class Outlet implements Serializable {
         this.outletAddress = outletAddress;
     }
 
-    public List<Employee> getEmployees() {
-        return employees;
-    }
-
-    public void setEmployees(List<Employee> employees) {
-        this.employees = employees;
-    }
-
-    public void addEmployee(Employee employee) {
-        if (!this.employees.contains(employee)) {
-            this.employees.add(employee);
-        }
-    }
-
-    public void removeEmployee(Employee employee) {
-        if (this.employees.contains(employee)) {
-            this.employees.remove(employee);
-        }
-    }
-
     public Date getOpeningHour() {
         return openingHour;
     }
@@ -139,23 +110,51 @@ public class Outlet implements Serializable {
         this.closingHour = closingHour;
     }
 
-    public List<RentalReservation> getReservations() {
-        return reservations;
+    public List<Car> getCars() {
+        return cars;
     }
 
-    public void setReservations(List<RentalReservation> reservations) {
-        this.reservations = reservations;
+    public void setCars(List<Car> cars) {
+        this.cars = cars;
     }
 
-    public void addReservation(RentalReservation reservation) {
-        if (!this.reservations.contains(reservation)) {
-            this.reservations.add(reservation);
+    public void addCar(Car car) {
+        if (!this.cars.contains(car)) {
+            this.cars.add(car);
         }
     }
 
-    public void removeReservation(RentalReservation reservation) {
-        if (this.reservations.contains(reservation)) {
-            this.reservations.remove(reservation);
+    public void removeCar(Car car) {
+        if (this.cars.contains(car)) {
+            this.cars.remove(car);
+        }
+    }
+
+    public List<Employee> getEmployees() {
+        return employees;
+    }
+
+    public void setEmployees(List<Employee> employees) {
+        this.employees = employees;
+    }
+
+    public List<TransitDriverDispatchRecord> getTransitDriverDispatchRecords() {
+        return transitDriverDispatchRecords;
+    }
+
+    public void setTransitDriverDispatchRecords(List<TransitDriverDispatchRecord> transitDriverDispatchRecords) {
+        this.transitDriverDispatchRecords = transitDriverDispatchRecords;
+    }
+
+    public void addTransitDriverDispatchRecord(TransitDriverDispatchRecord transitDriverDispatchRecord) {
+        if (!this.transitDriverDispatchRecords.contains(transitDriverDispatchRecord)) {
+            this.transitDriverDispatchRecords.add(transitDriverDispatchRecord);
+        }
+    }
+
+    public void removeTransitDriverDispatchRecord(TransitDriverDispatchRecord transitDriverDispatchRecord) {
+        if (this.transitDriverDispatchRecords.contains(transitDriverDispatchRecord)) {
+            this.transitDriverDispatchRecords.remove(transitDriverDispatchRecord);
         }
     }
 

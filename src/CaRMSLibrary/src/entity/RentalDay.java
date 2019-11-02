@@ -12,7 +12,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -29,20 +28,18 @@ public class RentalDay implements Serializable {
 
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
-    @NotNull
-    private RentalDay rentalDay;
+    private RentalRate rentalRate;
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
-    @NotNull
     private RentalReservation rentalReservation;
 
     public RentalDay() {
     }
-    
-    public RentalDay(RentalDay rentalDay, RentalReservation rentalReservation) {
+
+    public RentalDay(RentalRate rentalRate, RentalReservation rentalReservation) {
         this();
-        
-        this.rentalDay = rentalDay;
+
+        this.rentalRate = rentalRate;
         this.rentalReservation = rentalReservation;
     }
 
@@ -54,12 +51,12 @@ public class RentalDay implements Serializable {
         this.id = id;
     }
 
-    public RentalDay getRentalDay() {
-        return rentalDay;
+    public RentalRate getRentalRate() {
+        return rentalRate;
     }
 
-    public void setRentalDay(RentalDay rentalDay) {
-        this.rentalDay = rentalDay;
+    public void setRentalRate(RentalRate rentalRate) {
+        this.rentalRate = rentalRate;
     }
 
     public RentalReservation getRentalReservation() {

@@ -15,7 +15,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.DecimalMin;
@@ -34,12 +37,6 @@ public class RentalReservation implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long rentalReservationId;
-    @Column(nullable = false)
-    @NotNull
-    private Car car;
-    @Column(nullable = false)
-    @NotNull
-    private Customer customer;
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
     @NotNull
@@ -51,34 +48,44 @@ public class RentalReservation implements Serializable {
     @Column(nullable = false)
     @NotNull
     private Boolean paid;
-    @Column(nullable = false, length = 32)
-    @NotNull
-    private Outlet pickupOutlet;
-    @Column(nullable = false)
-    @NotNull
-    private Outlet returnOutlet;
     @Column(nullable = false, precision = 11, scale = 2)
     @NotNull
     @DecimalMin("0.00")
     @Digits(integer = 9, fraction = 2)
     private BigDecimal price;
-    @Column(nullable = true)
-    private TransitDriverDispatchRecord transitDriverDispatchRecord;
-    @Column(nullable = true)
-    private Partner partner;
 
-    @ManyToOne
-    @Column(nullable = false)
+    @OneToOne(optional = false)
+    private Car car;
+    @OneToOne(optional = true)
+    private CarCategory carCategory;
+    @OneToOne(optional = true)
+    private Model model;
+    @OneToMany(mappedBy = "rentalReservation")
     private List<RentalDay> rentalDays;
+    @OneToOne(optional = true)
+    private TransitDriverDispatchRecord transitDriverDispatchRecord;
+    @ManyToOne(optional = true)
+    @JoinColumn(nullable = true)
+    private Partner partner;
+    @ManyToOne(optional = false)
+    @JoinColumn(nullable = false)
+    private Customer customer;
+    @OneToOne(optional = false)
+    private Outlet pickupOutlet;
+    @OneToOne(optional = false)
+    private Outlet returnOutlet;
 
+    //optional car
+    // choose any car from a category or a particular model (both are optional)
+    // both pickup and return outlet are different
+    // one to many rental day
     public RentalReservation() {
         this.rentalDays = new ArrayList<>();
     }
 
-    public RentalReservation(Car car, Customer customer, Date startDate, Date endDate, Outlet pickupOutlet, Outlet returnOutlet) {
+    public RentalReservation(Customer customer, Date startDate, Date endDate, Outlet pickupOutlet, Outlet returnOutlet) {
         this();
 
-        this.car = car;
         this.customer = customer;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -92,22 +99,6 @@ public class RentalReservation implements Serializable {
 
     public void setRentalReservationId(Long rentalReservationId) {
         this.rentalReservationId = rentalReservationId;
-    }
-
-    public Car getCar() {
-        return car;
-    }
-
-    public void setCar(Car car) {
-        this.car = car;
-    }
-
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
     }
 
     public Date getStartDate() {
@@ -134,6 +125,82 @@ public class RentalReservation implements Serializable {
         this.paid = paid;
     }
 
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public Car getCar() {
+        return car;
+    }
+
+    public void setCar(Car car) {
+        this.car = car;
+    }
+
+    public CarCategory getCarCategory() {
+        return carCategory;
+    }
+
+    public void setCarCategory(CarCategory carCategory) {
+        this.carCategory = carCategory;
+    }
+
+    public Model getModel() {
+        return model;
+    }
+
+    public void setModel(Model model) {
+        this.model = model;
+    }
+
+    public List<RentalDay> getRentalDays() {
+        return rentalDays;
+    }
+
+    public void setRentalDays(List<RentalDay> rentalDays) {
+        this.rentalDays = rentalDays;
+    }
+
+    public void addRentalDay(RentalDay rentalDay) {
+        if (!this.rentalDays.contains(rentalDay)) {
+            this.rentalDays.add(rentalDay);
+        }
+    }
+
+    public void removeRentalDay(RentalDay rentalDay) {
+        if (this.rentalDays.contains(rentalDay)) {
+            this.rentalDays.remove(rentalDay);
+        }
+    }
+
+    public TransitDriverDispatchRecord getTransitDriverDispatchRecord() {
+        return transitDriverDispatchRecord;
+    }
+
+    public void setTransitDriverDispatchRecord(TransitDriverDispatchRecord transitDriverDispatchRecord) {
+        this.transitDriverDispatchRecord = transitDriverDispatchRecord;
+    }
+
+    public Partner getPartner() {
+        return partner;
+    }
+
+    public void setPartner(Partner partner) {
+        this.partner = partner;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
     public Outlet getPickupOutlet() {
         return pickupOutlet;
     }
@@ -148,22 +215,6 @@ public class RentalReservation implements Serializable {
 
     public void setReturnOutlet(Outlet returnOutlet) {
         this.returnOutlet = returnOutlet;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public Partner getPartner() {
-        return partner;
-    }
-
-    public void setPartner(Partner partner) {
-        this.partner = partner;
     }
 
     @Override

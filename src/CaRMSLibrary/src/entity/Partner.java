@@ -14,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 /**
  *
@@ -32,27 +33,22 @@ public class Partner implements Serializable {
     private String password;
 
     @OneToMany(mappedBy = "partner")
-    private List<RentalReservation> reservations;
-    
+    private List<RentalReservation> rentalReservations;
+    @OneToMany(mappedBy = "partner")
+    private List<Customer> customers;
+
     public Partner() {
-        reservations = new ArrayList<>();
+        this.rentalReservations = new ArrayList<>();
+        this.customers = new ArrayList<>();
     }
-    
+
     public Partner(String partnerName, String password) {
         this();
-        
+
         this.partnerName = partnerName;
         this.partnerName = password;
     }
 
-    public Partner(Long partnerId, String partnerName, String password) {
-        this();
-        
-        this.partnerId = partnerId;
-        this.partnerName = partnerName;
-        this.password = password;
-    }    
-    
     public Long getPartnerId() {
         return partnerId;
     }
@@ -77,31 +73,46 @@ public class Partner implements Serializable {
         this.password = password;
     }
 
-    public List<RentalReservation> getReservations() {
-        return reservations;
+    public List<RentalReservation> getRentalReservations() {
+        return rentalReservations;
     }
 
-    public void setReservations(List<RentalReservation> reservations) {
-        this.reservations = reservations;
+    public void setRentalReservations(List<RentalReservation> rentalReservations) {
+        this.rentalReservations = rentalReservations;
     }
 
-    public void addReservation(RentalReservation reservation)
-    {
-        if(!this.reservations.contains(reservation))
-        {
-            this.reservations.add(reservation);
-        }
-    }
-    
-    public void removeReservation(RentalReservation reservation)
-    {
-        if(this.reservations.contains(reservation))
-        {
-            this.reservations.remove(reservation);
+    public void addRentalReservation(RentalReservation rentalReservation) {
+        if (!this.rentalReservations.contains(rentalReservation)) {
+            this.rentalReservations.add(rentalReservation);
         }
     }
 
-    
+    public void removeRentalReservation(RentalReservation rentalReservation) {
+        if (this.rentalReservations.contains(rentalReservation)) {
+            this.rentalReservations.remove(rentalReservation);
+        }
+    }
+
+    public List<Customer> getCustomers() {
+        return customers;
+    }
+
+    public void setCustomers(List<Customer> customers) {
+        this.customers = customers;
+    }
+
+    public void addCustomer(Customer customer) {
+        if (!this.customers.contains(customer)) {
+            this.customers.add(customer);
+        }
+    }
+
+    public void removeCustomer(Customer customer) {
+        if (this.customers.contains(customer)) {
+            this.customers.remove(customer);
+        }
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -126,5 +137,5 @@ public class Partner implements Serializable {
     public String toString() {
         return "entity.Partner[ id=" + partnerId + " ]";
     }
-    
+
 }

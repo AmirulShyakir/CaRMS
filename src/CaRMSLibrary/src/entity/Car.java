@@ -6,16 +6,14 @@
 package entity;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -49,31 +47,18 @@ public class Car implements Serializable {
     @ManyToOne(optional = true)
     @JoinColumn(nullable = true)
     private Outlet outlet;
-    @ManyToMany
-    private List<RentalReservation> rentalReservations;
+    @OneToOne(optional = true)
+    private RentalReservation rentalReservation;
 
     public Car() {
-        this.onRental = false;
-        this.rentalReservations = new ArrayList<>();
     }
 
-    public Car(String licensePlate, String colour, Model model, Outlet outlet) {
+    public Car(String licensePlate, String colour, Model model) {
         this();
 
         this.licensePlate = licensePlate;
         this.colour = colour;
         this.model = model;
-        this.outlet = outlet;
-    }
-
-    public Car(Long carId, String licensePlate, String colour, Model model, Outlet outlet) {
-        this();
-
-        this.carId = carId;
-        this.licensePlate = licensePlate;
-        this.colour = colour;
-        this.model = model;
-        this.outlet = outlet;
     }
 
     public Long getCarId() {
@@ -124,24 +109,12 @@ public class Car implements Serializable {
         this.carId = carId;
     }
 
-    public List<RentalReservation> getRentalReservations() {
-        return rentalReservations;
+    public RentalReservation getRentalReservation() {
+        return rentalReservation;
     }
 
-    public void setRentalReservations(List<RentalReservation> rentalReservations) {
-        this.rentalReservations = rentalReservations;
-    }
-
-    public void addRentalReservation(RentalReservation rentalReservation) {
-        if (!this.rentalReservations.contains(rentalReservation)) {
-            this.rentalReservations.add(rentalReservation);
-        }
-    }
-
-    public void removeRentalReservation(RentalReservation rentalReservation) {
-        if (this.rentalReservations.contains(rentalReservation)) {
-            this.rentalReservations.remove(rentalReservation);
-        }
+    public void setRentalReservation(RentalReservation rentalReservation) {
+        this.rentalReservation = rentalReservation;
     }
 
     @Override

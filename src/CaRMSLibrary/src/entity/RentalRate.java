@@ -7,6 +7,7 @@ package entity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
@@ -14,6 +15,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
@@ -51,20 +53,18 @@ public class RentalRate implements Serializable {
     @NotNull
     private Date startDate;
     @Temporal(TemporalType.DATE)
-    @Column(nullable = true) // no end date
+    @Column(nullable = false)
+    @NotNull
     private Date endDate;
 
     @ManyToOne(optional = false)
-    @Column(nullable = false, length = 64)
-    @NotNull
-    private CarCategory category;
-
-    @OneToMany
-    @Column(nullable = false)
+    @JoinColumn(nullable = false)
+    private CarCategory carCategory;
+    @OneToMany(mappedBy = "rentalRate")
     private List<RentalDay> rentalDays;
 
     public RentalRate() {
-
+        this.rentalDays = new ArrayList<>();
     }
 
     public RentalRate(String rentalRateName, BigDecimal ratePerDay, Date startDate, Date endDate, CarCategory category) {
@@ -74,18 +74,7 @@ public class RentalRate implements Serializable {
         this.ratePerDay = ratePerDay;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.category = category;
-    }
-
-    public RentalRate(Long rentalRateId, String rentalRateName, BigDecimal ratePerDay, Date startDate, Date endDate, CarCategory category) {
-        this();
-
-        this.rentalRateId = rentalRateId;
-        this.rentalRateName = rentalRateName;
-        this.ratePerDay = ratePerDay;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.category = category;
+        this.carCategory = category;
     }
 
     public Long getRentalRateId() {
@@ -128,12 +117,12 @@ public class RentalRate implements Serializable {
         this.endDate = endDate;
     }
 
-    public CarCategory getCategory() {
-        return category;
+    public CarCategory getCarCategory() {
+        return carCategory;
     }
 
-    public void setCategory(CarCategory category) {
-        this.category = category;
+    public void setCarCategory(CarCategory carCategory) {
+        this.carCategory = carCategory;
     }
 
     public List<RentalDay> getRentalDays() {

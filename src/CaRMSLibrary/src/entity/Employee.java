@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -40,14 +41,14 @@ public class Employee implements Serializable {
     @NotNull
     @Size(max = 64)
     private String lastName;
-    @Column(nullable = false, length = 64)
-    @NotNull
-    @Size(max = 64)
-    private String password;
     @Column(nullable = false, length = 64, unique = true)
     @NotNull
     @Size(max = 64)
     private String username;
+    @Column(nullable = false, length = 64)
+    @NotNull
+    @Size(max = 64)
+    private String password;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @NotNull
@@ -55,35 +56,23 @@ public class Employee implements Serializable {
 
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
-    @NotNull
     private Outlet outlet;
-    @OneToMany(mappedBy = "employee")
-    @Column(nullable = true)
+    @OneToMany(mappedBy = "dispatchDriver")
     private List<TransitDriverDispatchRecord> transitDriverDispatchRecords;
 
     public Employee() {
+        transitDriverDispatchRecords = new ArrayList<>();
     }
 
-    public Employee(String firstName, String lastName, String password, String email, Outlet outlet) {
+    public Employee(String firstName, String lastName, String username, String password, EmployeeRoleEnum employeeRole, Outlet outlet) {
         this();
 
         this.firstName = firstName;
         this.lastName = lastName;
+        this.username = username;
         this.password = password;
-        this.username = email;
+        this.employeeRole = employeeRole;
         this.outlet = outlet;
-    }
-
-    public Employee(Long employeeId, String firstName, String lastName, String password, String email, Outlet outlet) {
-        this();
-
-        this.employeeId = employeeId;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.password = password;
-        this.username = email;
-
-        setOutlet(outlet);
     }
 
     public Long getEmployeeId() {

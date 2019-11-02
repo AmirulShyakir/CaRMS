@@ -13,8 +13,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -37,17 +35,13 @@ public class CarCategory implements Serializable {
     private String carCategoryName;
 
     @OneToMany(mappedBy = "carCategory")
-    private List<Car> cars;
-    @ManyToOne(optional = true)
-    @JoinColumn(nullable = false)
     private List<Model> models;
-    @ManyToOne(optional = true)
-    @JoinColumn(nullable = false)
-    private List<RentalReservation> rentalReservations;
+    @OneToMany(mappedBy = "carCategory")
+    private List<RentalRate> rentalRates;
 
     public CarCategory() {
-        this.cars = new ArrayList<>();
-        this.rentalReservations = new ArrayList<>();
+        this.models = new ArrayList<>();
+        this.rentalRates = new ArrayList<>();
     }
 
     public CarCategory(String categoryName) {
@@ -79,14 +73,6 @@ public class CarCategory implements Serializable {
         this.carCategoryName = carCategoryName;
     }
 
-    public List<Car> getCars() {
-        return cars;
-    }
-
-    public void setCars(List<Car> cars) {
-        this.cars = cars;
-    }
-
     public List<Model> getModels() {
         return models;
     }
@@ -94,15 +80,7 @@ public class CarCategory implements Serializable {
     public void setModels(List<Model> models) {
         this.models = models;
     }
-
-    public List<RentalReservation> getRentalReservations() {
-        return rentalReservations;
-    }
-
-    public void setRentalReservations(List<RentalReservation> rentalReservations) {
-        this.rentalReservations = rentalReservations;
-    }
-
+    
     public void addModel(Model model) {
         if (!this.models.contains(model)) {
             this.models.add(model);
@@ -115,30 +93,26 @@ public class CarCategory implements Serializable {
         }
     }
 
-    public void addCar(Car car) {
-        if (!this.cars.contains(car)) {
-            this.cars.add(car);
+    public List<RentalRate> getRentalRates() {
+        return rentalRates;
+    }
+
+    public void setRentalRates(List<RentalRate> rentalRates) {
+        this.rentalRates = rentalRates;
+    }
+    
+    public void addRentalRate(RentalRate rentalRate) {
+        if (!this.rentalRates.contains(rentalRate)) {
+            this.rentalRates.add(rentalRate);
         }
     }
 
-    public void removeCar(Car car) {
-        if (this.cars.contains(car)) {
-            this.cars.remove(car);
+    public void removeRentalRate(RentalRate rentalRate) {
+        if (this.rentalRates.contains(rentalRate)) {
+            this.rentalRates.remove(rentalRate);
         }
     }
-
-    public void addRentalReservation(RentalReservation rentalReservation) {
-        if (!this.rentalReservations.contains(rentalReservation)) {
-            this.rentalReservations.add(rentalReservation);
-        }
-    }
-
-    public void removeRentalReservation(RentalReservation rentalReservation) {
-        if (this.rentalReservations.contains(rentalReservation)) {
-            this.rentalReservations.remove(rentalReservation);
-        }
-    }
-
+    
     @Override
     public int hashCode() {
         int hash = 0;

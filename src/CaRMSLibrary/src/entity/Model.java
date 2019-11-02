@@ -42,28 +42,20 @@ public class Model implements Serializable {
 
     @OneToMany(mappedBy = "model")
     private List<Car> cars;
-    @ManyToOne(optional = true)
+    @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
-    private List<RentalReservation> rentalReservations;
+    private CarCategory carCategory;
 
     public Model() {
         this.cars = new ArrayList<>();
-        this.rentalReservations = new ArrayList<>();
     }
 
-    public Model(String make, String model) {
+    public Model(String make, String model, CarCategory carCategory) {
         this();
 
         this.make = make;
         this.model = model;
-    }
-
-    public Model(Long modelId, String make, String model) {
-        this();
-
-        this.modelId = modelId;
-        this.make = make;
-        this.model = model;
+        this.carCategory = carCategory;
     }
 
     public Long getModelId() {
@@ -90,6 +82,14 @@ public class Model implements Serializable {
         this.model = model;
     }
 
+    public List<Car> getCars() {
+        return cars;
+    }
+
+    public void setCars(List<Car> cars) {
+        this.cars = cars;
+    }
+
     public void addCar(Car car) {
         if (!this.cars.contains(car)) {
             this.cars.add(car);
@@ -100,6 +100,14 @@ public class Model implements Serializable {
         if (this.cars.contains(car)) {
             this.cars.remove(car);
         }
+    }
+
+    public CarCategory getCarCategory() {
+        return carCategory;
+    }
+
+    public void setCarCategory(CarCategory carCategory) {
+        this.carCategory = carCategory;
     }
 
     @Override

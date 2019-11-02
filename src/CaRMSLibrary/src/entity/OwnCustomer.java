@@ -18,19 +18,11 @@ import javax.validation.constraints.Size;
  * @author dtjldamien
  */
 @Entity
-@Inheritance(strategy=InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.JOINED)
 public class OwnCustomer extends Customer implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Column(nullable = false, length = 64)
-    @NotNull
-    @Size(max = 64)
-    private String firstName;
-    @Column(nullable = false, length = 64)
-    @NotNull
-    @Size(max = 64)
-    private String lastName;
     @Column(nullable = false, length = 64, unique = true)
     @NotNull
     @Size(max = 64)
@@ -59,7 +51,7 @@ public class OwnCustomer extends Customer implements Serializable {
 
     public OwnCustomer(String firstName, String lastName, String username, String password, String email, String phoneNumber, String passportNumber) {
         this();
-        
+
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
@@ -67,22 +59,6 @@ public class OwnCustomer extends Customer implements Serializable {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.passportNumber = passportNumber;
-    }
-    
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     public String getUsername() {

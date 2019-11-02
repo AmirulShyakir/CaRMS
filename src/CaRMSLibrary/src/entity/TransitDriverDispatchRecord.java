@@ -11,7 +11,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
@@ -25,22 +27,13 @@ public class TransitDriverDispatchRecord implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long transitDriverDispatchId;
-    @ManyToOne(optional = false)    
-    @Column(nullable = true) // unassigned
-    @NotNull
+    private Long transitDriverDispatchRecordId;
+    
+    @ManyToOne(optional = false)
+    @JoinColumn(nullable = false)
     private Employee dispatchDriver;
-    @ManyToOne(optional = false)    
-    @Column(nullable = false)
-    @NotNull
-    private Car car;
-    @ManyToOne(optional = false)    
-    @Column(nullable = false)
-    @NotNull
-    private Outlet currentOutlet;
-    @ManyToOne(optional = false)    
-    @Column(nullable = false)
-    @NotNull
+    @ManyToOne(optional = false)
+    @JoinColumn(nullable = false)
     private Outlet destinationOutlet;
 
     @Transient
@@ -50,29 +43,19 @@ public class TransitDriverDispatchRecord implements Serializable {
         
     }   
     
-    public TransitDriverDispatchRecord(Car car, Outlet currentOutlet, Outlet destinationOutlet) {
+    public TransitDriverDispatchRecord(Employee dispatchDriver, Outlet destinationOutlet) {
         this();
         
-        this.car = car;
-        this.currentOutlet = currentOutlet;
-        this.destinationOutlet = destinationOutlet;
-    }
-
-    public TransitDriverDispatchRecord(Long transitDriverDispatchId, Car car, Outlet currentOutlet, Outlet destinationOutlet) {
-        this();
-        
-        this.transitDriverDispatchId = transitDriverDispatchId;
-        this.car = car;
-        this.currentOutlet = currentOutlet;
+        this.dispatchDriver = dispatchDriver;
         this.destinationOutlet = destinationOutlet;
     }
     
-    public Long getTransitDriverDispatchId() {
-        return transitDriverDispatchId;
+    public Long getTransitDriverDispatchRecordId() {
+        return transitDriverDispatchRecordId;
     }
 
-    public void setTransitDriverDispatchId(Long transitDriverDispatchId) {
-        this.transitDriverDispatchId = transitDriverDispatchId;
+    public void setTransitDriverDispatchRecordId(Long transitDriverDispatchRecordId) {
+        this.transitDriverDispatchRecordId = transitDriverDispatchRecordId;
     }
 
     public Employee getDispatchDriver() {
@@ -81,22 +64,6 @@ public class TransitDriverDispatchRecord implements Serializable {
 
     public void setDispatchDriver(Employee dispatchDriver) {
         this.dispatchDriver = dispatchDriver;
-    }
-
-    public Car getCar() {
-        return car;
-    }
-
-    public void setCar(Car car) {
-        this.car = car;
-    }
-
-    public Outlet getCurrentOutlet() {
-        return currentOutlet;
-    }
-
-    public void setCurrentOutlet(Outlet currentOutlet) {
-        this.currentOutlet = currentOutlet;
     }
 
     public Outlet getDestinationOutlet() {
@@ -110,18 +77,18 @@ public class TransitDriverDispatchRecord implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (transitDriverDispatchId != null ? transitDriverDispatchId.hashCode() : 0);
+        hash += (transitDriverDispatchRecordId != null ? transitDriverDispatchRecordId.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the transitDriverDispatchId fields are not set
+        // TODO: Warning - this method won't work in the case the transitDriverDispatchRecordId fields are not set
         if (!(object instanceof TransitDriverDispatchRecord)) {
             return false;
         }
         TransitDriverDispatchRecord other = (TransitDriverDispatchRecord) object;
-        if ((this.transitDriverDispatchId == null && other.transitDriverDispatchId != null) || (this.transitDriverDispatchId != null && !this.transitDriverDispatchId.equals(other.transitDriverDispatchId))) {
+        if ((this.transitDriverDispatchRecordId == null && other.transitDriverDispatchRecordId != null) || (this.transitDriverDispatchRecordId != null && !this.transitDriverDispatchRecordId.equals(other.transitDriverDispatchRecordId))) {
             return false;
         }
         return true;
@@ -129,7 +96,7 @@ public class TransitDriverDispatchRecord implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.TransitDriverDispatch[ id=" + transitDriverDispatchId + " ]";
+        return "entity.TransitDriverDispatch[ id=" + transitDriverDispatchRecordId + " ]";
     }
     
 }
