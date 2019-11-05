@@ -5,9 +5,10 @@
  */
 package carmsmanagementclient;
 
+import ejb.session.stateless.EmployeeSessionBeanRemote;
 import entity.Employee;
 import java.util.Scanner;
-import util.enumeration.EmployeeRoleEnum;
+import util.exception.InvalidAccessRightException;
 import util.exception.InvalidLoginCredentialException;
 
 /**
@@ -16,13 +17,18 @@ import util.exception.InvalidLoginCredentialException;
  */
 public class MainApp {
 
+    private EmployeeSessionBeanRemote employeeSessionBeanRemote;
+
     private SalesManagementModule salesManagementModule;
     private CustomerServiceModule customerServiceModule;
 
     private Employee currentEmployee;
 
     public MainApp() {
-        currentEmployee = null;
+    }
+
+    public MainApp(EmployeeSessionBeanRemote employeeSessionBeanRemote) {
+        this.employeeSessionBeanRemote = employeeSessionBeanRemote;
     }
 
     public void runApp() {
@@ -30,7 +36,7 @@ public class MainApp {
         Integer response = 0;
 
         while (true) {
-            System.out.println("*** Welcome to Car Rental Management System Management Client ***\n");
+            System.out.println("*** Welcome to CaRMS Management Client ***\n");
             System.out.println("1: Login");
             System.out.println("2: Exit\n");
             response = 0;
@@ -57,20 +63,19 @@ public class MainApp {
         String username = "";
         String password = "";
 
-        System.out.println("*** CarMS Reservation Client :: Login ***\n");
+        System.out.println("*** CarMS Management Client :: Login ***\n");
         System.out.print("Enter username> ");
         username = scanner.nextLine().trim();
         System.out.print("Enter password> ");
         password = scanner.nextLine().trim();
 
         if (username.length() > 0 && password.length() > 0) {
-            //    currentCustomer = customerSessionBeanRemote.customerLogin(username, password);
+            currentEmployee = employeeSessionBeanRemote.login(username, password);
         } else {
             throw new InvalidLoginCredentialException("Missing login credential!");
         }
     }
 
-    // employee logout    
     private void menuMain() {
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
@@ -88,14 +93,18 @@ public class MainApp {
 
                 response = scanner.nextInt();
 
-                if (response == 1) {
-                    
-                } else if (response == 2) {
-                    
-                } else if (response == 3) {
-                    break;
-                } else {
-                    System.out.println("Invalid option, please try again!\n");
+                try {
+                    if (response == 1) {
+                        salesManagementModule.menuSalesManagement();
+                    } else if (response == 2) {
+                        customerServiceModule.menuCustomerService();
+                    } else if (response == 3) {
+                        break;
+                    } else {
+                        System.out.println("Invalid option, please try again!\n");
+                    }
+                } catch (InvalidAccessRightException ex) {
+                    System.out.println("Invalid option, please try again!: " + ex.getMessage() + "\n");
                 }
             }
 

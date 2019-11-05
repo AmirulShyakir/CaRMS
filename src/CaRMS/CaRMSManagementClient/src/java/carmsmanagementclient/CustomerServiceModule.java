@@ -5,7 +5,10 @@
  */
 package carmsmanagementclient;
 
+import entity.Employee;
 import java.util.Scanner;
+import util.enumeration.EmployeeRoleEnum;
+import util.exception.InvalidAccessRightException;
 
 /**
  *
@@ -13,10 +16,23 @@ import java.util.Scanner;
  */
 public class CustomerServiceModule {
 
+    private Employee currentEmployee; 
+    
     public CustomerServiceModule() {
     }
+
+    public CustomerServiceModule(Employee currentEmployee) {
+        this();
+        
+        this.currentEmployee = currentEmployee;
+    }
     
-        public void menuSalesManagement() {
+    public void menuCustomerService() throws InvalidAccessRightException {
+
+        if (currentEmployee.getEmployeeRole() != EmployeeRoleEnum.CUSTOMER_EXECUTIVE) {
+            throw new InvalidAccessRightException("You don't have CUSTOMER_EXECUTIVE rights to access the customer service module.");
+        }
+        
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
 
@@ -47,10 +63,10 @@ public class CustomerServiceModule {
                 break;
             }
         }
-    // pickup car
-    
-    // return car
-}
+        // pickup car
+
+        // return car
+    }
 
     private void doPickupCar() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

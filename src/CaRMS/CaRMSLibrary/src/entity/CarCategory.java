@@ -50,13 +50,6 @@ public class CarCategory implements Serializable {
         this.carCategoryName = categoryName;
     }
 
-    public CarCategory(Long categoryId, String categoryName) {
-        this();
-
-        this.carCategoryId = categoryId;
-        this.carCategoryName = categoryName;
-    }
-
     public Long getCarCategoryId() {
         return carCategoryId;
     }

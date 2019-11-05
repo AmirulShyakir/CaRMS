@@ -148,4 +148,8 @@ public class Customer implements Serializable {
     public String toString() {
         return "entity.Customer[ id=" + customerId + " ]";
     }
+
+    public String getFullName() {
+        return this.firstName + " " + this.lastName;
+    }
 }
