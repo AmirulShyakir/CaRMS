@@ -141,4 +141,11 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
         }
     }
      */
+    
+    /*
+    @Override
+    public Car searchCar() {
+        
+    }
+*/
 }

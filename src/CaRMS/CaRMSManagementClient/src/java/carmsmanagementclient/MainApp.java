@@ -71,6 +71,8 @@ public class MainApp {
 
         if (username.length() > 0 && password.length() > 0) {
             currentEmployee = employeeSessionBeanRemote.login(username, password);
+            salesManagementModule = new SalesManagementModule(currentEmployee);
+            customerServiceModule = new CustomerServiceModule(currentEmployee);
         } else {
             throw new InvalidLoginCredentialException("Missing login credential!");
         }
@@ -90,7 +92,6 @@ public class MainApp {
 
             while (response < 1 || response > 3) {
                 System.out.print("> ");
-
                 response = scanner.nextInt();
 
                 try {

@@ -117,7 +117,7 @@ public class DataInitializationSessionBean {
             System.out.println(ex.getMessage());
         }
 
-        /*
+        
         CarCategory luxurySedan = new CarCategory("Luxury Sedan");
         CarCategory familySedan = new CarCategory("Family Sedan");
         CarCategory standardSedan = new CarCategory("Standard Sedan");
@@ -135,6 +135,5 @@ public class DataInitializationSessionBean {
         } catch (UnknownPersistenceException ex) {
             System.out.println(ex.getMessage());
         }
-*/
     }
 }
