@@ -5,6 +5,7 @@
  */
 package carmsmanagementclient;
 
+import ejb.session.stateless.CarSessionBeanRemote;
 import entity.Employee;
 import java.util.Scanner;
 import util.enumeration.EmployeeRoleEnum;
@@ -17,14 +18,16 @@ import util.exception.InvalidAccessRightException;
 public class CustomerServiceModule {
 
     private Employee currentEmployee; 
+    private CarSessionBeanRemote carSessionBeanRemote;
     
     public CustomerServiceModule() {
     }
 
-    public CustomerServiceModule(Employee currentEmployee) {
+    public CustomerServiceModule(Employee currentEmployee, CarSessionBeanRemote carSessionBeanRemote) {
         this();
         
         this.currentEmployee = currentEmployee;
+        this.carSessionBeanRemote = carSessionBeanRemote;
     }
     
     public void menuCustomerService() throws InvalidAccessRightException {
@@ -63,9 +66,6 @@ public class CustomerServiceModule {
                 break;
             }
         }
-        // pickup car
-
-        // return car
     }
 
     private void doPickupCar() {
