@@ -7,7 +7,6 @@ package ejb.session.stateless;
 
 import entity.RentalRate;
 import java.util.List;
-import javax.ejb.Remote;
 import util.exception.InputDataValidationException;
 import util.exception.RentalRateNameExistException;
 import util.exception.RentalRateNotFoundException;
@@ -17,7 +16,6 @@ import util.exception.UnknownPersistenceException;
  *
  * @author dtjldamien
  */
-@Remote
 public interface RentalRateSessionBeanRemote {
 
     public Long createNewPartner(RentalRate newRentalRate) throws RentalRateNameExistException, UnknownPersistenceException, InputDataValidationException;

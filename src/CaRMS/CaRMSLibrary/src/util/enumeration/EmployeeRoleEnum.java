@@ -12,5 +12,5 @@ package util.enumeration;
 public enum EmployeeRoleEnum {
     SALES_MANAGER,
     OPERATIONS_MANAGER,
-    CUSTOMER_EXECUTIVE  
+    CUSTOMER_EXECUTIVE
 }

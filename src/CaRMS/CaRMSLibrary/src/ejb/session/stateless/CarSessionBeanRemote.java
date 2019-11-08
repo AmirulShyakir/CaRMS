@@ -7,7 +7,6 @@ package ejb.session.stateless;
 
 import entity.Car;
 import java.util.List;
-import javax.ejb.Remote;
 import util.exception.CarNotFoundException;
 import util.exception.InputDataValidationException;
 import util.exception.ModelNameExistException;
@@ -18,7 +17,6 @@ import util.exception.UpdateCarException;
  *
  * @author dtjldamien
  */
-@Remote
 public interface CarSessionBeanRemote {
 
     public Long createNewCar(Car newCar) throws ModelNameExistException, UnknownPersistenceException, InputDataValidationException;

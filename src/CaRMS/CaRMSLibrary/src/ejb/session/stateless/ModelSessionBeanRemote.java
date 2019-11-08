@@ -7,7 +7,6 @@ package ejb.session.stateless;
 
 import entity.Model;
 import java.util.List;
-import javax.ejb.Remote;
 import util.exception.InputDataValidationException;
 import util.exception.ModelNameExistException;
 import util.exception.ModelNotFoundException;
@@ -17,7 +16,6 @@ import util.exception.UnknownPersistenceException;
  *
  * @author dtjldamien
  */
-@Remote
 public interface ModelSessionBeanRemote {
 
     public Long createNewModel(Model newModel) throws ModelNameExistException, UnknownPersistenceException, InputDataValidationException;
