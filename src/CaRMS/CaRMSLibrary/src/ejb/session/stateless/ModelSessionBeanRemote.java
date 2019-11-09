@@ -7,6 +7,7 @@ package ejb.session.stateless;
 
 import entity.Model;
 import java.util.List;
+import util.exception.CarCategoryNotFoundException;
 import util.exception.InputDataValidationException;
 import util.exception.ModelNameExistException;
 import util.exception.ModelNotFoundException;
@@ -18,12 +19,14 @@ import util.exception.UnknownPersistenceException;
  */
 public interface ModelSessionBeanRemote {
 
-    public Long createNewModel(Model newModel) throws ModelNameExistException, UnknownPersistenceException, InputDataValidationException;
-
     public List<Model> retrieveAllModels();
 
     public Model retrieveModelByModelId(Long modelId) throws ModelNotFoundException;
 
-    public void updateModel(Model model) throws ModelNotFoundException, InputDataValidationException;
+    public Long createNewModel(Long carCategoryId, Model newModel) throws CarCategoryNotFoundException, ModelNameExistException, UnknownPersistenceException, InputDataValidationException;
+
+    public void deleteModel(Long modelId) throws ModelNotFoundException;
+
+    public void updateModel(Long carCategoryId, Model model) throws CarCategoryNotFoundException, ModelNotFoundException, InputDataValidationException;
 
 }

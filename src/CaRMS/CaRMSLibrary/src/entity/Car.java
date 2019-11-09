@@ -8,6 +8,7 @@ package entity;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -40,17 +41,22 @@ public class Car implements Serializable {
     @Column(nullable = false)
     @NotNull
     private Boolean onRental; // true means on rental, false means in outlet
+    @Column(nullable = false)
+    @NotNull
+    private Boolean isDisabled;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
     private Model model;
-    @ManyToOne(optional = true)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(nullable = true)
     private Outlet outlet;
-    @OneToOne(optional = true)
+    @OneToOne(optional = true, fetch = FetchType.EAGER)
     private RentalReservation rentalReservation;
 
     public Car() {
+        this.onRental = false;
+        this.isDisabled = false;
     }
 
     public Car(String licensePlate, String colour, Model model) {
@@ -115,6 +121,14 @@ public class Car implements Serializable {
 
     public void setRentalReservation(RentalReservation rentalReservation) {
         this.rentalReservation = rentalReservation;
+    }
+
+    public Boolean getIsDisabled() {
+        return isDisabled;
+    }
+
+    public void setIsDisabled(Boolean isDisabled) {
+        this.isDisabled = isDisabled;
     }
 
     @Override

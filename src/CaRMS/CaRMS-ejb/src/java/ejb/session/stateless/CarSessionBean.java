@@ -6,8 +6,11 @@
 package ejb.session.stateless;
 
 import entity.Car;
+import entity.Model;
+import entity.Outlet;
 import java.util.List;
 import java.util.Set;
+import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
@@ -20,8 +23,13 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import util.exception.CarNotFoundException;
+import util.exception.DeleteCarException;
 import util.exception.InputDataValidationException;
+import util.exception.LicensePlateExistException;
+import util.exception.ModelDisabledException;
 import util.exception.ModelNameExistException;
+import util.exception.ModelNotFoundException;
+import util.exception.OutletNotFoundException;
 import util.exception.UnknownPersistenceException;
 import util.exception.UpdateCarException;
 
@@ -40,6 +48,11 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
     private final ValidatorFactory validatorFactory;
     private final Validator validator;
 
+    @EJB
+    private OutletSessionBeanLocal outletSessionBeanLocal;
+    @EJB
+    private ModelSessionBeanLocal modelSessionBeanLocal;
+
     public CarSessionBean() {
         this.validatorFactory = Validation.buildDefaultValidatorFactory();
         this.validator = validatorFactory.getValidator();
@@ -48,14 +61,29 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
-    public Long createNewCar(Car newCar) throws ModelNameExistException, UnknownPersistenceException, InputDataValidationException {
+    public Long createNewCar(Long modelId, Long outletId, Car newCar) throws ModelDisabledException, ModelNotFoundException, OutletNotFoundException, LicensePlateExistException, UnknownPersistenceException, InputDataValidationException {
         try {
             Set<ConstraintViolation<Car>> constraintViolations = validator.validate(newCar);
 
             if (constraintViolations.isEmpty()) {
-                em.persist(newCar);
-                em.flush();
-
+                try {
+                    Outlet outlet = outletSessionBeanLocal.retrieveOutletByOutletId(outletId);
+                    Model model = modelSessionBeanLocal.retrieveModelByModelId(modelId);
+                    if (model.getIsEnabled()) {
+                        newCar.setModel(model);
+                        newCar.setOutlet(outlet);
+                        outlet.getCars().add(newCar);
+                        model.getCars().add(newCar);
+                        em.persist(newCar);
+                        em.flush();
+                    } else {
+                        throw new ModelDisabledException();
+                    }
+                } catch (ModelNotFoundException ex) {
+                    throw new ModelNotFoundException();
+                } catch (OutletNotFoundException ex) {
+                    throw new OutletNotFoundException();
+                }
                 return newCar.getCarId();
             } else {
                 throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));
@@ -63,7 +91,7 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
         } catch (PersistenceException ex) {
             if (ex.getCause() != null && ex.getCause().getClass().getName().equals("org.eclipse.persistence.exceptions.DatabaseException")) {
                 if (ex.getCause().getCause() != null && ex.getCause().getCause().getClass().getName().equals("java.sql.SQLIntegrityConstraintViolationException")) {
-                    throw new ModelNameExistException();
+                    throw new LicensePlateExistException();
                 } else {
                     throw new UnknownPersistenceException(ex.getMessage());
                 }
@@ -86,7 +114,7 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
     @Override
     public List<Car> retrieveAllCars() {
         // should be sorted in ascending order by car category, make and model.
-        Query query = em.createQuery("SELECT c FROM Car c ORDER BY c.carCategory.carCategoryName ASC");
+        Query query = em.createQuery("SELECT c FROM Car c ORDER BY c.carCategory.carCategoryName, c.model.makeName, c.model.modelName, c.licensePlate ASC");
 
         return query.getResultList();
     }
@@ -103,22 +131,14 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
     }
 
     @Override
-    public void updateCar(Car car) throws CarNotFoundException, UpdateCarException, InputDataValidationException {
+    public void updateCar(Car car) throws CarNotFoundException, InputDataValidationException {
         if (car != null && car.getCarId() != null) {
             Set<ConstraintViolation<Car>> constraintViolations = validator.validate(car);
 
             if (constraintViolations.isEmpty()) {
                 Car carToUpdate = retrieveCarByCarId(car.getCarId());
-                
-                if (carToUpdate.getLicensePlate().equals(car.getLicensePlate())) {
-                    carToUpdate.setColour(car.getColour());
-                    carToUpdate.setModel(car.getModel());
-                    carToUpdate.setOnRental(car.getOnRental());
-                    carToUpdate.setOutlet(car.getOutlet());
-                    carToUpdate.setRentalReservation(car.getRentalReservation());
-                } else {
-                    throw new UpdateCarException("License plate of car record to be updated does not match the existing record");
-                }
+                carToUpdate.setLicensePlate(car.getLicensePlate());
+                carToUpdate.setColour(car.getColour());
             } else {
                 throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));
             }
@@ -127,25 +147,14 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
         }
     }
 
-        /*
     @Override
-    public void deleteCar(Long carId) throws CarNotFoundException, DeleteCarException {
-        Model modelToRemove = retrieveModelByModelId(modelId);
+    public void deleteCar(Long carId) throws CarNotFoundException {
+        Car carToRemove = retrieveCarByCarId(carId);
 
-        List<Model> cars = model.retrieveSaleTransactionLineItemsByRentalDayId(rentalDayId);
-
-        if (cars.isEmpty()) {
-            em.remove(modelToRemove);
+        if (carToRemove.getRentalReservation() == null) {
+            em.remove(carToRemove);
         } else {
-            throw new DeleteRentalRateException("Model ID " + modelId + " is associated with cars(s) and cannot be deleted!");
+            carToRemove.setIsDisabled(true);
         }
     }
-     */
-    
-    /*
-    @Override
-    public Car searchCar() {
-        
-    }
-*/
 }
