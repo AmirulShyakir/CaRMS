@@ -19,6 +19,8 @@ import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.LocalBean;
 import javax.ejb.Startup;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import util.enumeration.EmployeeRoleEnum;
 import util.exception.CarCategoryExistException;
 import util.exception.EmployeeUsernameExistException;
@@ -35,7 +37,7 @@ import util.exception.UnknownPersistenceException;
 @LocalBean
 @Startup
 public class DataInitializationSessionBean {
-
+    
     @EJB
     private OutletSessionBeanLocal outletSessionBeanLocal;
     @EJB
@@ -44,6 +46,9 @@ public class DataInitializationSessionBean {
     private PartnerSessionBeanLocal partnerSessionBeanLocal;
     @EJB
     private CarCategorySessionBeanLocal carCategorySessionBeanLocal;
+    
+    @PersistenceContext(unitName = "CaRMS-ejbPU")
+    private EntityManager em;
 
     public DataInitializationSessionBean() {
     }
@@ -52,7 +57,9 @@ public class DataInitializationSessionBean {
     // "Insert Code > Add Business Method")
     @PostConstruct
     public void postConstruct() {
+        if (em.find(Outlet.class, 1l) == null && em.find(Employee.class, 1l) == null && em.find(Partner.class, 1l) == null && em.find(CarCategory.class, 1l) == null) {
         initialiseData();
+        } 
     }
 
     private void initialiseData() {
@@ -116,7 +123,6 @@ public class DataInitializationSessionBean {
         } catch (UnknownPersistenceException ex) {
             System.out.println(ex.getMessage());
         }
-
         
         CarCategory luxurySedan = new CarCategory("Luxury Sedan");
         CarCategory familySedan = new CarCategory("Family Sedan");
@@ -135,5 +141,9 @@ public class DataInitializationSessionBean {
         } catch (UnknownPersistenceException ex) {
             System.out.println(ex.getMessage());
         }
+    }
+
+    public void persist(Object object) {
+        em.persist(object);
     }
 }
