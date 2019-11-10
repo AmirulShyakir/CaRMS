@@ -6,7 +6,6 @@
 package entity;
 
 import java.io.Serializable;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,7 +14,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -28,28 +26,23 @@ public class TransitDriverDispatchRecord implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long transitDriverDispatchRecordId;
-    
+
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
     private Employee dispatchDriver;
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
     private Outlet destinationOutlet;
+    @OneToOne(optional = false)
+    private RentalReservation rentalReservation;
 
     @Transient
     private static final double TRANSIT_TIME = 2.0;
-    
+
     public TransitDriverDispatchRecord() {
-        
-    }   
-    
-    public TransitDriverDispatchRecord(Employee dispatchDriver, Outlet destinationOutlet) {
-        this();
-        
-        this.dispatchDriver = dispatchDriver;
-        this.destinationOutlet = destinationOutlet;
+
     }
-    
+
     public Long getTransitDriverDispatchRecordId() {
         return transitDriverDispatchRecordId;
     }
@@ -72,6 +65,14 @@ public class TransitDriverDispatchRecord implements Serializable {
 
     public void setDestinationOutlet(Outlet destinationOutlet) {
         this.destinationOutlet = destinationOutlet;
+    }
+
+    public RentalReservation getRentalReservation() {
+        return rentalReservation;
+    }
+
+    public void setRentalReservation(RentalReservation rentalReservation) {
+        this.rentalReservation = rentalReservation;
     }
 
     @Override
@@ -98,5 +99,5 @@ public class TransitDriverDispatchRecord implements Serializable {
     public String toString() {
         return "entity.TransitDriverDispatch[ id=" + transitDriverDispatchRecordId + " ]";
     }
-    
+
 }

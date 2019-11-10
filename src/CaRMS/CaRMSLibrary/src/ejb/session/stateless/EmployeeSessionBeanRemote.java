@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.Employee;
+import util.exception.EmployeeNotFoundException;
 import util.exception.EmployeeUsernameExistException;
 import util.exception.InputDataValidationException;
 import util.exception.InvalidLoginCredentialException;
@@ -18,7 +19,9 @@ import util.exception.UnknownPersistenceException;
 public interface EmployeeSessionBeanRemote {
 
     public Long createNewEmployee(Employee newEmployee) throws EmployeeUsernameExistException, UnknownPersistenceException, InputDataValidationException;
-    
+
     public Employee login(String username, String password) throws InvalidLoginCredentialException;
+
+    public Employee retrieveEmployeeByEmployeeId(Long employeeId) throws EmployeeNotFoundException;
 
 }

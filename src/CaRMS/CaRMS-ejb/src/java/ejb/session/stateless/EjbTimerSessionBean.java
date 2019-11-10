@@ -5,8 +5,10 @@
  */
 package ejb.session.stateless;
 
+import com.sun.media.sound.SF2Layer;
 import entity.RentalReservation;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
@@ -40,12 +42,21 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
         or will be returned to the pickup outlet in time. 
         • Cars that are at a different outlet from the pickup outlet should be allocated only when necessary. 
          */
-        List<RentalReservation> rentalReservations = rentalReservationSessionBeanLocal.retrieveAllRentalReservation();
-        String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        String timeStamp = sdf.format(new Date());
         System.out.println("********** EjbTimerSessionBean.allocateCarsToCurrentDayReservations(): Timeout at " + timeStamp);
+        List<RentalReservation> rentalReservations = rentalReservationSessionBeanLocal.retrieveAllRentalReservation();
+        List<RentalReservation> rentalReservationsToBeAllocated = new ArrayList<>();
+        
+        for (RentalReservation rentalReservation : rentalReservations) {
+            String startDate = sdf.format(rentalReservation.getStartDate());
+            if (startDate.equals(timeStamp)) {
+                rentalReservationsToBeAllocated.add(rentalReservation);
+            }
+        }
     }
 
-    @Schedule(hour = "*", minute = "*/5", info = "generateTransitDriverDispatchRecords")
+    @Schedule(hour = "0", minute = "0", info = "generateTransitDriverDispatchRecords")
     public void generateTransitDriverDispatchRecords() {
         /*
         • Retrieve a list of car allocations for pickup on the current date that require movement from another different outlet. 

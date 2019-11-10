@@ -6,6 +6,8 @@
 package ejb.session.stateless;
 
 import entity.Outlet;
+import entity.TransitDriverDispatchRecord;
+import java.util.List;
 import java.util.Set;
 import javax.ejb.Local;
 import javax.ejb.Remote;
@@ -90,5 +92,4 @@ public class OutletSessionBean implements OutletSessionBeanRemote, OutletSession
             throw new OutletNotFoundException("Outlet ID " + outletId + " does not exist!");
         }
     }
-
 }

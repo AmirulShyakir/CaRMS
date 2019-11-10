@@ -52,6 +52,7 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
 
             if (constraintViolations.isEmpty()) {
                 em.persist(newRentalReservation);
+                
                 em.flush();
 
                 return newRentalReservation.getRentalReservationId();
@@ -75,7 +76,7 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
         }
         return msg;
     }
-    
+
     @Override
     public RentalReservation retrieveRentalReservationByRentalReservationId(Long rentalReservationId) throws RentalReservationNotFoundException {
         RentalReservation carCategory = em.find(RentalReservation.class, rentalReservationId);
@@ -86,7 +87,7 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
             throw new RentalReservationNotFoundException("Car Category ID " + rentalReservationId + " does not exist!");
         }
     }
-    
+
     @Override
     public List<RentalReservation> retrieveAllRentalReservation() {
         Query query = em.createQuery("SELECT rr FROM RentalReservation rr");

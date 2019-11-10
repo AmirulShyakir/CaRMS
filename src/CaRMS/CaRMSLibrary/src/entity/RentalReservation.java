@@ -63,6 +63,7 @@ public class RentalReservation implements Serializable {
     @OneToMany(mappedBy = "rentalReservation")
     private List<RentalDay> rentalDays;
     @OneToOne(optional = true)
+    @JoinColumn(nullable = true)
     private TransitDriverDispatchRecord transitDriverDispatchRecord;
     @ManyToOne(optional = true)
     @JoinColumn(nullable = true)
@@ -81,16 +82,6 @@ public class RentalReservation implements Serializable {
     // one to many rental day
     public RentalReservation() {
         this.rentalDays = new ArrayList<>();
-    }
-
-    public RentalReservation(Customer customer, Date startDate, Date endDate, Outlet pickupOutlet, Outlet returnOutlet) {
-        this();
-
-        this.customer = customer;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.pickupOutlet = pickupOutlet;
-        this.returnOutlet = returnOutlet;
     }
 
     public Long getRentalReservationId() {
