@@ -24,6 +24,7 @@ import util.exception.InvalidLoginCredentialException;
 import util.exception.ModelNotFoundException;
 import util.exception.OutletNotFoundException;
 import util.exception.OwnCustomerUsernameExistException;
+import util.exception.RentalReservationNotFoundException;
 import util.exception.UnknownPersistenceException;
 
 /**
@@ -158,22 +159,28 @@ public class MainApp {
         Integer response = 0;
         SimpleDateFormat inputDateFormat = new SimpleDateFormat("d/M/y");
         SimpleDateFormat outputDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+        Long carCategoryId;
+        Long modelId;
+        Date pickUpDateTime;
+        Long pickupOutletId;
+        Date returnDateTime;
+        Long returnOutletId;
 
         System.out.println("*** CaRMS Reservation Client :: Search Car ***\n");
         System.out.print("Enter Car Category ID> "); // should show a list of category
-        Long carCategoryId = scanner.nextLong();
+        carCategoryId = scanner.nextLong();
         System.out.print("Enter Model ID> "); // should show a list of models
-        Long modelId = scanner.nextLong();
+        modelId = scanner.nextLong();
 
         try {
             System.out.print("Enter Pickup Date (dd/mm/yyyy)> ");
             Date pickUpDateTime = inputDateFormat.parse(scanner.nextLine().trim());
             System.out.print("Enter Return Date (dd/mm/yyyy)> ");
-            Date returnDateTime = inputDateFormat.parse(scanner.nextLine().trim());
+            returnDateTime = inputDateFormat.parse(scanner.nextLine().trim());
             System.out.print("Enter Pickup Outlet ID> ");
-            Long pickupOutletId = scanner.nextLong();
+            pickupOutletId = scanner.nextLong();
             System.out.print("Enter Return Outlet ID> ");
-            Long returnOutletId = scanner.nextLong();
+            returnOutletId = scanner.nextLong();
 
             List<Car> cars = carSessionBeanRemote.searchCar(carCategoryId, modelId, pickUpDateTime, returnDateTime, pickupOutletId, returnOutletId);
             System.out.printf("%4s%16s%32s%10s%16s%32s\n", "Car Category ID", "Model ID", "Pick-up Date Time", "Return Date Time", "Pick-up Outlet ID", "Return Outlet ID");
@@ -242,7 +249,17 @@ public class MainApp {
     }
 
     private void doCancelReservation() {
+        Scanner scanner = new Scanner(System.in);
         System.out.println("*** CaRMS Reservation Client :: Cancel Reservation ***\n");
+        System.out.print("Enter Reservation ID> ");
+        Long rentalReservationId = scanner.nextLong();
+        try {
+            rentalReservationSessionBeanRemote.deleteReservation(rentalReservationId);
+        } catch (RentalReservationNotFoundException ex) {
+            System.out.print("Rental Reservation not found for ID " + rentalReservationId);
+        }
+        System.out.print("Press any key to continue...> ");
+        scanner.nextLine();
     }
 
     private void doViewAllReservations() {

@@ -17,6 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -95,6 +96,7 @@ public class Car implements Serializable {
         this.onRental = onRental;
     }
 
+    @XmlTransient
     public Model getModel() {
         return model;
     }
@@ -103,6 +105,7 @@ public class Car implements Serializable {
         this.model = model;
     }
 
+    @XmlTransient
     public Outlet getOutlet() {
         return outlet;
     }
@@ -115,6 +118,7 @@ public class Car implements Serializable {
         this.carId = carId;
     }
 
+    @XmlTransient
     public RentalReservation getRentalReservation() {
         return rentalReservation;
     }
