@@ -6,7 +6,6 @@
 package ejb.session.stateless;
 
 import entity.Partner;
-import javax.ejb.Remote;
 import util.exception.InputDataValidationException;
 import util.exception.InvalidLoginCredentialException;
 import util.exception.PartnerNameExistException;
@@ -16,7 +15,6 @@ import util.exception.UnknownPersistenceException;
  *
  * @author dtjldamien
  */
-@Remote
 public interface PartnerSessionBeanRemote {
 
     public Long createNewPartner(Partner newPartner) throws PartnerNameExistException, UnknownPersistenceException, InputDataValidationException;

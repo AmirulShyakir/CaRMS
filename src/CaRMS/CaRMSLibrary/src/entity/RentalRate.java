@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -37,43 +38,44 @@ public class RentalRate implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long rentalRateId;
-    @Column(nullable = false, length = 64, unique = true)
+    @Column(nullable = false, length = 16, unique = true)
     @NotNull
-    @Size(max = 64)
+    @Size(max = 16)
     private String rentalRateName;
     @Column(nullable = false, precision = 11, scale = 2)
     @NotNull
     @DecimalMin("0.00")
     @Digits(integer = 9, fraction = 2)
     private BigDecimal ratePerDay;
+    
+    @Column(nullable = false)
+    @NotNull
+    private Boolean isEnabled;
 
     // validity period if applicable
     @Temporal(TemporalType.DATE)
-    @Column(nullable = false) // minimum start date is day before
-    @NotNull
+    @Column(nullable = true) // minimum start date is day before
     private Date startDate;
     @Temporal(TemporalType.DATE)
-    @Column(nullable = false)
-    @NotNull
+    @Column(nullable = true)
     private Date endDate;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
     private CarCategory carCategory;
     @OneToMany(mappedBy = "rentalRate")
     private List<RentalDay> rentalDays;
 
     public RentalRate() {
+        this.isEnabled = true;
         this.rentalDays = new ArrayList<>();
     }
 
-    public RentalRate(String rentalRateName, BigDecimal ratePerDay, Date startDate, Date endDate, CarCategory category) {
+    public RentalRate(String rentalRateName, BigDecimal ratePerDay, CarCategory category) {
         this();
 
         this.rentalRateName = rentalRateName;
         this.ratePerDay = ratePerDay;
-        this.startDate = startDate;
-        this.endDate = endDate;
         this.carCategory = category;
     }
 
@@ -143,6 +145,14 @@ public class RentalRate implements Serializable {
         if (this.rentalDays.contains(rentalDay)) {
             this.rentalDays.remove(rentalDay);
         }
+    }
+
+    public Boolean getIsEnabled() {
+        return isEnabled;
+    }
+
+    public void setIsEnabled(Boolean isEnabled) {
+        this.isEnabled = isEnabled;
     }
 
     @Override

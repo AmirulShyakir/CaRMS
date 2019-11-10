@@ -5,9 +5,11 @@
  */
 package ejb.session.stateless;
 
+import entity.CarCategory;
 import entity.Model;
 import java.util.List;
 import java.util.Set;
+import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
@@ -19,6 +21,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import util.exception.CarCategoryNotFoundException;
 import util.exception.InputDataValidationException;
 import util.exception.ModelNameExistException;
 import util.exception.ModelNotFoundException;
@@ -38,6 +41,9 @@ public class ModelSessionBean implements ModelSessionBeanRemote, ModelSessionBea
 
     private final ValidatorFactory validatorFactory;
     private final Validator validator;
+    
+    @EJB
+    private CarCategorySessionBeanLocal carCategorySessionBeanLocal;    
 
     public ModelSessionBean() {
         this.validatorFactory = Validation.buildDefaultValidatorFactory();
@@ -47,15 +53,20 @@ public class ModelSessionBean implements ModelSessionBeanRemote, ModelSessionBea
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
-    public Long createNewModel(Model newModel) throws ModelNameExistException, UnknownPersistenceException, InputDataValidationException {
+    public Long createNewModel(Long carCategoryId, Model newModel) throws CarCategoryNotFoundException, ModelNameExistException, UnknownPersistenceException, InputDataValidationException {
         try {
             Set<ConstraintViolation<Model>> constraintViolations = validator.validate(newModel);
 
             if (constraintViolations.isEmpty()) {
-                em.persist(newModel);
-                em.flush();
-
-                return newModel.getModelId();
+                try {
+                    em.persist(newModel);
+                    CarCategory carCategory = carCategorySessionBeanLocal.retrieveCarCategoryByCarCategoryId(carCategoryId);
+                    newModel.setCarCategory(carCategory);
+                    em.flush();
+                    return newModel.getModelId();
+                } catch (CarCategoryNotFoundException ex) {
+                    throw new CarCategoryNotFoundException();
+                }
             } else {
                 throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));
             }
@@ -85,7 +96,7 @@ public class ModelSessionBean implements ModelSessionBeanRemote, ModelSessionBea
     @Override
     public List<Model> retrieveAllModels() {
         // should be sorted in ascending order by car category, make and model.
-        Query query = em.createQuery("SELECT m FROM Model m ORDER BY m.carCategory.carCategoryName ASC");
+        Query query = em.createQuery("SELECT m FROM Model m ORDER BY m.carCategory.carCategoryName, m.makeName, m.modelName ASC");
 
         return query.getResultList();
     }
@@ -102,7 +113,7 @@ public class ModelSessionBean implements ModelSessionBeanRemote, ModelSessionBea
     }
 
     @Override
-    public void updateModel(Model model) throws ModelNotFoundException, InputDataValidationException {
+    public void updateModel(Long carCategoryId, Model model) throws CarCategoryNotFoundException, ModelNotFoundException, InputDataValidationException {
         if (model != null && model.getModelId() != null) {
             Set<ConstraintViolation<Model>> constraintViolations = validator.validate(model);
 
@@ -111,7 +122,12 @@ public class ModelSessionBean implements ModelSessionBeanRemote, ModelSessionBea
                 modelToUpdate.setMakeName(model.getMakeName());
                 modelToUpdate.setModelName(model.getModelName());
                 modelToUpdate.setCars(model.getCars());
-                modelToUpdate.setCarCategory(model.getCarCategory());
+                try {
+                    CarCategory carCategory = carCategorySessionBeanLocal.retrieveCarCategoryByCarCategoryId(carCategoryId);
+                    modelToUpdate.setCarCategory(carCategory);
+                } catch (CarCategoryNotFoundException ex) {
+                    throw new CarCategoryNotFoundException();
+                }
             } else {
                 throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));
             }
@@ -120,18 +136,17 @@ public class ModelSessionBean implements ModelSessionBeanRemote, ModelSessionBea
         }
     }
 
-    /*
     @Override
-    public void deleteModel(Long modelId) throws ModelNotFoundException, DeleteModelException {
-        Model modelToRemove = retrieveModelByModelId(modelId);
-
-        List<Model> cars = model.retrieveSaleTransactionLineItemsByRentalDayId(rentalDayId);
-
-        if (cars.isEmpty()) {
-            em.remove(modelToRemove);
-        } else {
-            throw new DeleteRentalRateException("Model ID " + modelId + " is associated with cars(s) and cannot be deleted!");
+    public void deleteModel(Long modelId) throws ModelNotFoundException {
+        try {
+            Model modelToRemove = retrieveModelByModelId(modelId);
+            if (modelToRemove.getCars().isEmpty()) {
+                em.remove(modelToRemove);
+            } else {
+                modelToRemove.setIsEnabled(false);
+            }
+        } catch (ModelNotFoundException ex) {
+            throw new ModelNotFoundException("Model of ID: " + modelId + " not found!");
         }
     }
-     */
 }

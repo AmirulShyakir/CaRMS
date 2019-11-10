@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -31,31 +32,34 @@ public class Model implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long modelId;
-    @Column(nullable = false, length = 64)
+    @Column(nullable = false, length = 32)
     @NotNull
-    @Size(max = 64)
+    @Size(max = 32)
     private String makeName;
-    @Column(nullable = false, length = 64, unique = true)
+    @Column(nullable = false, length = 32, unique = true)
     @NotNull
-    @Size(max = 64)
+    @Size(max = 32)
     private String modelName;
+    @Column(nullable = false)
+    @NotNull
+    private Boolean isEnabled;
 
     @OneToMany(mappedBy = "model")
     private List<Car> cars;
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
     private CarCategory carCategory;
 
     public Model() {
         this.cars = new ArrayList<>();
+        this.isEnabled = true;
     }
 
-    public Model(String makeName, String modelName, CarCategory carCategory) {
+    public Model(String makeName, String modelName) {
         this();
 
         this.makeName = makeName;
         this.modelName = modelName;
-        this.carCategory = carCategory;
     }
 
     public Long getModelId() {
@@ -108,6 +112,14 @@ public class Model implements Serializable {
 
     public void setCarCategory(CarCategory carCategory) {
         this.carCategory = carCategory;
+    }
+
+    public Boolean getIsEnabled() {
+        return isEnabled;
+    }
+
+    public void setIsEnabled(Boolean isEnabled) {
+        this.isEnabled = isEnabled;
     }
 
     @Override

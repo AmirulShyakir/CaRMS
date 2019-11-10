@@ -18,6 +18,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import util.exception.CarCategoryExistException;
+import util.exception.CarCategoryNotFoundException;
 import util.exception.InputDataValidationException;
 import util.exception.UnknownPersistenceException;
 
@@ -79,4 +80,14 @@ public class CarCategorySessionBean implements CarCategorySessionBeanRemote, Car
         return msg;
     }
 
+    @Override
+    public CarCategory retrieveCarCategoryByCarCategoryId(Long carCategoryId) throws CarCategoryNotFoundException {
+        CarCategory carCategory = em.find(CarCategory.class, carCategoryId);
+
+        if (carCategory != null) {
+            return carCategory;
+        } else {
+            throw new CarCategoryNotFoundException("Car Category ID " + carCategoryId + " does not exist!");
+        }
+    }
 }

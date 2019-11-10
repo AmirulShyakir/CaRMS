@@ -5,9 +5,11 @@
  */
 package ejb.session.stateless;
 
+import entity.CarCategory;
 import entity.RentalRate;
 import java.util.List;
 import java.util.Set;
+import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
@@ -19,6 +21,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import util.exception.CarCategoryNotFoundException;
 import util.exception.InputDataValidationException;
 import util.exception.RentalRateNameExistException;
 import util.exception.RentalRateNotFoundException;
@@ -39,6 +42,9 @@ public class RentalRateSessionBean implements RentalRateSessionBeanRemote, Renta
     private final ValidatorFactory validatorFactory;
     private final Validator validator;
 
+    @EJB
+    private CarCategorySessionBeanLocal carCategorySessionBeanLocal;
+
     public RentalRateSessionBean() {
         this.validatorFactory = Validation.buildDefaultValidatorFactory();
         this.validator = validatorFactory.getValidator();
@@ -47,15 +53,20 @@ public class RentalRateSessionBean implements RentalRateSessionBeanRemote, Renta
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
-    public Long createNewPartner(RentalRate newRentalRate) throws RentalRateNameExistException, UnknownPersistenceException, InputDataValidationException {
+    public Long createNewRentalRate(Long carCategoryId, RentalRate newRentalRate) throws RentalRateNameExistException, CarCategoryNotFoundException, UnknownPersistenceException, InputDataValidationException {
         try {
             Set<ConstraintViolation<RentalRate>> constraintViolations = validator.validate(newRentalRate);
 
             if (constraintViolations.isEmpty()) {
-                em.persist(newRentalRate);
-                em.flush();
-
-                return newRentalRate.getRentalRateId();
+                try {
+                    CarCategory carCategory = carCategorySessionBeanLocal.retrieveCarCategoryByCarCategoryId(carCategoryId);
+                    em.persist(newRentalRate);
+                    carCategory.addRentalRate(newRentalRate);
+                    em.flush();
+                    return newRentalRate.getRentalRateId();
+                } catch (CarCategoryNotFoundException ex) {
+                    throw new CarCategoryNotFoundException();
+                }
             } else {
                 throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));
             }
@@ -122,18 +133,17 @@ public class RentalRateSessionBean implements RentalRateSessionBeanRemote, Renta
         }
     }
 
-    /*
     @Override
-    public void deleteRentalRate(Long rentalRateId) throws RentalRateNotFoundException, DeleteRentalRateException {
-        RentalRate productEntityToRemove = retrieveRentalRateByRentalRateId(rentalRateId);
-
-        List<RentalDay> rentalDays = rentalDaySessionBeanLocal.retrieveSaleTransactionLineItemsByRentalDayId(rentalDayId);
-
-        if (rentalDays.isEmpty()) {
-            em.remove(productEntityToRemove);
-        } else {
-            throw new DeleteRentalRateException("Product ID " + productId + " is associated with existing sale transaction line item(s) and cannot be deleted!");
+    public void deleteRentalRate(Long rentalRateId) throws RentalRateNotFoundException {
+        try {
+            RentalRate rentalRateToRemove = retrieveRentalRateByRentalRateId(rentalRateId);
+            if (rentalRateToRemove.getRentalDays().isEmpty()) {
+                em.remove(rentalRateToRemove);
+            } else {
+                rentalRateToRemove.setIsEnabled(false);
+            }
+        } catch (RentalRateNotFoundException ex) {
+            throw new RentalRateNotFoundException("Rental rate of ID: " + rentalRateId + " not found!");
         }
     }
-    */
 }
