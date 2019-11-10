@@ -19,8 +19,10 @@ public interface RentalReservationSessionBeanRemote {
 
     public Long createNewRentalReservation(RentalReservation newRentalReservation) throws InputDataValidationException, UnknownPersistenceException;
 
-    public List<RentalReservation> retrieveAllRentalReservation();
-
     public RentalReservation retrieveRentalReservationByRentalReservationId(Long rentalReservationId) throws RentalReservationNotFoundException;
 
+    public List<RentalReservation> retrieveAllRentalReservations();
+    
+    public void deleteReservation(Long rentalReservationId) throws RentalReservationNotFoundException;
+    
 }

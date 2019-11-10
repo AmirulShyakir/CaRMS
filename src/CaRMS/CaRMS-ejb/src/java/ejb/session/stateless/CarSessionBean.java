@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import entity.Car;
 import entity.Model;
 import entity.Outlet;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import javax.ejb.EJB;
@@ -22,6 +23,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import util.exception.CarCategoryNotFoundException;
 import util.exception.CarNotFoundException;
 import util.exception.DeleteCarException;
 import util.exception.InputDataValidationException;
@@ -157,4 +159,13 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
             carToRemove.setIsDisabled(true);
         }
     }
+    
+    @Override
+    public List<Car> searchCar(Long categoryId, Long modelId, Date pickUpDateTime, Date returnDateTime, Long pickupOutletId, Long returnOutletId) throws CarNotFoundException, CarCategoryNotFoundException, ModelNotFoundException, OutletNotFoundException {
+        
+        Query query = em.createQuery("SELECT c FROM Car c WHERE c.model.carCategory.carCategoryId = :categoryId AND c.model.modelId = :modelId");
+
+        return query.getResultList();
+    }
+    
 }

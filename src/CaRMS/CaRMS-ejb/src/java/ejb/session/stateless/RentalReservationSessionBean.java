@@ -89,8 +89,28 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
     }
 
     @Override
-    public List<RentalReservation> retrieveAllRentalReservation() {
+    public List<RentalReservation> retrieveAllRentalReservations() {
         Query query = em.createQuery("SELECT rr FROM RentalReservation rr");
         return query.getResultList();
+    }
+    
+    @Override
+    public void deleteReservation(Long rentalReservationId) throws RentalReservationNotFoundException {
+        try {
+            RentalReservation rentalReservationToRemove = retrieveRentalReservationByRentalReservationId(rentalReservationId);
+            if (rentalReservationToRemove.getPaid()) {
+                
+                // refund credit card amount - penalty amoung
+            } else {
+                // charge credit card penalty amount
+            }
+            if (rentalReservationToRemove.getRentalDays().isEmpty()) {
+                em.remove(rentalReservationToRemove);
+            } else {
+                rentalReservationToRemove.setIsCancelled(true);
+            }
+        } catch (RentalReservationNotFoundException ex) {
+            throw new RentalReservationNotFoundException("Rental Reservation of ID: " + rentalReservationId + " not found!");
+        }
     }
 }

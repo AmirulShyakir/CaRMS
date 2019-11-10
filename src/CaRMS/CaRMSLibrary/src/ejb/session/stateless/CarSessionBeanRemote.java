@@ -6,7 +6,9 @@
 package ejb.session.stateless;
 
 import entity.Car;
+import java.util.Date;
 import java.util.List;
+import util.exception.CarCategoryNotFoundException;
 import util.exception.CarNotFoundException;
 import util.exception.InputDataValidationException;
 import util.exception.LicensePlateExistException;
@@ -32,4 +34,5 @@ public interface CarSessionBeanRemote {
 
     public void deleteCar(Long carId) throws CarNotFoundException;
 
+    public List<Car> searchCar(Long categoryId, Long modelId, Date pickUpDateTime, Date returnDateTime, Long pickupOutletId, Long returnOutletId) throws CarNotFoundException, CarCategoryNotFoundException, ModelNotFoundException, OutletNotFoundException;
 }
