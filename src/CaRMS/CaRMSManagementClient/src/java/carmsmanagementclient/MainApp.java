@@ -16,6 +16,7 @@ import entity.Employee;
 import java.util.Scanner;
 import util.exception.InvalidAccessRightException;
 import util.exception.InvalidLoginCredentialException;
+import util.exception.UnpaidRentalReservationException;
 
 /**
  *
@@ -138,6 +139,8 @@ public class MainApp {
                     }
                 } catch (InvalidAccessRightException ex) {
                     System.out.println("Invalid option, please try again!: " + ex.getMessage() + "\n");
+                } catch (UnpaidRentalReservationException ex) {
+                    System.out.println("Customer has not paid for the car rental reservation!");
                 }
             }
             if (response == 3) {

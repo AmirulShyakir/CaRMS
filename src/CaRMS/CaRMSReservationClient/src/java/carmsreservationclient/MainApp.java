@@ -174,7 +174,7 @@ public class MainApp {
 
         try {
             System.out.print("Enter Pickup Date (dd/mm/yyyy)> ");
-            Date pickUpDateTime = inputDateFormat.parse(scanner.nextLine().trim());
+            pickUpDateTime = inputDateFormat.parse(scanner.nextLine().trim());
             System.out.print("Enter Return Date (dd/mm/yyyy)> ");
             returnDateTime = inputDateFormat.parse(scanner.nextLine().trim());
             System.out.print("Enter Pickup Outlet ID> ");
