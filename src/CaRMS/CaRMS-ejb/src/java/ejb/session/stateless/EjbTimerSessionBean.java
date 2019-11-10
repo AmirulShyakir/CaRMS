@@ -5,23 +5,34 @@
  */
 package ejb.session.stateless;
 
+import entity.RentalReservation;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import javax.ejb.EJB;
+import javax.ejb.Local;
+import javax.ejb.Remote;
 import javax.ejb.Schedule;
 import javax.ejb.Stateless;
+import util.exception.NoAllocatableCarException;
+import util.exception.RentalReservationNotFoundException;
 
 /**
  *
  * @author dtjldamien
  */
 @Stateless
-
+@Local(EjbTimerSessionBeanLocal.class)
+@Remote(EjbTimerSessionBeanRemote.class)
 public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerSessionBeanLocal {
+    
+    @EJB
+    private RentalReservationSessionBeanLocal rentalReservationSessionBeanLocal;
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
-    @Schedule(hour = "*", minute = "*/5", info = "allocateCarsToCurrentDayReservations")
-    public void allocateCarsToCurrentDayReservations() {
+    @Schedule(hour = "0", minute = "0", second = "0", info = "allocateCarsToCurrentDayReservations")
+    public void allocateCarsToCurrentDayReservations() throws RentalReservationNotFoundException, NoAllocatableCarException {
         /*
         • Retrieve a list of all car rental reservations for pickup on the current date
         and allocate an available car for the reserved car (make and) model or category. 
@@ -29,6 +40,7 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
         or will be returned to the pickup outlet in time. 
         • Cars that are at a different outlet from the pickup outlet should be allocated only when necessary. 
          */
+        List<RentalReservation> rentalReservations = rentalReservationSessionBeanLocal.retrieveAllRentalReservation();
         String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
         System.out.println("********** EjbTimerSessionBean.allocateCarsToCurrentDayReservations(): Timeout at " + timeStamp);
     }

@@ -5,13 +5,10 @@
  */
 package ejb.session.stateless;
 
-import javax.ejb.Local;
-
 /**
  *
  * @author dtjldamien
  */
-@Local
 public interface EjbTimerSessionBeanLocal {
     
 }
