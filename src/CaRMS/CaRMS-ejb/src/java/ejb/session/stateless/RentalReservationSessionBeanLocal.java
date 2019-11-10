@@ -22,6 +22,9 @@ public interface RentalReservationSessionBeanLocal {
     public List<RentalReservation> retrieveAllRentalReservation();
 
     public RentalReservation retrieveRentalReservationByRentalReservationId(Long rentalReservationId) throws RentalReservationNotFoundException;
-    
+
+    public void pickupCar(Long rentalReservationId) throws RentalReservationNotFoundException;
+
+    public void returnCar(Long rentalReservationId) throws RentalReservationNotFoundException;
     
 }

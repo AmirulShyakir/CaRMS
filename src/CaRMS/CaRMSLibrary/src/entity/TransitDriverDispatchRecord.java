@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -27,8 +28,11 @@ public class TransitDriverDispatchRecord implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long transitDriverDispatchRecordId;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(nullable = false)
+    @Column(nullable = true)
+    private Boolean isCompleted;
+    
+    @ManyToOne(optional = true)
+    @JoinColumn(nullable = true)
     private Employee dispatchDriver;
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
@@ -40,7 +44,15 @@ public class TransitDriverDispatchRecord implements Serializable {
     private static final double TRANSIT_TIME = 2.0;
 
     public TransitDriverDispatchRecord() {
+        this.isCompleted = false;
+    }
 
+    public Boolean getIsCompleted() {
+        return isCompleted;
+    }
+
+    public void setIsCompleted(Boolean isCompleted) {
+        this.isCompleted = isCompleted;
     }
 
     public Long getTransitDriverDispatchRecordId() {

@@ -7,9 +7,11 @@ package ejb.session.stateless;
 
 import entity.TransitDriverDispatchRecord;
 import java.util.List;
+import util.exception.DriverNotWorkingInSameOutletException;
 import util.exception.EmployeeNotFoundException;
 import util.exception.OutletNotFoundException;
 import util.exception.RentalReservationNotFoundException;
+import util.exception.TransitDriverDispatchRecordNotFoundException;
 
 /**
  *
@@ -20,5 +22,11 @@ public interface TransitDriverDispatchRecordSessionBeanLocal {
     public Long createNewTranspatchDriverRecord(Long dispatchDriverId, Long destinationOutletId, Long rentalReservationId) throws RentalReservationNotFoundException, OutletNotFoundException, EmployeeNotFoundException;
 
     public List<TransitDriverDispatchRecord> retrieveTransitDriverDispatchRecordByOutletId(Long outletId);
+
+    public TransitDriverDispatchRecord retrieveTransitDriverDispatchRecordByTransitDriverDispatchRecordId(Long transitDriverDispatchRecordId) throws TransitDriverDispatchRecordNotFoundException;
+
+    public void updateTransitAsCompleted(Long transitDriverDispatchRecordId) throws TransitDriverDispatchRecordNotFoundException;
+
+    public void assignDriver(Long dispatchDriverId, Long transitDriverDispatchRecordId) throws DriverNotWorkingInSameOutletException, TransitDriverDispatchRecordNotFoundException, EmployeeNotFoundException;
 
 }

@@ -10,6 +10,7 @@ import ejb.session.stateless.CarSessionBeanRemote;
 import ejb.session.stateless.EmployeeSessionBeanRemote;
 import ejb.session.stateless.ModelSessionBeanRemote;
 import ejb.session.stateless.RentalRateSessionBeanRemote;
+import ejb.session.stateless.RentalReservationSessionBeanRemote;
 import ejb.session.stateless.TransitDriverDispatchRecordSessionBeanRemote;
 import entity.Employee;
 import java.util.Scanner;
@@ -28,6 +29,7 @@ public class MainApp {
     private CarSessionBeanRemote carSessionBeanRemote;
     private TransitDriverDispatchRecordSessionBeanRemote transitDriverDispatchRecordSessionBeanRemote;
     private CarCategorySessionBeanRemote carCategorySessionBeanRemote;
+    private RentalReservationSessionBeanRemote rentalReservationSessionBeanRemote;
 
     private SalesManagementModule salesManagementModule;
     private CustomerServiceModule customerServiceModule;
@@ -40,7 +42,7 @@ public class MainApp {
     public MainApp(EmployeeSessionBeanRemote employeeSessionBeanRemote, RentalRateSessionBeanRemote rentalRateSessionBeanRemote,
             ModelSessionBeanRemote modelSessionBeanRemote, CarSessionBeanRemote carSessionBeanRemote,
             TransitDriverDispatchRecordSessionBeanRemote transitDriverDispatchRecordSessionBeanRemote,
-            CarCategorySessionBeanRemote carCategorySessionBeanRemote) {
+            CarCategorySessionBeanRemote carCategorySessionBeanRemote, RentalReservationSessionBeanRemote rentalReservationSessionBeanRemote) {
         this();
         
         this.employeeSessionBeanRemote = employeeSessionBeanRemote;
@@ -49,6 +51,7 @@ public class MainApp {
         this.carSessionBeanRemote = carSessionBeanRemote;
         this.transitDriverDispatchRecordSessionBeanRemote = transitDriverDispatchRecordSessionBeanRemote;
         this.carCategorySessionBeanRemote = carCategorySessionBeanRemote;
+        this.rentalReservationSessionBeanRemote = rentalReservationSessionBeanRemote;
     }
 
     public void runApp() {
@@ -126,7 +129,7 @@ public class MainApp {
                             carCategorySessionBeanRemote);
                         salesManagementModule.menuSalesManagement();
                     } else if (response == 2) {
-                        customerServiceModule = new CustomerServiceModule(currentEmployee, carSessionBeanRemote);
+                        customerServiceModule = new CustomerServiceModule(currentEmployee, rentalReservationSessionBeanRemote);
                         customerServiceModule.menuCustomerService();
                     } else if (response == 3) {
                         break;

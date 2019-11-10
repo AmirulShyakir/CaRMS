@@ -5,9 +5,13 @@
  */
 package ejb.session.stateless;
 
+import entity.Car;
+import entity.Customer;
+import entity.Outlet;
 import entity.RentalReservation;
 import java.util.List;
 import java.util.Set;
+import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
@@ -19,6 +23,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import util.exception.CustomerNotFoundException;
 import util.exception.InputDataValidationException;
 import util.exception.RentalReservationNotFoundException;
 import util.exception.UnknownPersistenceException;
@@ -38,9 +43,21 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
     private final ValidatorFactory validatorFactory;
     private final Validator validator;
 
+    @EJB
+    private CustomerSessionBeanLocal customerSessionBeanLocal;
+    @EJB
+    private CarSessionBeanLocal carSessionBeanLocal;
+
     public RentalReservationSessionBean() {
         this.validatorFactory = Validation.buildDefaultValidatorFactory();
         this.validator = validatorFactory.getValidator();
+    }
+
+    public RentalReservationSessionBean(CustomerSessionBeanLocal customerSessionBeanLocal, CarSessionBeanLocal carSessionBeanLocal) {
+        this();
+        
+        this.customerSessionBeanLocal = customerSessionBeanLocal;
+        this.carSessionBeanLocal = carSessionBeanLocal;
     }
 
     // Add business logic below. (Right-click in editor and choose
@@ -52,7 +69,7 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
 
             if (constraintViolations.isEmpty()) {
                 em.persist(newRentalReservation);
-                
+
                 em.flush();
 
                 return newRentalReservation.getRentalReservationId();
@@ -92,5 +109,30 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
     public List<RentalReservation> retrieveAllRentalReservation() {
         Query query = em.createQuery("SELECT rr FROM RentalReservation rr");
         return query.getResultList();
+    }
+
+    @Override
+    public void pickupCar(Long rentalReservationId) throws RentalReservationNotFoundException {
+        try {
+            RentalReservation rentalReservation = retrieveRentalReservationByRentalReservationId(rentalReservationId);
+            Car car = rentalReservation.getCar();
+            car.setOnRental(true);
+            car.setOutlet(null);
+        } catch (RentalReservationNotFoundException ex) {
+            throw new RentalReservationNotFoundException("Rental Reservation ID: " + rentalReservationId + "not found!");
+        }
+    }
+
+    @Override
+    public void returnCar(Long rentalReservationId) throws RentalReservationNotFoundException {
+        try {
+            RentalReservation rentalReservation = retrieveRentalReservationByRentalReservationId(rentalReservationId);
+            Outlet returnOutlet = rentalReservation.getReturnOutlet();
+            Car car = rentalReservation.getCar();
+            car.setOnRental(false);
+            car.setOutlet(returnOutlet);
+        } catch (RentalReservationNotFoundException ex) {
+            throw new RentalReservationNotFoundException("Rental Reservation ID: " + rentalReservationId + "not found!");
+        }
     }
 }

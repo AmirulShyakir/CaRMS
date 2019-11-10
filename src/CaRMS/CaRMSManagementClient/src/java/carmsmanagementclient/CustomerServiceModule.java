@@ -5,11 +5,14 @@
  */
 package carmsmanagementclient;
 
-import ejb.session.stateless.CarSessionBeanRemote;
+import ejb.session.stateless.RentalReservationSessionBeanRemote;
 import entity.Employee;
+import entity.RentalReservation;
 import java.util.Scanner;
 import util.enumeration.EmployeeRoleEnum;
 import util.exception.InvalidAccessRightException;
+import util.exception.RentalReservationNotFoundException;
+import util.exception.UnpaidRentalReservationException;
 
 /**
  *
@@ -17,25 +20,25 @@ import util.exception.InvalidAccessRightException;
  */
 public class CustomerServiceModule {
 
-    private Employee currentEmployee; 
-    private CarSessionBeanRemote carSessionBeanRemote;
-    
+    private Employee currentEmployee;
+    private RentalReservationSessionBeanRemote rentalReservationSessionBeanRemote;
+
     public CustomerServiceModule() {
     }
 
-    public CustomerServiceModule(Employee currentEmployee, CarSessionBeanRemote carSessionBeanRemote) {
+    public CustomerServiceModule(Employee currentEmployee, RentalReservationSessionBeanRemote rentalReservationSessionBeanRemote) {
         this();
-        
+
         this.currentEmployee = currentEmployee;
-        this.carSessionBeanRemote = carSessionBeanRemote;
+        this.rentalReservationSessionBeanRemote = rentalReservationSessionBeanRemote;
     }
-    
-    public void menuCustomerService() throws InvalidAccessRightException {
+
+    public void menuCustomerService() throws InvalidAccessRightException, UnpaidRentalReservationException {
 
         if (currentEmployee.getEmployeeRole() != EmployeeRoleEnum.CUSTOMER_EXECUTIVE) {
             throw new InvalidAccessRightException("You don't have CUSTOMER_EXECUTIVE rights to access the customer service module.");
         }
-        
+
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
 
@@ -69,10 +72,42 @@ public class CustomerServiceModule {
     }
 
     private void doPickupCar() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("*** CarMS Management Client :: Sales Management :: Pickup Car***\n");
+        System.out.print("Enter Rental Reservation ID> ");
+        Long rentalReservationId = scanner.nextLong();
+        try {
+            RentalReservation rentalReservation = rentalReservationSessionBeanRemote.retrieveRentalReservationByRentalReservationId(rentalReservationId);
+            if (rentalReservation.getPaid()) {
+                System.out.println("Pay rental fee? (Enter 'Y' to pay)");
+                String input = scanner.nextLine().trim();
+                if (!input.equals("Y")) {
+                    throw new UnpaidRentalReservationException("Please pay for the rental reservation before!");
+                }
+            }
+            rentalReservationSessionBeanRemote.pickupCar(rentalReservationId);
+            System.out.println("Car successfully picked up by customer");
+        } catch (RentalReservationNotFoundException ex) {
+            System.out.print("No Rental Reservation of ID: " + rentalReservationId);
+        } catch (UnpaidRentalReservationException ex) {
+            System.out.print("Rental Reservation of ID: " + rentalReservationId + " is not paid for");
+        }
+        System.out.print("Press any key to continue...> ");
+        scanner.nextLine();
     }
 
     private void doReturnCar() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("*** CarMS Management Client :: Sales Management :: Return Car***\n");
+        System.out.print("Enter Rental Reservation ID> ");
+        Long rentalReservationId = scanner.nextLong();
+        try {
+            rentalReservationSessionBeanRemote.returnCar(rentalReservationId);
+            System.out.println("Car returned by customer");
+        } catch (RentalReservationNotFoundException ex) {
+            System.out.print("No Rental Reservation of ID: " + rentalReservationId);
+        }
+        System.out.print("Press any key to continue...> ");
+        scanner.nextLine();
     }
 }

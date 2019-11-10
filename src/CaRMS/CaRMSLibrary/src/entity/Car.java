@@ -48,7 +48,7 @@ public class Car implements Serializable {
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
     private Model model;
-    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @ManyToOne(optional = true, fetch = FetchType.EAGER)
     @JoinColumn(nullable = true)
     private Outlet outlet;
     @OneToOne(optional = true, fetch = FetchType.EAGER)

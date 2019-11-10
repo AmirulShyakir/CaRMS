@@ -450,7 +450,6 @@ public class SalesManagementModule {
 
     private void doDeleteModel() {
         Scanner scanner = new Scanner(System.in);
-        RentalRate newRentalRate = new RentalRate();
         System.out.println("*** CarMS Management Client :: Sales Management :: Delete Model***\n");
         System.out.print("Enter Model ID> ");
         Long modelId = scanner.nextLong();
