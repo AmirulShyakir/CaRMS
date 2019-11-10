@@ -24,7 +24,7 @@ public class RentalDay implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Long rentalDayId;
 
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
@@ -43,12 +43,12 @@ public class RentalDay implements Serializable {
         this.rentalReservation = rentalReservation;
     }
 
-    public Long getId() {
-        return id;
+    public Long getRentalDayId() {
+        return rentalDayId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setRentalDayId(Long rentalDayId) {
+        this.rentalDayId = rentalDayId;
     }
 
     public RentalRate getRentalRate() {
@@ -70,18 +70,18 @@ public class RentalDay implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (rentalDayId != null ? rentalDayId.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
+        // TODO: Warning - this method won't work in the case the rentalDayId fields are not set
         if (!(object instanceof RentalDay)) {
             return false;
         }
         RentalDay other = (RentalDay) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.rentalDayId == null && other.rentalDayId != null) || (this.rentalDayId != null && !this.rentalDayId.equals(other.rentalDayId))) {
             return false;
         }
         return true;
@@ -89,6 +89,6 @@ public class RentalDay implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.RentalDay[ id=" + id + " ]";
+        return "entity.RentalDay[ id=" + rentalDayId + " ]";
     }
 }
