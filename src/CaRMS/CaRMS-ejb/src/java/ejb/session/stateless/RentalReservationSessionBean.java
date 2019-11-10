@@ -99,7 +99,6 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
         try {
             RentalReservation rentalReservationToRemove = retrieveRentalReservationByRentalReservationId(rentalReservationId);
             if (rentalReservationToRemove.getPaid()) {
-                
                 // refund credit card amount - penalty amoung
             } else {
                 // charge credit card penalty amount

@@ -24,6 +24,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -128,6 +129,7 @@ public class RentalReservation implements Serializable {
         this.price = price;
     }
 
+    @XmlTransient
     public Car getCar() {
         return car;
     }
@@ -136,6 +138,7 @@ public class RentalReservation implements Serializable {
         this.car = car;
     }
 
+    @XmlTransient
     public CarCategory getCarCategory() {
         return carCategory;
     }
@@ -144,6 +147,7 @@ public class RentalReservation implements Serializable {
         this.carCategory = carCategory;
     }
 
+    @XmlTransient
     public Model getModel() {
         return model;
     }
@@ -152,6 +156,7 @@ public class RentalReservation implements Serializable {
         this.model = model;
     }
 
+    @XmlTransient
     public List<RentalDay> getRentalDays() {
         return rentalDays;
     }
@@ -172,6 +177,7 @@ public class RentalReservation implements Serializable {
         }
     }
 
+    @XmlTransient
     public TransitDriverDispatchRecord getTransitDriverDispatchRecord() {
         return transitDriverDispatchRecord;
     }
@@ -180,6 +186,7 @@ public class RentalReservation implements Serializable {
         this.transitDriverDispatchRecord = transitDriverDispatchRecord;
     }
 
+    @XmlTransient
     public Partner getPartner() {
         return partner;
     }
@@ -188,6 +195,7 @@ public class RentalReservation implements Serializable {
         this.partner = partner;
     }
 
+    @XmlTransient
     public Customer getCustomer() {
         return customer;
     }
@@ -196,6 +204,7 @@ public class RentalReservation implements Serializable {
         this.customer = customer;
     }
 
+    @XmlTransient
     public Outlet getPickupOutlet() {
         return pickupOutlet;
     }
@@ -204,6 +213,7 @@ public class RentalReservation implements Serializable {
         this.pickupOutlet = pickupOutlet;
     }
 
+    @XmlTransient
     public Outlet getReturnOutlet() {
         return returnOutlet;
     }

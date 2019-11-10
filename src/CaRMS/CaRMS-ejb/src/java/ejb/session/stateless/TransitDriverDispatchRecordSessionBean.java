@@ -67,4 +67,9 @@ public class TransitDriverDispatchRecordSessionBean implements TransitDriverDisp
             throw new RentalReservationNotFoundException("Rental Reservation ID: " + rentalReservationId + " not found!");
         }
     }
+
+    @Override
+    public List<TransitDriverDispatchRecord> retrieveTransitDriverDispatchRecordByOutletId(Long outletId) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

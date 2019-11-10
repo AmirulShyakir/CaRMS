@@ -5,7 +5,6 @@
  */
 package ejb.session.stateless;
 
-import com.sun.media.sound.SF2Layer;
 import entity.RentalReservation;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -45,7 +44,7 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         String timeStamp = sdf.format(new Date());
         System.out.println("********** EjbTimerSessionBean.allocateCarsToCurrentDayReservations(): Timeout at " + timeStamp);
-        List<RentalReservation> rentalReservations = rentalReservationSessionBeanLocal.retrieveAllRentalReservation();
+        List<RentalReservation> rentalReservations = rentalReservationSessionBeanLocal.retrieveAllRentalReservations();
         List<RentalReservation> rentalReservationsToBeAllocated = new ArrayList<>();
         
         for (RentalReservation rentalReservation : rentalReservations) {
