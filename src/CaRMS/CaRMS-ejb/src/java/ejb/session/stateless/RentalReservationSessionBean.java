@@ -6,7 +6,6 @@
 package ejb.session.stateless;
 
 import entity.Car;
-import entity.Customer;
 import entity.Outlet;
 import entity.RentalReservation;
 import java.util.List;
@@ -23,7 +22,6 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-import util.exception.CustomerNotFoundException;
 import util.exception.InputDataValidationException;
 import util.exception.RentalReservationNotFoundException;
 import util.exception.UnknownPersistenceException;
@@ -151,6 +149,7 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
             Car car = rentalReservation.getCar();
             car.setOnRental(false);
             car.setOutlet(returnOutlet);
+            returnOutlet.addCar(car);
         } catch (RentalReservationNotFoundException ex) {
             throw new RentalReservationNotFoundException("Rental Reservation ID: " + rentalReservationId + "not found!");
         }

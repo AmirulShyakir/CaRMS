@@ -61,7 +61,7 @@ public class Employee implements Serializable {
     private List<TransitDriverDispatchRecord> transitDriverDispatchRecords;
 
     public Employee() {
-        transitDriverDispatchRecords = new ArrayList<>();
+        this.transitDriverDispatchRecords = new ArrayList<>();
     }
 
     public Employee(String firstName, String lastName, String username, String password, EmployeeRoleEnum employeeRole, Outlet outlet) {

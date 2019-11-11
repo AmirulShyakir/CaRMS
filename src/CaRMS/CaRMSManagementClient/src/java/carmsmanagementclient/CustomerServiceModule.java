@@ -79,7 +79,7 @@ public class CustomerServiceModule {
         try {
             RentalReservation rentalReservation = rentalReservationSessionBeanRemote.retrieveRentalReservationByRentalReservationId(rentalReservationId);
             if (rentalReservation.getPaid()) {
-                System.out.println("Pay rental fee? (Enter 'Y' to pay)");
+                System.out.print("Pay rental fee? (Enter 'Y' to pay)> ");
                 String input = scanner.nextLine().trim();
                 if (!input.equals("Y")) {
                     throw new UnpaidRentalReservationException("Please pay for the rental reservation before!");
@@ -88,9 +88,9 @@ public class CustomerServiceModule {
             rentalReservationSessionBeanRemote.pickupCar(rentalReservationId);
             System.out.println("Car successfully picked up by customer");
         } catch (RentalReservationNotFoundException ex) {
-            System.out.print("No Rental Reservation of ID: " + rentalReservationId);
+            System.out.println("No Rental Reservation of ID: " + rentalReservationId);
         } catch (UnpaidRentalReservationException ex) {
-            System.out.print("Rental Reservation of ID: " + rentalReservationId + " is not paid for");
+            System.out.println("Rental Reservation of ID: " + rentalReservationId + " is not paid for");
         }
         System.out.print("Press any key to continue...> ");
         scanner.nextLine();
@@ -105,7 +105,7 @@ public class CustomerServiceModule {
             rentalReservationSessionBeanRemote.returnCar(rentalReservationId);
             System.out.println("Car returned by customer");
         } catch (RentalReservationNotFoundException ex) {
-            System.out.print("No Rental Reservation of ID: " + rentalReservationId);
+            System.out.println("No Rental Reservation of ID: " + rentalReservationId);
         }
         System.out.print("Press any key to continue...> ");
         scanner.nextLine();

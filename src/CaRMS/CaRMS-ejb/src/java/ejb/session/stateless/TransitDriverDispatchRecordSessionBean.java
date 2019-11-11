@@ -9,6 +9,9 @@ import entity.Employee;
 import entity.Outlet;
 import entity.RentalReservation;
 import entity.TransitDriverDispatchRecord;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Local;
@@ -45,9 +48,9 @@ public class TransitDriverDispatchRecordSessionBean implements TransitDriverDisp
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
-    public Long createNewTranspatchDriverRecord(Long dispatchDriverId, Long destinationOutletId, Long rentalReservationId) throws RentalReservationNotFoundException, OutletNotFoundException, EmployeeNotFoundException {
+    public Long createNewTranspatchDriverRecord(Long dispatchDriverId, Long destinationOutletId, Long rentalReservationId, Date transitDate) throws RentalReservationNotFoundException, OutletNotFoundException, EmployeeNotFoundException {
         try {
-            TransitDriverDispatchRecord transitDriverDispatchRecord = new TransitDriverDispatchRecord();
+            TransitDriverDispatchRecord transitDriverDispatchRecord = new TransitDriverDispatchRecord(transitDate);
             Employee dispatchDriver = employeeSessionBeanLocal.retrieveEmployeeByEmployeeId(dispatchDriverId);
             Outlet destinationOutlet = outletSessionBeanLocal.retrieveOutletByOutletId(destinationOutletId);
             RentalReservation rentalReservation = rentalReservationSessionBeanLocal.retrieveRentalReservationByRentalReservationId(rentalReservationId);
@@ -71,8 +74,17 @@ public class TransitDriverDispatchRecordSessionBean implements TransitDriverDisp
 
     @Override
     public List<TransitDriverDispatchRecord> retrieveTransitDriverDispatchRecordByOutletId(Long outletId) {
-        Query query = em.createQuery("SELECT t FROM TransitDriverDispatchRecord t WHERE t.destinationOutlet.outletId = :inOutletId");
-        query.setParameter("inOutletId", outletId);
+        Date today = new Date();
+        today.setHours(0);
+        today.setMinutes(0);
+        today.setSeconds(0);
+        GregorianCalendar calendar = new GregorianCalendar(today.getYear() + 1900, today.getMonth(), today.getDate(), today.getHours(), today.getMinutes(), today.getSeconds());
+        calendar.add(Calendar.DATE, 1);
+        Date nextDay = calendar.getTime();
+        Query query = em.createQuery("SELECT t FROM TransitDriverDispatchRecord t WHERE t.destinationOutlet.outletId = :inOutletId AND t.transitDate >= :inToday AND t.transitDate < :inNextDay");
+        query.setParameter("inOutletId", today);
+        query.setParameter("inToday", today);
+        query.setParameter("inNextDay", nextDay);
         return query.getResultList();
     }
 

@@ -45,7 +45,7 @@ public class MainApp {
             TransitDriverDispatchRecordSessionBeanRemote transitDriverDispatchRecordSessionBeanRemote,
             CarCategorySessionBeanRemote carCategorySessionBeanRemote, RentalReservationSessionBeanRemote rentalReservationSessionBeanRemote) {
         this();
-        
+
         this.employeeSessionBeanRemote = employeeSessionBeanRemote;
         this.rentalRateSessionBeanRemote = rentalRateSessionBeanRemote;
         this.modelSessionBeanRemote = modelSessionBeanRemote;
@@ -127,7 +127,7 @@ public class MainApp {
                     if (response == 1) {
                         salesManagementModule = new SalesManagementModule(currentEmployee, rentalRateSessionBeanRemote,
                                 modelSessionBeanRemote, carSessionBeanRemote, transitDriverDispatchRecordSessionBeanRemote,
-                            carCategorySessionBeanRemote);
+                                carCategorySessionBeanRemote);
                         salesManagementModule.menuSalesManagement();
                     } else if (response == 2) {
                         customerServiceModule = new CustomerServiceModule(currentEmployee, rentalReservationSessionBeanRemote);

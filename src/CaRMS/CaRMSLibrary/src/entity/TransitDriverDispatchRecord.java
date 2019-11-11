@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,6 +15,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 /**
@@ -30,7 +33,10 @@ public class TransitDriverDispatchRecord implements Serializable {
 
     @Column(nullable = true)
     private Boolean isCompleted;
-    
+    @Temporal(TemporalType.DATE)
+    @Column(nullable = true)
+    private Date transitDate;
+
     @ManyToOne(optional = true)
     @JoinColumn(nullable = true)
     private Employee dispatchDriver;
@@ -45,6 +51,10 @@ public class TransitDriverDispatchRecord implements Serializable {
 
     public TransitDriverDispatchRecord() {
         this.isCompleted = false;
+    }
+
+    public TransitDriverDispatchRecord(Date transitDate) {
+        this.transitDate = transitDate;
     }
 
     public Boolean getIsCompleted() {
@@ -85,6 +95,14 @@ public class TransitDriverDispatchRecord implements Serializable {
 
     public void setRentalReservation(RentalReservation rentalReservation) {
         this.rentalReservation = rentalReservation;
+    }
+
+    public Date getTransitDate() {
+        return transitDate;
+    }
+
+    public void setTransitDate(Date transitDate) {
+        this.transitDate = transitDate;
     }
 
     @Override

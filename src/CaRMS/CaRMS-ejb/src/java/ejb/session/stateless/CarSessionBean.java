@@ -25,15 +25,12 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import util.exception.CarCategoryNotFoundException;
 import util.exception.CarNotFoundException;
-import util.exception.DeleteCarException;
 import util.exception.InputDataValidationException;
 import util.exception.LicensePlateExistException;
 import util.exception.ModelDisabledException;
-import util.exception.ModelNameExistException;
 import util.exception.ModelNotFoundException;
 import util.exception.OutletNotFoundException;
 import util.exception.UnknownPersistenceException;
-import util.exception.UpdateCarException;
 
 /**
  *
@@ -116,7 +113,7 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
     @Override
     public List<Car> retrieveAllCars() {
         // should be sorted in ascending order by car category, make and model.
-        Query query = em.createQuery("SELECT c FROM Car c ORDER BY c.carCategory.carCategoryName, c.model.makeName, c.model.modelName, c.licensePlate ASC");
+        Query query = em.createQuery("SELECT c FROM Car c ORDER BY c.model.carCategory.carCategoryName, c.model.makeName, c.model.modelName, c.licensePlate ASC");
 
         return query.getResultList();
     }

@@ -96,8 +96,9 @@ public class RentalRateSessionBean implements RentalRateSessionBeanRemote, Renta
     @Override
     public List<RentalRate> retrieveAllRentalRates() {
         // should be sorted in ascending order by car category and validity period
-        Query query = em.createQuery("SELECT r FROM RentalRate r ORDER BY r.carCategory.carCategoryName ASC");
-
+        //        Query query = em.createQuery("SELECT r FROM RentalRate r WHERE ((r.startDate IS NULL AND r.endDate IS NULL) OR (r.startDate <= :inDate AND r.endDate >= :inDate)) ORDER BY r.carCategory.carCategoryName ASC, r.startDate ASC");
+        // Query query = em.createQuery("SELECT r FROM RentalRate r WHERE ((r.startDate IS NULL AND r.endDate IS NULL) OR (r.startDate <= :inDate AND r.endDate >= :inDate)) ORDER BY r.carCategory.carCategoryName ASC");
+        Query query = em.createQuery("SELECT r FROM RentalRate r ORDER BY r.carCategory.carCategoryName, r.startDate, r.endDate ASC");
         return query.getResultList();
     }
 
