@@ -183,6 +183,7 @@ public class MainApp {
             System.out.println("*** Search by Car Category or Car Model? ***\n");
             System.out.println("1: Car Category");
             System.out.println("2: Car Model");
+            System.out.println();
             response = scanner.nextInt();
 
             Boolean canReserve = false;
