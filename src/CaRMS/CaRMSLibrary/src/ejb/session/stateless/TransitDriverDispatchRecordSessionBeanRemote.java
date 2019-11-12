@@ -20,7 +20,7 @@ import util.exception.TransitDriverDispatchRecordNotFoundException;
  */
 public interface TransitDriverDispatchRecordSessionBeanRemote {
 
-    public Long createNewTranspatchDriverRecord(Long dispatchDriverId, Long destinationOutletId, Long rentalReservationId, Date transitDate) throws RentalReservationNotFoundException, OutletNotFoundException, EmployeeNotFoundException;
+    public Long createNewTranspatchDriverRecord(Long destinationOutletId, Long rentalReservationId, Date transitDate) throws RentalReservationNotFoundException, OutletNotFoundException;
 
     public List<TransitDriverDispatchRecord> retrieveTransitDriverDispatchRecordByOutletId(Long outletId);
 

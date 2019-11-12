@@ -48,23 +48,18 @@ public class TransitDriverDispatchRecordSessionBean implements TransitDriverDisp
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
-    public Long createNewTranspatchDriverRecord(Long dispatchDriverId, Long destinationOutletId, Long rentalReservationId, Date transitDate) throws RentalReservationNotFoundException, OutletNotFoundException, EmployeeNotFoundException {
+    public Long createNewTranspatchDriverRecord(Long destinationOutletId, Long rentalReservationId, Date transitDate) throws RentalReservationNotFoundException, OutletNotFoundException {
         try {
             TransitDriverDispatchRecord transitDriverDispatchRecord = new TransitDriverDispatchRecord(transitDate);
-            Employee dispatchDriver = employeeSessionBeanLocal.retrieveEmployeeByEmployeeId(dispatchDriverId);
             Outlet destinationOutlet = outletSessionBeanLocal.retrieveOutletByOutletId(destinationOutletId);
             RentalReservation rentalReservation = rentalReservationSessionBeanLocal.retrieveRentalReservationByRentalReservationId(rentalReservationId);
             transitDriverDispatchRecord.setDestinationOutlet(destinationOutlet);
             destinationOutlet.getTransitDriverDispatchRecords().add(transitDriverDispatchRecord);
-            transitDriverDispatchRecord.setDispatchDriver(dispatchDriver);
-            dispatchDriver.getTransitDriverDispatchRecords().add(transitDriverDispatchRecord);
             transitDriverDispatchRecord.setRentalReservation(rentalReservation);
             rentalReservation.setTransitDriverDispatchRecord(transitDriverDispatchRecord);
             em.persist(transitDriverDispatchRecord);
             em.flush();
             return transitDriverDispatchRecord.getTransitDriverDispatchRecordId();
-        } catch (EmployeeNotFoundException ex) {
-            throw new EmployeeNotFoundException("Employee ID: " + dispatchDriverId + " not found!");
         } catch (OutletNotFoundException ex) {
             throw new OutletNotFoundException("Outlet ID: " + destinationOutletId + " not found!");
         } catch (RentalReservationNotFoundException ex) {

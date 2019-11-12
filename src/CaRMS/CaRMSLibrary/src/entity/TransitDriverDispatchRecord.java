@@ -54,6 +54,8 @@ public class TransitDriverDispatchRecord implements Serializable {
     }
 
     public TransitDriverDispatchRecord(Date transitDate) {
+        this();
+        
         this.transitDate = transitDate;
     }
 

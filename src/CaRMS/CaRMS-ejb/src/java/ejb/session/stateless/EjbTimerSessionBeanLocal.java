@@ -5,10 +5,16 @@
  */
 package ejb.session.stateless;
 
+import java.util.Date;
+import util.exception.NoAllocatableCarException;
+import util.exception.RentalReservationNotFoundException;
+
 /**
  *
  * @author dtjldamien
  */
 public interface EjbTimerSessionBeanLocal {
+
+    public void allocateCarsToCurrentDayReservations(Date date) throws RentalReservationNotFoundException, NoAllocatableCarException;
     
 }
