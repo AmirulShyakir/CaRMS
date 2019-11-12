@@ -334,7 +334,7 @@ public class MainApp {
             }
 
         } catch (RentalReservationNotFoundException ex) {
-            System.out.print("Rental Reservation not found for ID " + rentalReservationId);
+            System.out.println("Rental Reservation not found for ID " + rentalReservationId);
         }
         System.out.print("Press any key to continue...> ");
         scanner.nextLine();
@@ -362,7 +362,9 @@ public class MainApp {
         } catch (RentalReservationNotFoundException ex) {
             System.out.println("Rental Reservation not found for ID " + rentalReservationId);
         }
-
+        System.out.print("Press any key to continue...> ");
+        scanner.nextLine();
+        
     }
 
     private void doViewAllReservations() {

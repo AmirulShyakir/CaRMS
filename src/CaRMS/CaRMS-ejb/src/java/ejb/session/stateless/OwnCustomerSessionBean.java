@@ -75,7 +75,7 @@ public class OwnCustomerSessionBean implements OwnCustomerSessionBeanRemote, Own
     @Override
     public OwnCustomer login(String username, String password) throws InvalidLoginCredentialException {
         try {
-            Query query = em.createQuery("SELECT e FROM Employee e WHERE e.username = :inUsername");
+            Query query = em.createQuery("SELECT c FROM OwnCustomer c WHERE c.username = :inUsername");
             query.setParameter("inUsername", username);
             OwnCustomer ownCustomer = (OwnCustomer) query.getSingleResult();
 

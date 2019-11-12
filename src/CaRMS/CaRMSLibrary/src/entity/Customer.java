@@ -41,8 +41,7 @@ public class Customer implements Serializable {
     @Size(max = 64)
     protected String lastName;
 
-    @Column(nullable = false, length = 32)
-    @NotNull
+    @Column(nullable = true, length = 32)
     @Size(max = 32)
     protected String creditCardNumber;
 
