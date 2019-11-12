@@ -58,9 +58,8 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
         GregorianCalendar calendar = new GregorianCalendar(today.getYear() + 1900, today.getMonth(), today.getDate(), today.getHours(), today.getMinutes(), today.getSeconds());
         calendar.add(Calendar.DATE, 1);
         Date nextDay = calendar.getTime();
-        Query query = em.createQuery("SELECT r FROM RentalReservation r WHERE r.startDate >= :inStartDate AND r.endDate < :inEndDate");
+        Query query = em.createQuery("SELECT r FROM RentalReservation r WHERE r.startDate = :inStartDate");
         query.setParameter("inStartDate", today);
-        query.setParameter("endDate", nextDay);
         List<RentalReservation> rentalReservationsToBeAllocated = query.getResultList();
         for (RentalReservation rentalReservation : rentalReservationsToBeAllocated) {
             boolean isAllocated = false;
