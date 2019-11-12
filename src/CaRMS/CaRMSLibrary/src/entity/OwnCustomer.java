@@ -39,11 +39,11 @@ public class OwnCustomer extends Customer implements Serializable {
     private String email;
     @Column(nullable = true, length = 32, unique = true)
     @NotNull
-    @Size(max = 64)
+    @Size(max = 32)
     private String phoneNumber;
     @Column(nullable = true, length = 32, unique = true)
     @NotNull
-    @Size(max = 64)
+    @Size(max = 32)
     private String passportNumber;
 
     public OwnCustomer() {

@@ -58,7 +58,7 @@ public class RentalReservation implements Serializable {
     @NotNull
     private Boolean isCancelled;
 
-    @OneToOne(optional = false)
+    @OneToOne(optional = true)
     private Car car;
     @OneToOne(optional = true)
     private CarCategory carCategory;

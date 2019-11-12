@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.RentalReservation;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import util.exception.CarCategoryNotFoundException;
@@ -28,7 +29,7 @@ public interface RentalReservationSessionBeanRemote {
 
     public List<RentalReservation> retrieveAllRentalReservations();
 
-    public void deleteReservation(Long rentalReservationId) throws RentalReservationNotFoundException;
+    public BigDecimal cancelReservation(Long rentalReservationId) throws RentalReservationNotFoundException;
 
     public void pickupCar(Long rentalReservationId) throws RentalReservationNotFoundException;
 

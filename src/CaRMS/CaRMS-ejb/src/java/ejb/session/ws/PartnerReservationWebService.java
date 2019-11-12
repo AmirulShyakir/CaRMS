@@ -46,8 +46,8 @@ public class PartnerReservationWebService {
     }
 
     @WebMethod
-    public void deleteReservation(@WebParam Long rentalReservationId) throws RentalReservationNotFoundException {
-        rentalReservationSessionBean.deleteReservation(rentalReservationId);
+    public void cancelReservation(@WebParam Long rentalReservationId) throws RentalReservationNotFoundException {
+        rentalReservationSessionBean.cancelReservation(rentalReservationId);
     }
 
 }
