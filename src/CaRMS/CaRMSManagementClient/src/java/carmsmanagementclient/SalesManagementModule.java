@@ -367,7 +367,6 @@ public class SalesManagementModule {
         System.out.println("*** CarMS Management Client :: Sales Management :: Update Rental Rate***\n");
         Long rentalRateId = rentalRate.getRentalRateId();
         newRentalRate.setRentalRateId(rentalRateId);
-        scanner.nextLine();
         System.out.print("Enter new Rental Rate Name> ");
         newRentalRate.setRentalRateName(scanner.nextLine().trim());
         System.out.print("Enter new Car Category ID > ");

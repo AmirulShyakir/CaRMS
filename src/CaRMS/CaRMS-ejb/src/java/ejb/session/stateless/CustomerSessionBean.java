@@ -25,6 +25,9 @@ public class CustomerSessionBean implements CustomerSessionBeanRemote, CustomerS
     @PersistenceContext(unitName = "CaRMS-ejbPU")
     private EntityManager em;
 
+    public CustomerSessionBean() {
+    }
+
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
@@ -37,5 +40,4 @@ public class CustomerSessionBean implements CustomerSessionBeanRemote, CustomerS
             throw new CustomerNotFoundException("Customer ID " + customerId + " does not exist!");
         }
     }
-
 }
