@@ -36,11 +36,6 @@ public class PartnerReservationWebService {
     private RentalReservationSessionBeanLocal rentalReservationSessionBean;
 
     @WebMethod
-    public List<Car> searchCar(@WebParam Long categoryId, @WebParam Long modelId, @WebParam Date pickUpDateTime, @WebParam Date returnDateTime, @WebParam Long pickupOutletId, @WebParam Long returnOutletId) throws CarNotFoundException, CarCategoryNotFoundException, ModelNotFoundException, OutletNotFoundException {
-        return carSessionBean.searchCar(categoryId, modelId, pickUpDateTime, returnDateTime, pickupOutletId, returnOutletId);
-    }
-
-    @WebMethod
     public RentalReservation retrieveRentalReservationByRentalReservationId(@WebParam Long rentalReservationId) throws RentalReservationNotFoundException {
         return rentalReservationSessionBean.retrieveRentalReservationByRentalReservationId(rentalReservationId);
     }

@@ -29,6 +29,7 @@ import util.exception.InputDataValidationException;
 import util.exception.LicensePlateExistException;
 import util.exception.ModelDisabledException;
 import util.exception.ModelNotFoundException;
+import util.exception.NoAvailableRentalRateException;
 import util.exception.OutletNotFoundException;
 import util.exception.UnknownPersistenceException;
 
@@ -156,14 +157,6 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
             carToRemove.setOutlet(null);
             carToRemove.setIsDisabled(true);
         }
-    }
-    
-    @Override
-    public List<Car> searchCar(Long categoryId, Long modelId, Date pickUpDateTime, Date returnDateTime, Long pickupOutletId, Long returnOutletId) throws CarNotFoundException, CarCategoryNotFoundException, ModelNotFoundException, OutletNotFoundException {
-        
-        Query query = em.createQuery("SELECT c FROM Car c WHERE c.model.carCategory.carCategoryId = :categoryId AND c.model.modelId = :modelId");
-
-        return query.getResultList();
     }
     
 }

@@ -6,7 +6,17 @@
 package ejb.session.stateless;
 
 import entity.CarCategory;
+import entity.RentalRate;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Set;
+import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
@@ -20,6 +30,7 @@ import javax.validation.ValidatorFactory;
 import util.exception.CarCategoryExistException;
 import util.exception.CarCategoryNotFoundException;
 import util.exception.InputDataValidationException;
+import util.exception.NoAvailableRentalRateException;
 import util.exception.UnknownPersistenceException;
 
 /**
@@ -36,6 +47,9 @@ public class CarCategorySessionBean implements CarCategorySessionBeanRemote, Car
 
     private final ValidatorFactory validatorFactory;
     private final Validator validator;
+
+    @EJB
+    private RentalRateSessionBeanLocal rentalRateSessionBeanLocal;
 
     public CarCategorySessionBean() {
         this.validatorFactory = Validation.buildDefaultValidatorFactory();
@@ -90,4 +104,36 @@ public class CarCategorySessionBean implements CarCategorySessionBeanRemote, Car
             throw new CarCategoryNotFoundException("Car Category ID " + carCategoryId + " does not exist!");
         }
     }
+
+    @Override
+    public BigDecimal calculateTotalRentalFee(Long carCategoryId, Date pickUpDateTime, Date returnDateTime) throws NoAvailableRentalRateException {
+        CarCategory carCategory = em.find(CarCategory.class, carCategoryId);
+
+        LocalDateTime pickUpTemporal = pickUpDateTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        LocalDateTime returnTemporal = returnDateTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        Long daysToRent = ChronoUnit.DAYS.between(pickUpTemporal, returnTemporal);
+
+        BigDecimal totalRentalFee = null;
+
+        GregorianCalendar transitCalendar = new GregorianCalendar(
+                pickUpDateTime.getYear() + 1900,
+                pickUpDateTime.getMonth(),
+                pickUpDateTime.getDate(),
+                pickUpDateTime.getHours(),
+                pickUpDateTime.getMinutes(),
+                pickUpDateTime.getSeconds());
+
+        try {
+            for (int i = 0; i < daysToRent; i++) {
+                RentalRate cheapestRentalRate = rentalRateSessionBeanLocal.retrieveCheapestRentalRate(carCategory, transitCalendar.getTime());
+                transitCalendar.add(Calendar.DATE, 1);
+                totalRentalFee.add(cheapestRentalRate.getRatePerDay());
+            }
+        } catch (NoAvailableRentalRateException ex) {
+            throw new NoAvailableRentalRateException();
+        }
+
+        return totalRentalFee;
+    }
+
 }

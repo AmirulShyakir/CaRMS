@@ -5,9 +5,15 @@
  */
 package ejb.session.stateless;
 
+import entity.Car;
 import entity.RentalReservation;
+import java.util.Date;
 import java.util.List;
+import util.exception.CarCategoryNotFoundException;
 import util.exception.InputDataValidationException;
+import util.exception.ModelNotFoundException;
+import util.exception.NoAvailableRentalRateException;
+import util.exception.OutletNotFoundException;
 import util.exception.RentalReservationNotFoundException;
 import util.exception.UnknownPersistenceException;
 
@@ -28,5 +34,9 @@ public interface RentalReservationSessionBeanLocal {
     public void pickupCar(Long rentalReservationId) throws RentalReservationNotFoundException;
 
     public void returnCar(Long rentalReservationId) throws RentalReservationNotFoundException;
+
+    public Boolean searchCarByModel(Date pickUpDateTime, Date returnDateTime, Long pickupOutletId, Long returnOutletId, Long modelId) throws NoAvailableRentalRateException, CarCategoryNotFoundException, OutletNotFoundException, ModelNotFoundException;
+
+    public Boolean searchCarByCategory(Date pickUpDateTime, Date returnDateTime, Long pickupOutletId, Long returnOutletId, Long carCategoryId) throws NoAvailableRentalRateException, CarCategoryNotFoundException, OutletNotFoundException;
 
 }
