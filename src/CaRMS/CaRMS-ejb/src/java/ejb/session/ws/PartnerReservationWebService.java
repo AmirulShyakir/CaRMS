@@ -50,6 +50,7 @@ public class PartnerReservationWebService {
         return rentalReservationSessionBean.retrieveAllRentalReservations();
     }
 
+    @WebMethod
     public void deleteReservation(@WebParam Long rentalReservationId) throws RentalReservationNotFoundException {
         rentalReservationSessionBean.deleteReservation(rentalReservationId);
     }
