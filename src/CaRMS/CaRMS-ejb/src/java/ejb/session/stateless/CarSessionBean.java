@@ -153,6 +153,7 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
         if (carToRemove.getRentalReservation() == null) {
             em.remove(carToRemove);
         } else {
+            carToRemove.setOutlet(null);
             carToRemove.setIsDisabled(true);
         }
     }
