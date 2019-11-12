@@ -24,6 +24,6 @@ public interface CarCategorySessionBeanRemote {
 
     public CarCategory retrieveCarCategoryByCarCategoryId(Long carCategoryId) throws CarCategoryNotFoundException;
     
-    public BigDecimal calculateTotalRentalFee(Long carCategoryId, Date pickUpDateTime, Date returnDateTime) throws NoAvailableRentalRateException;
+    public BigDecimal calculateTotalRentalFee(Long carCategoryId, Date pickUpDateTime, Date returnDateTime) throws CarCategoryNotFoundException, NoAvailableRentalRateException;    
 
 }

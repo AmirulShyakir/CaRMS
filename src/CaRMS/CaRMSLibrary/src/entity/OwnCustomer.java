@@ -33,17 +33,17 @@ public class OwnCustomer extends Customer implements Serializable {
     private String password;
 
     // anyone of the below unique identifiers
-    @Column(nullable = true, length = 64, unique = true)
+    @Column(nullable = true, length = 32, unique = true)
     @NotNull
-    @Size(max = 64)
+    @Size(max = 32)
     private String email;
     @Column(nullable = true, length = 32, unique = true)
     @NotNull
-    @Size(max = 64)
+    @Size(max = 32)
     private String phoneNumber;
     @Column(nullable = true, length = 32, unique = true)
     @NotNull
-    @Size(max = 64)
+    @Size(max = 32)
     private String passportNumber;
 
     public OwnCustomer() {

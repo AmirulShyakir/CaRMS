@@ -106,34 +106,34 @@ public class CarCategorySessionBean implements CarCategorySessionBeanRemote, Car
     }
 
     @Override
-    public BigDecimal calculateTotalRentalFee(Long carCategoryId, Date pickUpDateTime, Date returnDateTime) throws NoAvailableRentalRateException {
-        CarCategory carCategory = em.find(CarCategory.class, carCategoryId);
-
-        LocalDateTime pickUpTemporal = pickUpDateTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-        LocalDateTime returnTemporal = returnDateTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-        Long daysToRent = ChronoUnit.DAYS.between(pickUpTemporal, returnTemporal);
-
-        BigDecimal totalRentalFee = null;
-
-        GregorianCalendar transitCalendar = new GregorianCalendar(
-                pickUpDateTime.getYear() + 1900,
-                pickUpDateTime.getMonth(),
-                pickUpDateTime.getDate(),
-                pickUpDateTime.getHours(),
-                pickUpDateTime.getMinutes(),
-                pickUpDateTime.getSeconds());
+    public BigDecimal calculateTotalRentalFee(Long carCategoryId, Date pickUpDateTime, Date returnDateTime) throws CarCategoryNotFoundException, NoAvailableRentalRateException {
+        BigDecimal totalRentalFee = new BigDecimal(0);
 
         try {
+            CarCategory carCategory = retrieveCarCategoryByCarCategoryId(carCategoryId);
+            LocalDateTime pickUpTemporal = pickUpDateTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+            LocalDateTime returnTemporal = returnDateTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+            Long daysToRent = ChronoUnit.DAYS.between(pickUpTemporal, returnTemporal);
+
+            GregorianCalendar transitCalendar = new GregorianCalendar(
+                    pickUpDateTime.getYear() + 1900,
+                    pickUpDateTime.getMonth(),
+                    pickUpDateTime.getDate(),
+                    pickUpDateTime.getHours(),
+                    pickUpDateTime.getMinutes(),
+                    pickUpDateTime.getSeconds());
+
             for (int i = 0; i < daysToRent; i++) {
                 RentalRate cheapestRentalRate = rentalRateSessionBeanLocal.retrieveCheapestRentalRate(carCategory, transitCalendar.getTime());
                 transitCalendar.add(Calendar.DATE, 1);
-                totalRentalFee.add(cheapestRentalRate.getRatePerDay());
+                totalRentalFee = totalRentalFee.add(cheapestRentalRate.getRatePerDay());
             }
+            return totalRentalFee;
         } catch (NoAvailableRentalRateException ex) {
             throw new NoAvailableRentalRateException();
+        } catch (CarCategoryNotFoundException ex) {
+            throw new CarCategoryNotFoundException();
         }
-
-        return totalRentalFee;
     }
 
 }
