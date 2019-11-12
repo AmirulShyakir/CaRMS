@@ -158,5 +158,4 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
             carToRemove.setIsDisabled(true);
         }
     }
-    
 }
