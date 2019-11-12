@@ -41,21 +41,9 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
     private final ValidatorFactory validatorFactory;
     private final Validator validator;
 
-    @EJB
-    private CustomerSessionBeanLocal customerSessionBeanLocal;
-    @EJB
-    private CarSessionBeanLocal carSessionBeanLocal;
-
     public RentalReservationSessionBean() {
         this.validatorFactory = Validation.buildDefaultValidatorFactory();
         this.validator = validatorFactory.getValidator();
-    }
-
-    public RentalReservationSessionBean(CustomerSessionBeanLocal customerSessionBeanLocal, CarSessionBeanLocal carSessionBeanLocal) {
-        this();
-        
-        this.customerSessionBeanLocal = customerSessionBeanLocal;
-        this.carSessionBeanLocal = carSessionBeanLocal;
     }
 
     // Add business logic below. (Right-click in editor and choose
@@ -105,7 +93,7 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
 
     @Override
     public List<RentalReservation> retrieveAllRentalReservations() {
-        Query query = em.createQuery("SELECT rr FROM RentalReservation rr");
+        Query query = em.createQuery("SELECT r FROM RentalReservation r");
         return query.getResultList();
     }
     
@@ -136,6 +124,8 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
             Car car = rentalReservation.getCar();
             car.setOnRental(true);
             car.setOutlet(null);
+            car.setRentalReservation(rentalReservation);
+            rentalReservation.getPickupOutlet().removeCar(car);
         } catch (RentalReservationNotFoundException ex) {
             throw new RentalReservationNotFoundException("Rental Reservation ID: " + rentalReservationId + "not found!");
         }
@@ -149,6 +139,7 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
             Car car = rentalReservation.getCar();
             car.setOnRental(false);
             car.setOutlet(returnOutlet);
+            car.setRentalReservation(null);
             returnOutlet.addCar(car);
         } catch (RentalReservationNotFoundException ex) {
             throw new RentalReservationNotFoundException("Rental Reservation ID: " + rentalReservationId + "not found!");

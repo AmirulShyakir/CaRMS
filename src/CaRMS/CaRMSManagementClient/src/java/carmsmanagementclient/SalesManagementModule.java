@@ -25,6 +25,7 @@ import util.exception.CarCategoryNotFoundException;
 import util.exception.CarNotFoundException;
 import util.exception.DriverNotWorkingInSameOutletException;
 import util.exception.EmployeeNotFoundException;
+import util.exception.EndDateBeforeStartDateException;
 import util.exception.InputDataValidationException;
 import util.exception.InvalidAccessRightException;
 import util.exception.LicensePlateExistException;
@@ -262,9 +263,12 @@ public class SalesManagementModule {
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
                 System.out.print("Enter start date (DD/MM/YYYY HH:MM)> ");
                 Date startDate = sdf.parse(scanner.nextLine().trim());
-                rentalRate.setStartDate(startDate);
                 System.out.print("Enter end date (DD/MM/YYYY HH:MM)> ");
                 Date endDate = sdf.parse(scanner.nextLine().trim());
+                if (endDate.before(startDate)) {
+                    throw new EndDateBeforeStartDateException();
+                }
+                rentalRate.setStartDate(startDate);
                 rentalRate.setEndDate(endDate);
             } else {
                 System.out.println("Validity period not entered!");
@@ -281,6 +285,8 @@ public class SalesManagementModule {
             System.out.println("UnknownPersistenceException when creating new Rental Rate");
         } catch (InputDataValidationException ex) {
             System.out.println("Invalid fields for the rental rate");
+        } catch (EndDateBeforeStartDateException ex) {
+            System.out.println("End date is before start date!");
         }
         System.out.print("Press any key to continue...> ");
         scanner.nextLine();
@@ -622,7 +628,8 @@ public class SalesManagementModule {
         Long outletId = scanner.nextLong();
         scanner.nextLine();
         List<TransitDriverDispatchRecord> transitDriverDispatchRecords = transitDriverDispatchRecordSessionBeanRemote.retrieveTransitDriverDispatchRecordByOutletId(outletId);
-        System.out.printf("%4s%16s%16s%8s%16s\n", "Record ID", "Destination Outlet", "Dispatch Driver", "Completed", "Transit Time");
+        System.out.printf("%16s%16s%16s%16s%16s%16s\n", "Record ID",
+                "Destination Outlet", "Reservation ID", "Driver ID", "Completed", "Transit Time");
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         for (TransitDriverDispatchRecord transitDriverDispatchRecord : transitDriverDispatchRecords) {
             String isCompleted = "false";
@@ -633,10 +640,11 @@ public class SalesManagementModule {
             if (transitDriverDispatchRecord.getDispatchDriver() != null) {
                 dispatchDriverName = transitDriverDispatchRecord.getDispatchDriver().getFullName();
             }
-            String transitTime = sdf.format(transitDriverDispatchRecord.getTransitDate());
-            System.out.printf("%4s%16s%16s\n", transitDriverDispatchRecord.getTransitDriverDispatchRecordId(),
+            String date = sdf.format(transitDriverDispatchRecord.getTransitDate());
+            System.out.printf("%16s%16s%16s%16s%16s%24s\n",
+                    transitDriverDispatchRecord.getTransitDriverDispatchRecordId(),
                     transitDriverDispatchRecord.getDestinationOutlet().getOutletName(),
-                    dispatchDriverName, isCompleted, transitTime);
+                    dispatchDriverName, isCompleted, date);
         }
         System.out.print("Press any key to continue...> ");
         scanner.nextLine();
