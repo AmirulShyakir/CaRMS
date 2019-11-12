@@ -6,6 +6,12 @@
 package holidayreservationsystem;
 
 import java.util.Scanner;
+import ws.client.CarCategoryNotFoundException_Exception;
+import ws.client.CarNotFoundException_Exception;
+import ws.client.ModelNotFoundException_Exception;
+import ws.client.OutletNotFoundException_Exception;
+import ws.client.RentalReservation;
+import ws.client.RentalReservationNotFoundException_Exception;
 
 /**
  *
@@ -112,9 +118,38 @@ class MainApp {
 
     private void doCancelReservation() {
         System.out.println("*** Holiday Reservation System :: Cancel Reservation ***\n");
+        try {
+            deleteReservation(1l);
+        } catch (RentalReservationNotFoundException_Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     private void doViewAllReservations() {
         System.out.println("*** Holiday Reservation System :: View All Reservations ***\n");
+    }
+    
+    private static void deleteReservation(java.lang.Long arg0) throws RentalReservationNotFoundException_Exception {
+        ws.client.PartnerReservationWebService_Service service = new ws.client.PartnerReservationWebService_Service();
+        ws.client.PartnerReservationWebService port = service.getPartnerReservationWebServicePort();
+        port.deleteReservation(arg0);
+    }
+
+    private static java.util.List<ws.client.RentalReservation> retrieveAllRentalReservations() {
+        ws.client.PartnerReservationWebService_Service service = new ws.client.PartnerReservationWebService_Service();
+        ws.client.PartnerReservationWebService port = service.getPartnerReservationWebServicePort();
+        return port.retrieveAllRentalReservations();
+    }
+
+    private static RentalReservation retrieveRentalReservationByRentalReservationId(java.lang.Long arg0) throws RentalReservationNotFoundException_Exception {
+        ws.client.PartnerReservationWebService_Service service = new ws.client.PartnerReservationWebService_Service();
+        ws.client.PartnerReservationWebService port = service.getPartnerReservationWebServicePort();
+        return port.retrieveRentalReservationByRentalReservationId(arg0);
+    }
+
+    private static java.util.List<ws.client.Car> searchCar(java.lang.Long arg0, java.lang.Long arg1, javax.xml.datatype.XMLGregorianCalendar arg2, javax.xml.datatype.XMLGregorianCalendar arg3, java.lang.Long arg4, java.lang.Long arg5) throws OutletNotFoundException_Exception, ModelNotFoundException_Exception, CarNotFoundException_Exception, CarCategoryNotFoundException_Exception {
+        ws.client.PartnerReservationWebService_Service service = new ws.client.PartnerReservationWebService_Service();
+        ws.client.PartnerReservationWebService port = service.getPartnerReservationWebServicePort();
+        return port.searchCar(arg0, arg1, arg2, arg3, arg4, arg5);
     }
 }
