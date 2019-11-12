@@ -10,12 +10,18 @@ import entity.CarCategory;
 import entity.Model;
 import entity.Outlet;
 import entity.RentalReservation;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Set;
+import javafx.util.converter.LocalDateTimeStringConverter;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Remote;
@@ -124,23 +130,32 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
     }
 
     @Override
-    public void deleteReservation(Long rentalReservationId) throws RentalReservationNotFoundException {
+    public BigDecimal cancelReservation(Long rentalReservationId) throws RentalReservationNotFoundException {
         try {
-            RentalReservation rentalReservationToRemove = retrieveRentalReservationByRentalReservationId(rentalReservationId);
-            if (rentalReservationToRemove.getPaid()) {
+            RentalReservation rentalReservation = retrieveRentalReservationByRentalReservationId(rentalReservationId);
+            rentalReservation.setIsCancelled(Boolean.TRUE);
+            LocalDateTime startDateTemporal = rentalReservation.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+            LocalDateTime today = new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+            Long noOfDaysToStartReservation = ChronoUnit.DAYS.between(today, startDateTemporal);
+            BigDecimal price = rentalReservation.getPrice();
+            BigDecimal penalty = null;
 
-                // refund credit card amount - penalty amoung
-            } else {
-                // charge credit card penalty amount
+            if (noOfDaysToStartReservation >= 14) {
+                penalty = new BigDecimal(0);
+            } else if (noOfDaysToStartReservation < 14 && noOfDaysToStartReservation >= 7) {
+                penalty = price.multiply(new BigDecimal(0.2));
+            } else if (noOfDaysToStartReservation < 7 && noOfDaysToStartReservation >= 3) {
+                penalty = price.multiply(new BigDecimal(0.5));
+            } else if (noOfDaysToStartReservation < 3) {
+                penalty = price.multiply(new BigDecimal(0.7));
             }
-            if (rentalReservationToRemove.getRentalDays().isEmpty()) {
-                em.remove(rentalReservationToRemove);
-            } else {
-                rentalReservationToRemove.setIsCancelled(true);
-            }
+
+            return penalty;
+
         } catch (RentalReservationNotFoundException ex) {
             throw new RentalReservationNotFoundException("Rental Reservation of ID: " + rentalReservationId + " not found!");
         }
+
     }
 
     @Override
