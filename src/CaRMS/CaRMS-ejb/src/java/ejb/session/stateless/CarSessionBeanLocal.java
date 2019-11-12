@@ -36,8 +36,5 @@ public interface CarSessionBeanLocal {
     public Long createNewCar(Long modelId, Long outletId, Car newCar) throws ModelDisabledException, ModelNotFoundException, OutletNotFoundException, LicensePlateExistException, UnknownPersistenceException, InputDataValidationException;
 
     public void deleteCar(Long carId) throws CarNotFoundException;
-
-    public List<Car> searchCar(Long categoryId, Long modelId, Date pickUpDateTime, Date returnDateTime, Long pickupOutletId, Long returnOutletId) throws CarNotFoundException, CarCategoryNotFoundException, ModelNotFoundException, OutletNotFoundException;
-
     
 }

@@ -7,6 +7,7 @@ package ejb.session.stateless;
 
 import entity.CarCategory;
 import entity.RentalRate;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import javax.ejb.EJB;
@@ -23,6 +24,7 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import util.exception.CarCategoryNotFoundException;
 import util.exception.InputDataValidationException;
+import util.exception.NoAvailableRentalRateException;
 import util.exception.RentalRateNameExistException;
 import util.exception.RentalRateNotFoundException;
 import util.exception.UnknownPersistenceException;
@@ -147,4 +149,16 @@ public class RentalRateSessionBean implements RentalRateSessionBeanRemote, Renta
             throw new RentalRateNotFoundException("Rental rate of ID: " + rentalRateId + " not found!");
         }
     }
+    
+    @Override
+    public RentalRate retrieveCheapestRentalRate(CarCategory carcategory, Date currentCheckedDate) throws NoAvailableRentalRateException {
+        Query query = em.createQuery("SELECT r FROM RentalRate r WHERE r.startDate >= :inCurrentCheckedDate AND r.endDate <= :inCurrentCheckedDate ORDER BY r.ratePerDay ASC");
+        query.setParameter("inCurrentCheckedDate", currentCheckedDate);
+        List<RentalRate> rentalRates = query.getResultList();
+        if (rentalRates.isEmpty()) {
+            throw new NoAvailableRentalRateException();
+        }
+        return (RentalRate) query.getSingleResult();
+    }
+    
 }

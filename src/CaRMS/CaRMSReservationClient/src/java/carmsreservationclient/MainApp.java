@@ -5,15 +5,20 @@
  */
 package carmsreservationclient;
 
+import ejb.session.stateless.CarCategorySessionBeanRemote;
 import ejb.session.stateless.CarSessionBeanRemote;
+import ejb.session.stateless.ModelSessionBeanRemote;
 import ejb.session.stateless.OwnCustomerSessionBeanRemote;
 import ejb.session.stateless.RentalReservationSessionBeanRemote;
 import entity.Car;
+import entity.CarCategory;
 import entity.Customer;
 import entity.OwnCustomer;
 import entity.RentalReservation;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
@@ -22,6 +27,7 @@ import util.exception.CarNotFoundException;
 import util.exception.InputDataValidationException;
 import util.exception.InvalidLoginCredentialException;
 import util.exception.ModelNotFoundException;
+import util.exception.NoAvailableRentalRateException;
 import util.exception.OutletNotFoundException;
 import util.exception.OwnCustomerUsernameExistException;
 import util.exception.RentalReservationNotFoundException;
@@ -35,14 +41,16 @@ public class MainApp {
 
     private OwnCustomerSessionBeanRemote ownCustomerSessionBeanRemote;
     private CarSessionBeanRemote carSessionBeanRemote;
+    private CarCategorySessionBeanRemote carCategorySessionBeanRemote;
     private RentalReservationSessionBeanRemote rentalReservationSessionBeanRemote;
+    private ModelSessionBeanRemote modelSessionBeanRemote;
 
     private Customer currentCustomer;
 
     public MainApp() {
     }
 
-    public MainApp(OwnCustomerSessionBeanRemote ownCustomerSessionBeanRemote, CarSessionBeanRemote carSessionBeanRemote, RentalReservationSessionBeanRemote rentalReservationSessionBeanRemote) {
+    public MainApp(OwnCustomerSessionBeanRemote ownCustomerSessionBeanRemote, CarSessionBeanRemote carSessionBeanRemote, CarCategorySessionBeanRemote carCategorySessionBeanRemote, RentalReservationSessionBeanRemote rentalReservationSessionBeanRemote, ModelSessionBeanRemote modelSessionBeanRemote) {
         this();
 
         this.ownCustomerSessionBeanRemote = ownCustomerSessionBeanRemote;
@@ -76,18 +84,13 @@ public class MainApp {
                         System.out.println("Invalid login credential: " + ex.getMessage() + "\n");
                     }
                 } else if (response == 2) {
-                    // try {
                     doRegisterCustomer();
-                    // } catch ({
-
-                    // }
                 } else if (response == 3) {
-                    // try catch
                     doSearchCar();
                 } else if (response == 4) {
                     break;
                 } else {
-                    System.out.println("Invalid option, please try  again\n");
+                    System.out.println("Invalid option, please try again\n");
                 }
             }
         }
@@ -157,9 +160,8 @@ public class MainApp {
 
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
-        SimpleDateFormat inputDateFormat = new SimpleDateFormat("d/M/y");
-        SimpleDateFormat outputDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
-        Long carCategoryId;
+        SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        Long carCategoryId = null; // to avoid error
         Long modelId;
         Date pickUpDateTime;
         Long pickupOutletId;
@@ -167,35 +169,59 @@ public class MainApp {
         Long returnOutletId;
 
         System.out.println("*** CaRMS Reservation Client :: Search Car ***\n");
-        System.out.print("Enter Car Category ID> "); // should show a list of category
-        carCategoryId = scanner.nextLong();
-        System.out.print("Enter Model ID> "); // should show a list of models
-        modelId = scanner.nextLong();
 
         try {
-            System.out.print("Enter Pickup Date (dd/mm/yyyy)> ");
+            System.out.print("Enter Pickup Date & Time (DD/MM/YYYY HH:MM)> ");
             pickUpDateTime = inputDateFormat.parse(scanner.nextLine().trim());
-            System.out.print("Enter Return Date (dd/mm/yyyy)> ");
+            System.out.print("Enter Return Date & Time (DD/MM/YYYY HH:MM)> ");
             returnDateTime = inputDateFormat.parse(scanner.nextLine().trim());
             System.out.print("Enter Pickup Outlet ID> ");
             pickupOutletId = scanner.nextLong();
             System.out.print("Enter Return Outlet ID> ");
             returnOutletId = scanner.nextLong();
 
-            List<Car> cars = carSessionBeanRemote.searchCar(carCategoryId, modelId, pickUpDateTime, returnDateTime, pickupOutletId, returnOutletId);
-            System.out.printf("%4s%16s%32s%10s%16s%32s\n", "Car Category ID", "Model ID", "Pick-up Date Time", "Return Date Time", "Pick-up Outlet ID", "Return Outlet ID");
+            System.out.println("*** Search by Car Category or Car Model? ***\n");
+            System.out.println("1: Car Category");
+            System.out.println("2: Car Model");
+            response = scanner.nextInt();
+
+            Boolean canReserve = false;
+            
+            if (response == 1) {
+                System.out.print("Enter Car Category ID> ");
+                carCategoryId = scanner.nextLong();
+                canReserve = rentalReservationSessionBeanRemote.searchCarByCategory(pickUpDateTime, returnDateTime, pickupOutletId, returnOutletId, carCategoryId);
+            } else if (response == 2) {
+                System.out.print("Enter Car Model ID> ");
+                modelId = scanner.nextLong();
+                carCategoryId = modelSessionBeanRemote.retrieveModelByModelId(modelId).getCarCategory().getCarCategoryId();
+                canReserve = rentalReservationSessionBeanRemote.searchCarByModel(pickUpDateTime, returnDateTime, pickupOutletId, returnOutletId, modelId);
+            }
+
+            if (!canReserve) {
+                System.out.println("No cars are available under the provided criteria! ");
+            } else {
+                BigDecimal totalRentalFee = carCategorySessionBeanRemote.calculateTotalRentalFee(carCategoryId, pickUpDateTime, returnDateTime);
+                System.out.println("There are cars available! Total rental fee is SGD" + totalRentalFee + ". ");
+                System.out.println("Reserve a car? (Enter 'Y' to reserve a car)> ");
+                String input = scanner.nextLine().trim();
+                if (input.equals("Y")) {
+                    doReserveCar();
+                }
+            }
 
         } catch (ParseException ex) {
             System.out.println("Invalid date input!\n");
-        } catch (CarNotFoundException ex) {
-            System.out.println("Car not found!\n");
+        } catch (NoAvailableRentalRateException ex) {
+            System.out.println("There are no available rental rates for the period!\n");
         } catch (CarCategoryNotFoundException ex) {
-            System.out.println("Car Category not found for ID: " + carCategoryId);
+            System.out.println("Car Category not found for ID: " + carCategoryId + "\n");
         } catch (ModelNotFoundException ex) {
             System.out.println("Model not found!\n");
         } catch (OutletNotFoundException ex) {
             System.out.println("Outlet not found!\n");
         }
+
         System.out.print("Press any key to continue...> ");
         scanner.nextLine();
     }

@@ -6,9 +6,12 @@
 package ejb.session.stateless;
 
 import entity.CarCategory;
+import java.math.BigDecimal;
+import java.util.Date;
 import util.exception.CarCategoryExistException;
 import util.exception.CarCategoryNotFoundException;
 import util.exception.InputDataValidationException;
+import util.exception.NoAvailableRentalRateException;
 import util.exception.UnknownPersistenceException;
 
 /**
@@ -20,5 +23,7 @@ public interface CarCategorySessionBeanRemote {
     public Long createCarCategory(CarCategory newCarCategory) throws CarCategoryExistException, UnknownPersistenceException, InputDataValidationException;
 
     public CarCategory retrieveCarCategoryByCarCategoryId(Long carCategoryId) throws CarCategoryNotFoundException;
+    
+    public BigDecimal calculateTotalRentalFee(Long carCategoryId, Date pickUpDateTime, Date returnDateTime) throws NoAvailableRentalRateException;
 
 }
