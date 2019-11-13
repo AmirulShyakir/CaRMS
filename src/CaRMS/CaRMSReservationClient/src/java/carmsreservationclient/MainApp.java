@@ -6,27 +6,20 @@
 package carmsreservationclient;
 
 import ejb.session.stateless.CarCategorySessionBeanRemote;
-import ejb.session.stateless.CarSessionBeanRemote;
 import ejb.session.stateless.ModelSessionBeanRemote;
 import ejb.session.stateless.OutletSessionBeanRemote;
 import ejb.session.stateless.OwnCustomerSessionBeanRemote;
 import ejb.session.stateless.RentalReservationSessionBeanRemote;
-import entity.Car;
-import entity.CarCategory;
 import entity.Customer;
 import entity.OwnCustomer;
 import entity.RentalReservation;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 import util.exception.CarCategoryNotFoundException;
-import util.exception.CarNotFoundException;
 import util.exception.InputDataValidationException;
 import util.exception.InvalidLoginCredentialException;
 import util.exception.ModelNotFoundException;
@@ -43,7 +36,6 @@ import util.exception.UnknownPersistenceException;
 public class MainApp {
 
     private OwnCustomerSessionBeanRemote ownCustomerSessionBeanRemote;
-    private CarSessionBeanRemote carSessionBeanRemote;
     private CarCategorySessionBeanRemote carCategorySessionBeanRemote;
     private RentalReservationSessionBeanRemote rentalReservationSessionBeanRemote;
     private ModelSessionBeanRemote modelSessionBeanRemote;
@@ -54,12 +46,14 @@ public class MainApp {
     public MainApp() {
     }
 
-    public MainApp(OwnCustomerSessionBeanRemote ownCustomerSessionBeanRemote, CarSessionBeanRemote carSessionBeanRemote, CarCategorySessionBeanRemote carCategorySessionBeanRemote, RentalReservationSessionBeanRemote rentalReservationSessionBeanRemote, ModelSessionBeanRemote modelSessionBeanRemote) {
+    public MainApp(OwnCustomerSessionBeanRemote ownCustomerSessionBeanRemote, CarCategorySessionBeanRemote carCategorySessionBeanRemote, RentalReservationSessionBeanRemote rentalReservationSessionBeanRemote, ModelSessionBeanRemote modelSessionBeanRemote, OutletSessionBeanRemote outletSessionBeanRemote) {
         this();
 
         this.ownCustomerSessionBeanRemote = ownCustomerSessionBeanRemote;
-        this.carSessionBeanRemote = carSessionBeanRemote;
+        this.carCategorySessionBeanRemote = carCategorySessionBeanRemote;
         this.rentalReservationSessionBeanRemote = rentalReservationSessionBeanRemote;
+        this.modelSessionBeanRemote = modelSessionBeanRemote;
+        this.outletSessionBeanRemote = outletSessionBeanRemote;
     }
 
     public void runApp() {
@@ -167,8 +161,8 @@ public class MainApp {
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
         SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        Long carCategoryId = null; // to avoid error
-        Long modelId = null; // to avoid error
+        Long carCategoryId = new Long(0); // to avoid error
+        Long modelId = new Long(0); // to avoid error
         Date pickUpDateTime;
         Long pickupOutletId;
         Date returnDateTime;
@@ -364,7 +358,7 @@ public class MainApp {
         }
         System.out.print("Press any key to continue...> ");
         scanner.nextLine();
-        
+
     }
 
     private void doViewAllReservations() {

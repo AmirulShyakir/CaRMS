@@ -5,7 +5,6 @@
  */
 package ejb.session.stateless;
 
-import entity.Employee;
 import entity.Partner;
 import java.util.Set;
 import javax.ejb.Local;

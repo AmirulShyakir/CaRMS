@@ -8,7 +8,6 @@ package ejb.session.stateless;
 import entity.CarCategory;
 import entity.RentalRate;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;

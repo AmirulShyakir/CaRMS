@@ -245,9 +245,9 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
             cars.addAll(model.getCars());
         }
         if (cars.size() > rentalReservations.size()) {
-            return false;
-        } else {
             return true;
+        } else {
+            return false;
         }
     }
 
@@ -304,10 +304,9 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
 
         Model model = modelSessionBeanLocal.retrieveModelByModelId(modelId);
         if (model.getCars().size() > rentalReservations.size()) {
-            return false;
-        } else {
             return true;
+        } else {
+            return false;
         }
     }
-
 }

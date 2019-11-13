@@ -6,8 +6,6 @@
 package ejb.session.stateless;
 
 import entity.Outlet;
-import entity.TransitDriverDispatchRecord;
-import java.util.List;
 import java.util.Set;
 import javax.ejb.Local;
 import javax.ejb.Remote;
