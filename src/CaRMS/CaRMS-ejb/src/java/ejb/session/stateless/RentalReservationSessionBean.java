@@ -59,6 +59,10 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
     private final Validator validator;
 
     @EJB
+    private CustomerSessionBeanLocal customerSessionBeanLocal;
+    @EJB
+    private OutletSessionBeanLocal outletSessionBeanLocal;
+    @EJB
     private CarCategorySessionBeanLocal carCategorySessionBeanLocal;
     @EJB
     private ModelSessionBeanLocal modelSessionBeanLocal;

@@ -202,7 +202,7 @@ class MainApp {
         }
     }
 
-    private void doReserveCar() {
+    private void doReserveCar(Integer response, Long carCategoryId, Long modelId, Date pickUpDateTime, Date returnDateTime, Long pickupOutletId, Long returnOutletId, BigDecimal totalRentalFee) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("*** Holiday Reservation System :: Reserve Car ***\n");
 
@@ -210,7 +210,7 @@ class MainApp {
 
         try {
             if (response == 1) {
-                rentalReservation.setCarCategory(carCategorySessionBeanRemote.retrieveCarCategoryByCarCategoryId(carCategoryId));
+                rentalReservation.setCarCategory(retrieveCarCategoryByCarCategoryId(carCategoryId));
             } else if (response == 2) {
                 rentalReservation.setModel(modelSessionBeanRemote.retrieveModelByModelId(modelId));
             }
