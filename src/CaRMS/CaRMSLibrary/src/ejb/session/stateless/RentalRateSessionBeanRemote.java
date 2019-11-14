@@ -12,7 +12,6 @@ import java.util.List;
 import util.exception.CarCategoryNotFoundException;
 import util.exception.InputDataValidationException;
 import util.exception.NoAvailableRentalRateException;
-import util.exception.RentalRateNameExistException;
 import util.exception.RentalRateNotFoundException;
 import util.exception.UnknownPersistenceException;
 
@@ -31,7 +30,7 @@ public interface RentalRateSessionBeanRemote {
     public void updateRentalRate(RentalRate rentalRate) throws RentalRateNotFoundException, InputDataValidationException;
 
     public void deleteRentalRate(Long rentalRateId) throws RentalRateNotFoundException;
-    
+
     public RentalRate retrieveCheapestRentalRate(CarCategory carcategory, Date currentCheckedDate) throws NoAvailableRentalRateException;
 
 }

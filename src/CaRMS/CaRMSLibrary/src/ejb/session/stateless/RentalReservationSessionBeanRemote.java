@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import util.exception.CarCategoryNotFoundException;
+import util.exception.CustomerNotFoundException;
 import util.exception.InputDataValidationException;
 import util.exception.ModelNotFoundException;
 import util.exception.NoAvailableRentalRateException;
@@ -23,7 +24,7 @@ import util.exception.UnknownPersistenceException;
  */
 public interface RentalReservationSessionBeanRemote {
 
-    public Long createNewRentalReservation(RentalReservation newRentalReservation) throws InputDataValidationException, UnknownPersistenceException;
+    public Long createNewRentalReservation(Long carCategoryId, Long modelId, Long customerId, Long pickupOutletId, Long returnOutletId, RentalReservation newRentalReservation) throws OutletNotFoundException, CustomerNotFoundException, InputDataValidationException, UnknownPersistenceException, CarCategoryNotFoundException, ModelNotFoundException;
 
     public RentalReservation retrieveRentalReservationByRentalReservationId(Long rentalReservationId) throws RentalReservationNotFoundException;
 
@@ -35,8 +36,8 @@ public interface RentalReservationSessionBeanRemote {
 
     public void returnCar(Long rentalReservationId) throws RentalReservationNotFoundException;
 
-    public Boolean searchCarByModel(Date pickUpDateTime, Date returnDateTime, Long pickupOutletId, Long returnOutletId, Long modelId) throws NoAvailableRentalRateException, CarCategoryNotFoundException, OutletNotFoundException, ModelNotFoundException;
-
     public Boolean searchCarByCategory(Date pickUpDateTime, Date returnDateTime, Long pickupOutletId, Long returnOutletId, Long carCategoryId) throws NoAvailableRentalRateException, CarCategoryNotFoundException, OutletNotFoundException;
+
+    public Boolean searchCarByModel(Date pickUpDateTime, Date returnDateTime, Long pickupOutletId, Long returnOutletId, Long modelId) throws NoAvailableRentalRateException, CarCategoryNotFoundException, OutletNotFoundException, ModelNotFoundException;
 
 }

@@ -14,6 +14,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Set;
 import javax.ejb.EJB;
 import javax.ejb.Local;
@@ -22,6 +23,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
+import javax.persistence.Query;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -101,6 +103,12 @@ public class CarCategorySessionBean implements CarCategorySessionBeanRemote, Car
         } else {
             throw new CarCategoryNotFoundException("Car Category ID " + carCategoryId + " does not exist!");
         }
+    }
+
+    @Override
+    public List<CarCategory> retrieveAllCarCategories() {
+        Query query = em.createQuery("SELECT c FROM CarCategory c ORDER BY c.carCategoryId ASC");
+        return query.getResultList();
     }
 
     @Override
