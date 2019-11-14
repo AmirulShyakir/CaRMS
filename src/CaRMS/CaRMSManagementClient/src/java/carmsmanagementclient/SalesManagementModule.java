@@ -33,7 +33,6 @@ import util.exception.ModelDisabledException;
 import util.exception.ModelNameExistException;
 import util.exception.ModelNotFoundException;
 import util.exception.OutletNotFoundException;
-import util.exception.RentalRateNameExistException;
 import util.exception.RentalRateNotFoundException;
 import util.exception.TransitDriverDispatchRecordNotFoundException;
 import util.exception.UnknownPersistenceException;
