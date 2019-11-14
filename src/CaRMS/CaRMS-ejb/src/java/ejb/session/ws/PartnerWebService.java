@@ -17,7 +17,7 @@ import util.exception.InvalidLoginCredentialException;
 
 /**
  *
- * @author dtjldamien
+ * @author sw_be
  */
 @WebService(serviceName = "PartnerWebService")
 @Stateless

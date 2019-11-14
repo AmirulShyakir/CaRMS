@@ -15,7 +15,7 @@ import ws.client.RentalReservationNotFoundException_Exception;
 
 /**
  *
- * @author dtjldamien
+ * @author sw_be
  */
 class MainApp {
 
