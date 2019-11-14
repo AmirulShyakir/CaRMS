@@ -238,31 +238,29 @@ class MainApp {
             returnGregorianCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(gc);
             rentalReservation.setEndDate(returnGregorianCalendar);
             rentalReservation.setPrice(totalRentalFee);
+            Customer newCustomer = new Customer();
+
+            System.out.print("Enter customer first name> ");
+            firstName = scanner.nextLine().trim();
+            System.out.print("Enter customer last name> ");
+            lastName = scanner.nextLine().trim();
+            System.out.print("Enter email> ");
+            email = scanner.nextLine().trim();
+            newCustomer.setFirstName(firstName);
+            newCustomer.setLastName(lastName);
+            newCustomer.setEmail(email);
 
             System.out.print("Would you like to pay now? (Enter 'Y' to enter payment details)> ");
             String input = scanner.nextLine().trim();
             if (input.equals("Y")) {
                 System.out.print("Enter credit card number> ");
                 String creditCardNumber = scanner.nextLine().trim();
-                System.out.print("Enter customer first name> ");
-                firstName = scanner.nextLine().trim();
-                System.out.print("Enter customer last name> ");
-                lastName = scanner.nextLine().trim();
-                System.out.print("Enter email> ");
-                email = scanner.nextLine().trim();
-                
-                Customer newCustomer = new Customer();
                 newCustomer.setCreditCardNumber(creditCardNumber);
-                newCustomer.setFirstName(firstName);
-                newCustomer.setLastName(lastName);
-                newCustomer.setEmail(email);
-                customerId = createNewCustomer(currentPartnerId, newCustomer);
-
                 rentalReservation.setPaid(Boolean.TRUE);
             } else {
                 rentalReservation.setPaid(Boolean.FALSE);
             }
-
+            customerId = createNewCustomer(currentPartnerId, newCustomer);
             Long rentalReservationId = createNewRentalReservation(carCategoryId, modelId, customerId, pickupOutletId, returnOutletId, rentalReservation);
             System.out.println("Rental reservation created with ID: " + rentalReservationId);
 
@@ -412,7 +410,7 @@ class MainApp {
         ws.client.PartnerReservationWebService port = service.getPartnerReservationWebServicePort();
         return port.retrieveRentalReservationByRentalReservationId(arg0);
     }
-    
+
     private static java.util.List<ws.client.RentalReservation> retrieveAllRentalReservations() {
         ws.client.PartnerReservationWebService_Service service = new ws.client.PartnerReservationWebService_Service();
         ws.client.PartnerReservationWebService port = service.getPartnerReservationWebServicePort();
