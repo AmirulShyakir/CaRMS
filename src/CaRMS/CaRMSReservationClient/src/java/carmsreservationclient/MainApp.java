@@ -198,7 +198,7 @@ public class MainApp {
                 carCategoryId = modelSessionBeanRemote.retrieveModelByModelId(modelId).getCarCategory().getCarCategoryId();
                 canReserve = rentalReservationSessionBeanRemote.searchCarByModel(pickUpDateTime, returnDateTime, pickupOutletId, returnOutletId, modelId);
             }
-
+            scanner.nextLine();
             if (!canReserve) {
                 System.out.println("No cars are available under the provided criteria!");
             } else {
@@ -207,9 +207,11 @@ public class MainApp {
                 if (currentCustomer != null) {
                     System.out.print("Reserve a car? (Enter 'Y' to reserve a car)> ");
                     String input = scanner.nextLine().trim();
-                    doReserveCar(response, carCategoryId, modelId, pickUpDateTime, returnDateTime, pickupOutletId, returnOutletId, totalRentalFee);
+                    if (input.equals("Y")) {
+                        doReserveCar(response, carCategoryId, modelId, pickUpDateTime, returnDateTime, pickupOutletId, returnOutletId, totalRentalFee);
+                    }
                 } else {
-                    System.out.println("Please login first!");
+                    System.out.println("Please login to reserve the car!");
                 }
             }
         } catch (ParseException ex) {
@@ -295,16 +297,20 @@ public class MainApp {
             System.out.print("Enter Credit Card Number> ");
             String creditCardNumber = scanner.nextLine().trim();
             currentCustomer.setCreditCardNumber(creditCardNumber);
-
+            Long rentalReservationId = rentalReservationSessionBeanRemote.createNewRentalReservation(rentalReservation);
+            System.out.println("Rental reservation created with ID: " + rentalReservationId);
+            scanner.nextLine();
         } catch (CarCategoryNotFoundException ex) {
             System.out.println("Car Category not found for ID: " + carCategoryId + "\n");
         } catch (ModelNotFoundException ex) {
             System.out.println("Model not found!\n");
         } catch (OutletNotFoundException ex) {
             System.out.println("Outlet not found!\n");
+        } catch (InputDataValidationException ex) {
+            System.err.println(ex.getMessage());
+        } catch (UnknownPersistenceException ex) {
+            System.err.println(ex.getMessage());
         }
-        System.out.print("Press any key to continue...> ");
-        scanner.nextLine();
     }
 
     private void doCancelReservation() {
