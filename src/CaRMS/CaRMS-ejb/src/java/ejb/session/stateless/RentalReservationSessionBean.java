@@ -57,10 +57,6 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
     private final Validator validator;
 
     @EJB
-    private CustomerSessionBeanLocal customerSessionBeanLocal;
-    @EJB
-    private CarSessionBeanLocal carSessionBeanLocal;
-    @EJB
     private CarCategorySessionBeanLocal carCategorySessionBeanLocal;
     @EJB
     private ModelSessionBeanLocal modelSessionBeanLocal;
@@ -70,11 +66,11 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
         this.validator = validatorFactory.getValidator();
     }
 
-    public RentalReservationSessionBean(CustomerSessionBeanLocal customerSessionBeanLocal, CarSessionBeanLocal carSessionBeanLocal) {
+    public RentalReservationSessionBean(CarCategorySessionBeanLocal carCategorySessionBeanLocal, ModelSessionBeanLocal modelSessionBeanLocal) {
         this();
 
-        this.customerSessionBeanLocal = customerSessionBeanLocal;
-        this.carSessionBeanLocal = carSessionBeanLocal;
+        this.carCategorySessionBeanLocal = carCategorySessionBeanLocal;
+        this.modelSessionBeanLocal = modelSessionBeanLocal;
     }
 
     // Add business logic below. (Right-click in editor and choose

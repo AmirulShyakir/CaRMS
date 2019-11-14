@@ -5,14 +5,6 @@
  */
 package holidayreservationsystem;
 
-import java.util.Scanner;
-import ws.client.CarCategoryNotFoundException_Exception;
-import ws.client.CarNotFoundException_Exception;
-import ws.client.ModelNotFoundException_Exception;
-import ws.client.OutletNotFoundException_Exception;
-import ws.client.RentalReservation;
-import ws.client.RentalReservationNotFoundException_Exception;
-
 /**
  *
  * @author sw_be
@@ -26,6 +18,6 @@ public class Main {
         // TODO code application logic here
         MainApp mainApp = new MainApp();
         mainApp.runApp();
-    }
+    }    
 
 }

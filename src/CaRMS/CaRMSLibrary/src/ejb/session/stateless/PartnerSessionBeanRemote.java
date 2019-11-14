@@ -20,7 +20,7 @@ public interface PartnerSessionBeanRemote {
 
     public Long createNewPartner(Partner newPartner) throws PartnerNameExistException, UnknownPersistenceException, InputDataValidationException;
 
-    public Partner login(String partnerName, String password) throws InvalidLoginCredentialException;
+    public Partner partnerLogin(String partnerName, String password) throws InvalidLoginCredentialException;
 
     public Partner retrievePartnerByPartnerId(Long partnerId) throws PartnerNotFoundException;
 

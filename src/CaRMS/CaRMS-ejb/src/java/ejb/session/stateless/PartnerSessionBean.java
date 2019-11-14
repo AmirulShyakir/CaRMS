@@ -27,7 +27,7 @@ import util.exception.UnknownPersistenceException;
 
 /**
  *
- * @author dtjldamien
+ * @author sw_be
  */
 @Stateless
 @Local(PartnerSessionBeanLocal.class)
@@ -83,7 +83,7 @@ public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSess
     }
 
     @Override
-    public Partner login(String partnerName, String password) throws InvalidLoginCredentialException {
+    public Partner partnerLogin(String partnerName, String password) throws InvalidLoginCredentialException {
         try {
             Query query = em.createQuery("SELECT p FROM Partner p WHERE p.partnerName = :inPartnerName");
             query.setParameter("inPartnerName", partnerName);
