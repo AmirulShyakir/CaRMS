@@ -9,7 +9,12 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Scanner;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import ws.client.CarCategory;
 import ws.client.CarCategoryNotFoundException_Exception;
 import ws.client.Customer;
@@ -37,7 +42,7 @@ class MainApp {
 
     private Long currentPartnerId = new Long(0);
 
-    void runApp() throws InvalidLoginCredentialException_Exception, OutletNotFoundException_Exception, CarCategoryNotFoundException_Exception, NoAvailableRentalRateException_Exception, ModelNotFoundException_Exception {
+    void runApp() throws InvalidLoginCredentialException_Exception, OutletNotFoundException_Exception, CarCategoryNotFoundException_Exception, NoAvailableRentalRateException_Exception, ModelNotFoundException_Exception, DatatypeConfigurationException {
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
 
@@ -55,7 +60,7 @@ class MainApp {
 
                 if (response == 1) {
                     try {
-                    doPartnerLogin();
+                        doPartnerLogin();
                         System.out.println("Login successful\n");
                         menuMain();
                     } catch (InvalidLoginCredentialException_Exception ex) {
@@ -94,7 +99,7 @@ class MainApp {
         }
     }
 
-    private void doSearchCar() throws OutletNotFoundException_Exception, CarCategoryNotFoundException_Exception, CarCategoryNotFoundException_Exception, NoAvailableRentalRateException_Exception, ModelNotFoundException_Exception, ModelNotFoundException_Exception, ModelNotFoundException_Exception, NoAvailableRentalRateException_Exception, ModelNotFoundException_Exception, ModelNotFoundException_Exception {
+    private void doSearchCar() throws OutletNotFoundException_Exception, CarCategoryNotFoundException_Exception, CarCategoryNotFoundException_Exception, NoAvailableRentalRateException_Exception, ModelNotFoundException_Exception, ModelNotFoundException_Exception, ModelNotFoundException_Exception, NoAvailableRentalRateException_Exception, ModelNotFoundException_Exception, ModelNotFoundException_Exception, DatatypeConfigurationException {
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
         SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
@@ -104,14 +109,21 @@ class MainApp {
         Long pickupOutletId;
         Date returnDateTime;
         Long returnOutletId;
+        XMLGregorianCalendar pickUpGregorianCalendar = null;
+        XMLGregorianCalendar returnGregorianCalendar = null;
+        GregorianCalendar gc = new GregorianCalendar();
 
         System.out.println("*** Holiday Reservation System :: Search Car ***\n");
 
         try {
             System.out.print("Enter Pickup Date & Time (DD/MM/YYYY HH:MM)> ");
             pickUpDateTime = inputDateFormat.parse(scanner.nextLine().trim());
+            gc.setTime(pickUpDateTime);
+            pickUpGregorianCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(gc);
             System.out.print("Enter Return Date & Time (DD/MM/YYYY HH:MM)> ");
             returnDateTime = inputDateFormat.parse(scanner.nextLine().trim());
+            gc.setTime(returnDateTime);
+            returnGregorianCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(gc);
             System.out.print("Enter Pickup Outlet ID> ");
             pickupOutletId = scanner.nextLong();
             System.out.print("Enter Return Outlet ID> ");
@@ -128,18 +140,18 @@ class MainApp {
             if (response == 1) {
                 System.out.print("Enter Car Category ID> ");
                 carCategoryId = scanner.nextLong();
-                canReserve = searchCarByCategory(pickUpDateTime, returnDateTime, pickupOutletId, returnOutletId, carCategoryId);
+                canReserve = searchCarByCategory(pickUpGregorianCalendar, returnGregorianCalendar, pickupOutletId, returnOutletId, carCategoryId);
             } else if (response == 2) {
                 System.out.print("Enter Car Model ID> ");
                 modelId = scanner.nextLong();
                 carCategoryId = retrieveModelByModelId(modelId).getCarCategory().getCarCategoryId();
-                canReserve = searchCarByModel(pickUpDateTime, returnDateTime, pickupOutletId, returnOutletId, modelId);
+                canReserve = searchCarByModel(pickUpGregorianCalendar, returnGregorianCalendar, pickupOutletId, returnOutletId, modelId);
             }
             scanner.nextLine();
             if (!canReserve) {
                 System.out.println("No cars are available under the provided criteria!");
             } else {
-                BigDecimal totalRentalFee = calculateTotalRentalFee(carCategoryId, pickUpDateTime, returnDateTime);
+                BigDecimal totalRentalFee = calculateTotalRentalFee(carCategoryId, pickUpGregorianCalendar, returnGregorianCalendar);
                 System.out.println("There are cars available! Total rental fee is SGD" + totalRentalFee + ". ");
                 if (currentPartnerId > 0) {
                     System.out.print("Reserve a car? (Enter 'Y' to reserve a car)> ");
@@ -166,7 +178,7 @@ class MainApp {
         scanner.nextLine();
     }
 
-    private void menuMain() throws ModelNotFoundException_Exception, OutletNotFoundException_Exception, CarCategoryNotFoundException_Exception, CarCategoryNotFoundException_Exception, CarCategoryNotFoundException_Exception, CarCategoryNotFoundException_Exception, NoAvailableRentalRateException_Exception, NoAvailableRentalRateException_Exception {
+    private void menuMain() throws ModelNotFoundException_Exception, OutletNotFoundException_Exception, CarCategoryNotFoundException_Exception, CarCategoryNotFoundException_Exception, CarCategoryNotFoundException_Exception, CarCategoryNotFoundException_Exception, NoAvailableRentalRateException_Exception, NoAvailableRentalRateException_Exception, DatatypeConfigurationException {
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
 
@@ -205,7 +217,7 @@ class MainApp {
         }
     }
 
-    private void doReserveCar(Integer response, Long carCategoryId, Long modelId, Date pickUpDateTime, Date returnDateTime, Long pickupOutletId, Long returnOutletId, BigDecimal totalRentalFee) {
+    private void doReserveCar(Integer response, Long carCategoryId, Long modelId, Date pickUpDateTime, Date returnDateTime, Long pickupOutletId, Long returnOutletId, BigDecimal totalRentalFee) throws DatatypeConfigurationException {
         Scanner scanner = new Scanner(System.in);
         System.out.println("*** Holiday Reservation System :: Reserve Car ***\n");
 
@@ -214,28 +226,37 @@ class MainApp {
         String firstName;
         String lastName;
         String email;
+        XMLGregorianCalendar pickUpGregorianCalendar = null;
+        XMLGregorianCalendar returnGregorianCalendar = null;
+        GregorianCalendar gc = new GregorianCalendar();
 
         try {
-            rentalReservation.setStartDate(pickUpDateTime);
-            rentalReservation.setEndDate(returnDateTime);
+            gc.setTime(pickUpDateTime);
+            pickUpGregorianCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(gc);
+            rentalReservation.setStartDate(pickUpGregorianCalendar);
+            gc.setTime(returnDateTime);
+            returnGregorianCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(gc);
+            rentalReservation.setEndDate(returnGregorianCalendar);
             rentalReservation.setPrice(totalRentalFee);
 
             System.out.print("Would you like to pay now? (Enter 'Y' to enter payment details)> ");
             String input = scanner.nextLine().trim();
             if (input.equals("Y")) {
-                System.out.print("Enter Credit Card Number> ");
+                System.out.print("Enter credit card number> ");
                 String creditCardNumber = scanner.nextLine().trim();
-
-                Customer newCustomer = new Customer();
-                customerId = createNewCustomer(currentPartnerId, newCustomer);
-                newCustomer.setCreditCardNumber(creditCardNumber);
-
-                System.out.print("Enter Customer First Name> ");
+                System.out.print("Enter customer first name> ");
                 firstName = scanner.nextLine().trim();
-                System.out.print("Enter Customer Last Name> ");
+                System.out.print("Enter customer last name> ");
                 lastName = scanner.nextLine().trim();
-                System.out.print("Enter Email> ");
+                System.out.print("Enter email> ");
                 email = scanner.nextLine().trim();
+                
+                Customer newCustomer = new Customer();
+                newCustomer.setCreditCardNumber(creditCardNumber);
+                newCustomer.setFirstName(firstName);
+                newCustomer.setLastName(lastName);
+                newCustomer.setEmail(email);
+                customerId = createNewCustomer(currentPartnerId, newCustomer);
 
                 rentalReservation.setPaid(Boolean.TRUE);
             } else {
@@ -255,7 +276,7 @@ class MainApp {
             System.out.println("Partner not found!\n");
         } catch (InputDataValidationException_Exception | UnknownPersistenceException_Exception | CustomerNotFoundException_Exception ex) {
             System.out.println(ex.getMessage());
-        } 
+        }
     }
 
     private void doCancelReservation() {
@@ -314,24 +335,13 @@ class MainApp {
     private void doViewAllReservations() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("*** Holiday Reservation System :: View All Reservations ***\n");
-        System.out.print("Enter Reservation ID> ");
-        Long rentalReservationId = scanner.nextLong();
-
-        try {
-            RentalReservation rentalReservation = retrieveRentalReservationByRentalReservationId(rentalReservationId);
-            System.out.printf("%4s%20s%20s%9s%3s%3s%129s%64s\n",
-                    "Rental Reservation ID", "Start Date",
-                    "End Date", "Rental Fee",
-                    "Paid? (T/F)", "Cancelled? (T/F)",
-                    "Customer Name", "Partner Name");
-            System.out.printf("%4s%20s%20s%9s%3s%3s\n",
-                    rentalReservation.getRentalReservationId(), rentalReservation.getStartDate().toString(),
-                    rentalReservation.getEndDate().toString(), rentalReservation.getPrice().toString(),
-                    rentalReservation.isPaid().toString(), rentalReservation.isIsCancelled().toString());
-                    //rentalReservation.getCustomer().getFullName(), rentalReservation.getPartner().getPartnerName());
-
-        } catch (RentalReservationNotFoundException_Exception ex) {
-            System.out.println("Rental Reservation not found for ID " + rentalReservationId);
+        List<RentalReservation> rentalReservations = retrieveAllRentalReservations();
+        System.out.printf("%4s%20s%20s\n", "ID", "Start Date", "End Date");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        for (RentalReservation rentalReservation : rentalReservations) {
+            System.out.printf("%4s%20s%20s\n", rentalReservation.getRentalReservationId(),
+                    sdf.format(rentalReservation.getStartDate()),
+                    sdf.format(rentalReservation.getEndDate()));
         }
         System.out.print("Press any key to continue...> ");
         scanner.nextLine();
@@ -349,7 +359,7 @@ class MainApp {
         return port.partnerLogin(arg0, arg1);
     }
 
-    private static BigDecimal calculateTotalRentalFee(Long arg0, Date arg1, Date arg2) throws CarCategoryNotFoundException_Exception, NoAvailableRentalRateException_Exception {
+    private static BigDecimal calculateTotalRentalFee(Long arg0, XMLGregorianCalendar arg1, XMLGregorianCalendar arg2) throws CarCategoryNotFoundException_Exception, NoAvailableRentalRateException_Exception {
         ws.client.PartnerReservationWebService_Service service = new ws.client.PartnerReservationWebService_Service();
         ws.client.PartnerReservationWebService port = service.getPartnerReservationWebServicePort();
         return port.calculateTotalRentalFee(arg0, arg1, arg2);
@@ -402,14 +412,20 @@ class MainApp {
         ws.client.PartnerReservationWebService port = service.getPartnerReservationWebServicePort();
         return port.retrieveRentalReservationByRentalReservationId(arg0);
     }
+    
+    private static java.util.List<ws.client.RentalReservation> retrieveAllRentalReservations() {
+        ws.client.PartnerReservationWebService_Service service = new ws.client.PartnerReservationWebService_Service();
+        ws.client.PartnerReservationWebService port = service.getPartnerReservationWebServicePort();
+        return port.retrieveAllRentalReservations();
+    }
 
-    private static Boolean searchCarByCategory(Date arg0, Date arg1, Long arg2, Long arg3, Long arg4) throws OutletNotFoundException_Exception, CarCategoryNotFoundException_Exception, NoAvailableRentalRateException_Exception {
+    private static Boolean searchCarByCategory(XMLGregorianCalendar arg0, XMLGregorianCalendar arg1, Long arg2, Long arg3, Long arg4) throws OutletNotFoundException_Exception, CarCategoryNotFoundException_Exception, NoAvailableRentalRateException_Exception {
         ws.client.PartnerReservationWebService_Service service = new ws.client.PartnerReservationWebService_Service();
         ws.client.PartnerReservationWebService port = service.getPartnerReservationWebServicePort();
         return port.searchCarByCategory(arg0, arg1, arg2, arg3, arg4);
     }
 
-    private static Boolean searchCarByModel(Date arg0, Date arg1, Long arg2, Long arg3, Long arg4) throws NoAvailableRentalRateException_Exception, CarCategoryNotFoundException_Exception, ModelNotFoundException_Exception, OutletNotFoundException_Exception {
+    private static Boolean searchCarByModel(XMLGregorianCalendar arg0, XMLGregorianCalendar arg1, Long arg2, Long arg3, Long arg4) throws NoAvailableRentalRateException_Exception, CarCategoryNotFoundException_Exception, ModelNotFoundException_Exception, OutletNotFoundException_Exception {
         ws.client.PartnerReservationWebService_Service service = new ws.client.PartnerReservationWebService_Service();
         ws.client.PartnerReservationWebService port = service.getPartnerReservationWebServicePort();
         return port.searchCarByModel(arg0, arg1, arg2, arg3, arg4);

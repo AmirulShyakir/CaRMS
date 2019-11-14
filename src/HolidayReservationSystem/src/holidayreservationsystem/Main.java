@@ -5,6 +5,7 @@
  */
 package holidayreservationsystem;
 
+import javax.xml.datatype.DatatypeConfigurationException;
 import ws.client.CarCategoryNotFoundException_Exception;
 import ws.client.InvalidLoginCredentialException_Exception;
 import ws.client.ModelNotFoundException_Exception;
@@ -26,7 +27,7 @@ public class Main {
      * @throws ws.client.ModelNotFoundException_Exception
      * @throws ws.client.NoAvailableRentalRateException_Exception
      */
-    public static void main(String[] args) throws InvalidLoginCredentialException_Exception, OutletNotFoundException_Exception, OutletNotFoundException_Exception, CarCategoryNotFoundException_Exception, CarCategoryNotFoundException_Exception, NoAvailableRentalRateException_Exception, ModelNotFoundException_Exception {
+    public static void main(String[] args) throws InvalidLoginCredentialException_Exception, OutletNotFoundException_Exception, OutletNotFoundException_Exception, CarCategoryNotFoundException_Exception, CarCategoryNotFoundException_Exception, NoAvailableRentalRateException_Exception, ModelNotFoundException_Exception, DatatypeConfigurationException {
         // TODO code application logic here
         MainApp mainApp = new MainApp();
         mainApp.runApp();

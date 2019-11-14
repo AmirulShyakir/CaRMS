@@ -19,6 +19,7 @@ import entity.Partner;
 import entity.RentalReservation;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
@@ -100,6 +101,11 @@ public class PartnerReservationWebService {
     @WebMethod
     public RentalReservation retrieveRentalReservationByRentalReservationId(@WebParam Long rentalReservationId) throws RentalReservationNotFoundException {
         return rentalReservationSessionBeanRemote.retrieveRentalReservationByRentalReservationId(rentalReservationId);
+    }
+    
+    @WebMethod
+    public List<RentalReservation> retrieveAllRentalReservations() {
+        return rentalReservationSessionBeanRemote.retrieveAllRentalReservations();
     }
     
     @WebMethod

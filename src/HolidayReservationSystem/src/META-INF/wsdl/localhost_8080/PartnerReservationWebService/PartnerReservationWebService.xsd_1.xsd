@@ -46,6 +46,10 @@
 
 <xs:element name="partnerLoginResponse" type="tns:partnerLoginResponse"/>
 
+<xs:element name="retrieveAllRentalReservations" type="tns:retrieveAllRentalReservations"/>
+
+<xs:element name="retrieveAllRentalReservationsResponse" type="tns:retrieveAllRentalReservationsResponse"/>
+
 <xs:element name="retrieveCarCategoryByCarCategoryId" type="tns:retrieveCarCategoryByCarCategoryId"/>
 
 <xs:element name="retrieveCarCategoryByCarCategoryIdResponse" type="tns:retrieveCarCategoryByCarCategoryIdResponse"/>
@@ -100,6 +104,7 @@
 <xs:sequence>
 <xs:element name="creditCardNumber" type="xs:string" minOccurs="0"/>
 <xs:element name="customerId" type="xs:long" minOccurs="0"/>
+<xs:element name="email" type="xs:string" minOccurs="0"/>
 <xs:element name="firstName" type="xs:string" minOccurs="0"/>
 <xs:element name="lastName" type="xs:string" minOccurs="0"/>
 <xs:element name="partner" type="tns:partner" minOccurs="0"/>
@@ -215,6 +220,16 @@
 <xs:complexType name="ModelNotFoundException">
 <xs:sequence>
 <xs:element name="message" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="retrieveAllRentalReservations">
+<xs:sequence/>
+</xs:complexType>
+
+<xs:complexType name="retrieveAllRentalReservationsResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:rentalReservation" minOccurs="0" maxOccurs="unbounded"/>
 </xs:sequence>
 </xs:complexType>
 
@@ -398,18 +413,6 @@
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="cancelReservation">
-<xs:sequence>
-<xs:element name="arg0" type="xs:long" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="cancelReservationResponse">
-<xs:sequence>
-<xs:element name="return" type="xs:decimal" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
 <xs:complexType name="createNewRentalReservation">
 <xs:sequence>
 <xs:element name="arg0" type="xs:long" minOccurs="0"/>
@@ -430,6 +433,18 @@
 <xs:complexType name="CustomerNotFoundException">
 <xs:sequence>
 <xs:element name="message" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="cancelReservation">
+<xs:sequence>
+<xs:element name="arg0" type="xs:long" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="cancelReservationResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:decimal" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 
