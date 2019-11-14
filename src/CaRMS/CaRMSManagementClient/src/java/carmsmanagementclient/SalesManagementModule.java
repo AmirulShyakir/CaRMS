@@ -537,9 +537,9 @@ public class SalesManagementModule {
         Scanner scanner = new Scanner(System.in);
         System.out.println("*** CarMS Management Client :: Sales Management :: View All Cars***\n");
         List<Car> cars = carSessionBeanRemote.retrieveAllCars();
-        System.out.printf("%4s%32s%16s%16s%16s\n", "ID", "Car Category", "Make", "Model", "License Plate Number");
+        System.out.printf("%4s%32s%16s%16s%22s\n", "ID", "Car Category", "Make", "Model", "License Plate Number");
         for (Car car : cars) {
-            System.out.printf("%4s%32s%16s%16s%16s\n", car.getCarId(),
+            System.out.printf("%4s%32s%16s%16s%22s\n", car.getCarId(),
                     car.getModel().getCarCategory().getCarCategoryName(),
                     car.getModel().getMakeName(), car.getModel().getModelName(),
                     car.getLicensePlate());
@@ -557,8 +557,8 @@ public class SalesManagementModule {
         scanner.nextLine();
         try {
             Car car = carSessionBeanRemote.retrieveCarByCarId(carId);
-            System.out.printf("%4s%32s%16s%16s%16s\n", "ID", "Car Category", "Make", "Model", "License Plate Number");
-            System.out.printf("%4s%32s%16s%16s%16s\n", car.getCarId(), 
+            System.out.printf("%4s%32s%16s%16s%22s\n", "ID", "Car Category", "Make", "Model", "License Plate Number");
+            System.out.printf("%%4s%32s%16s%16s%22s\n", car.getCarId(), 
                     car.getModel().getCarCategory().getCarCategoryName(),
                     car.getModel().getMakeName(), car.getModel().getModelName(),
                     car.getLicensePlate());
@@ -627,12 +627,12 @@ public class SalesManagementModule {
         scanner.nextLine();
         List<TransitDriverDispatchRecord> transitDriverDispatchRecords = transitDriverDispatchRecordSessionBeanRemote.retrieveTransitDriverDispatchRecordByOutletId(outletId);
         System.out.printf("%12s%32s%20s%32s%16s%20s\n", "Record ID",
-                "Destination Outlet", "Reservation ID", "Driver", "Completed", "Transit Time");
+                "Destination Outlet", "Reservation ID", "Driver", "Status", "Transit Time");
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         for (TransitDriverDispatchRecord transitDriverDispatchRecord : transitDriverDispatchRecords) {
-            String isCompleted = "false";
+            String isCompleted = "Not Completed";
             if (transitDriverDispatchRecord.getIsCompleted()) {
-                isCompleted = "true";
+                isCompleted = "Completed";
             }
             String dispatchDriverName = "unassigned";
             if (transitDriverDispatchRecord.getDispatchDriver() != null) {
