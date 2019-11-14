@@ -14,6 +14,8 @@ import ejb.session.stateless.RentalRateSessionBeanRemote;
 import ejb.session.stateless.RentalReservationSessionBeanRemote;
 import ejb.session.stateless.TransitDriverDispatchRecordSessionBeanRemote;
 import entity.Employee;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
 import util.exception.InvalidAccessRightException;
@@ -69,7 +71,7 @@ public class MainApp {
         while (true) {
             System.out.println("*** Welcome to CaRMS Management Client ***\n");
             System.out.println("1: Login");
-            System.out.println("2: Manually Allocate Cars to Current Day Reservations");
+            System.out.println("2: Manually Allocate Cars");
             System.out.println("3: Exit\n");
             response = 0;
 
@@ -87,7 +89,7 @@ public class MainApp {
                     }
                 } else if (response == 2) {
                     try {
-                        doAllocateCarsToCurrentDayReservations();
+                        doAllocateCarReservations();
                     } catch (NoAllocatableCarException ex) {
                         System.out.println("There are no allocatable cars for today");
                     } catch (RentalReservationNotFoundException ex) {
@@ -165,10 +167,18 @@ public class MainApp {
         }
     }
 
-    private void doAllocateCarsToCurrentDayReservations() throws RentalReservationNotFoundException, NoAllocatableCarException {
-        System.out.println("*** CarMS Reservation Client :: Allocating Cars to Current Day Reservation***\n");
-        Date date = new Date();
-        ejbTimerSessionBeanRemote.allocateCarsToCurrentDayReservations(date);
-        System.out.println("*** CarMS Reservation Client :: Completed Allocation of Cars to Current Day Reservation***\n");
+    private void doAllocateCarReservations() throws RentalReservationNotFoundException, NoAllocatableCarException {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("*** CarMS Reservation Client :: Allocating Cars to Reservation of a certain date***\n");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        System.out.print("Enter Date(DD/MM/YYYY)> ");
+        String inputDate = scanner.nextLine().trim();
+        try {
+            Date date = sdf.parse(inputDate);
+            ejbTimerSessionBeanRemote.allocateCarsToCurrentDayReservations(date);
+            System.out.println("*** CarMS Reservation Client :: Completed Allocation of Cars for reservations on " + inputDate + " ***\n");
+        } catch (ParseException ex) {
+            System.out.println("Invalid date input!\n");
+        }
     }
 }

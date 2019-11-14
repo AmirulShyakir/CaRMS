@@ -155,4 +155,11 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
             carToRemove.setIsDisabled(true);
         }
     }
+    
+    @Override
+    public List<Car> retrieveCarsByOutletId(Long outletId) {
+        Query query = em.createQuery("SELECT c FROM Car c WHERE c.outlet.outletId = :inOutletId");
+        query.setParameter("inOutletId", outletId);
+        return query.getResultList();
+    }
 }

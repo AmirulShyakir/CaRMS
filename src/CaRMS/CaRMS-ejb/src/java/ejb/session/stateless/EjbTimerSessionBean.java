@@ -9,7 +9,6 @@ import entity.Car;
 import entity.Model;
 import entity.Outlet;
 import entity.RentalReservation;
-import entity.TransitDriverDispatchRecord;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -42,6 +41,10 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
 
     @EJB
     private TransitDriverDispatchRecordSessionBeanLocal transitDriverDispatchRecordSessionBeanLocal;
+    @EJB
+    private RentalReservationSessionBeanLocal rentalReservationSessionBeanLocal;
+    @EJB
+    private CarSessionBeanLocal carSessionBeanLocal;
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
@@ -52,24 +55,28 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
     }
 
     public void allocateCarsToCurrentDayReservations(Date date) {
-        Date today = date; // take in date from the cli
-        today.setHours(2);
-        today.setMinutes(0);
-        today.setSeconds(0);
-        GregorianCalendar calendar = new GregorianCalendar(today.getYear() + 1900, today.getMonth(), today.getDate(), today.getHours(), today.getMinutes(), today.getSeconds());
+        Date start = date; // take in date from the cli
+        start.setHours(2);
+        start.setMinutes(0);
+        start.setSeconds(0);
+        GregorianCalendar calendar = new GregorianCalendar(start.getYear() + 1900, start.getMonth(), start.getDate(), start.getHours(), start.getMinutes(), start.getSeconds());
         calendar.add(Calendar.DATE, 1);
-        Date nextDay = calendar.getTime();
-        Query query = em.createQuery("SELECT r FROM RentalReservation r WHERE r.startDate = :inStartDate");
-        query.setParameter("inStartDate", today);
+        Date end = calendar.getTime();
+        Query query = em.createQuery("SELECT r FROM RentalReservation r WHERE r.startDate >= :inStartDate AND r.startDate <= :inEndDate");
+        query.setParameter("inStartDate", start);
+        query.setParameter("inEndDate", end);
         List<RentalReservation> rentalReservationsToBeAllocated = query.getResultList();
+        System.out.println("number of rental reservations: " + rentalReservationsToBeAllocated.size());
         for (RentalReservation rentalReservation : rentalReservationsToBeAllocated) {
             boolean isAllocated = false;
-            Outlet pickupOutlet = rentalReservation.getPickupOutlet();
-            List<Car> cars = pickupOutlet.getCars();
+            Long pickupOutletId = rentalReservation.getPickupOutlet().getOutletId();
+            List<Car> cars = carSessionBeanLocal.retrieveAllCars();
+            System.out.println("number of cars : " + cars.size());
             if (rentalReservation.getModel() != null) {
                 for (Car car : cars) {
                     if (car.getModel().equals(rentalReservation.getModel())) {
                         rentalReservation.setCar(car);
+                        System.out.println("car is " + car);
                         isAllocated = true;
                         break;
                     }
@@ -82,6 +89,7 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
                 for (Car car : carsOfSameModel) {
                     if ((car.getCarStatus() == CarStatusEnum.AVAILABLE) && car.getRentalReservation() == null) {
                         rentalReservation.setCar(car);
+                        isAllocated = true;
                         break;
                     }
                 }
@@ -93,6 +101,7 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
                     if ((car.getCarStatus() == CarStatusEnum.ON_RENT) && car.getRentalReservation().getReturnOutlet().equals(rentalReservation.getPickupOutlet())) {
                         if (car.getRentalReservation().getEndDate().before(rentalReservation.getStartDate())) {
                             rentalReservation.setCar(car);
+                            isAllocated = true;
                             break;
                         }
                     }
@@ -104,11 +113,12 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
                                 car.getRentalReservation().getEndDate().getYear() + 1900,
                                 car.getRentalReservation().getEndDate().getMonth(),
                                 car.getRentalReservation().getEndDate().getDate(),
-                                today.getHours(), today.getMinutes(), today.getSeconds());
+                                start.getHours(), start.getMinutes(), start.getSeconds());
                         calendar.add(Calendar.HOUR, 2);
                         Date transitEndTime = calendar.getTime();
                         if (rentalReservation.getStartDate().after(transitEndTime)) {
                             rentalReservation.setCar(car);
+                            isAllocated = true;
                             break;
                         }
                     }
@@ -148,6 +158,7 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
                     if ((car.getCarStatus() == CarStatusEnum.ON_RENT) && car.getRentalReservation().getReturnOutlet().equals(rentalReservation.getPickupOutlet())) {
                         if (car.getRentalReservation().getEndDate().before(rentalReservation.getStartDate())) {
                             rentalReservation.setCar(car);
+                            isAllocated = true;
                             break;
                         }
                     }
@@ -166,9 +177,13 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
                         Date transitEndTime = transitCalendar.getTime();
                         if (rentalReservation.getStartDate().after(transitEndTime)) {
                             rentalReservation.setCar(car);
+                            isAllocated = true;
                             break;
                         }
                     }
+                }
+                if (isAllocated) {
+                    break;
                 }
             }
         }
@@ -176,27 +191,38 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
     }
 
     public void generateTransitDriverDispatchRecords(List<RentalReservation> rentalReservationsToBeAllocated) {
-        List<TransitDriverDispatchRecord> transitDriverDispatchRecords = new ArrayList<>();
-        for (RentalReservation rentalReservation : rentalReservationsToBeAllocated) {
-            if (!(rentalReservation.getPickupOutlet().equals(rentalReservation.getCar().getOutlet()))) {
-                GregorianCalendar transitCalendar = new GregorianCalendar(
-                        rentalReservation.getEndDate().getYear() + 1900,
-                        rentalReservation.getEndDate().getMonth(),
-                        rentalReservation.getEndDate().getDate(),
-                        rentalReservation.getEndDate().getHours(),
-                        rentalReservation.getEndDate().getMinutes(),
-                        rentalReservation.getEndDate().getSeconds());
-                transitCalendar.add(Calendar.HOUR, -2);
+        try {
+            for (RentalReservation rentalReservation : rentalReservationsToBeAllocated) {
+                Date transitStartDate = new Date();
+                Long rentalReservationId = rentalReservation.getRentalReservationId();
+                RentalReservation newRentalReservation = rentalReservationSessionBeanLocal.retrieveRentalReservationByRentalReservationId(rentalReservationId);
+                if (rentalReservation.getCar().getOutlet() != null) { // car is currently in outlet
+                    if (!(rentalReservation.getPickupOutlet().equals(rentalReservation.getCar().getOutlet()))) {
+                        GregorianCalendar transitCalendar = new GregorianCalendar(
+                                rentalReservation.getEndDate().getYear() + 1900,
+                                rentalReservation.getEndDate().getMonth(),
+                                rentalReservation.getEndDate().getDate(),
+                                rentalReservation.getEndDate().getHours(),
+                                rentalReservation.getEndDate().getMinutes(),
+                                rentalReservation.getEndDate().getSeconds());
+                        transitCalendar.add(Calendar.HOUR, -2);
+                        transitStartDate = transitCalendar.getTime();
+                    }
+                } else { // car is currently going to be returned to another outlet
+                    transitStartDate = rentalReservation.getCar().getRentalReservation().getEndDate();
+                }
                 try {
                     transitDriverDispatchRecordSessionBeanLocal.
                             createNewTranspatchDriverRecord(rentalReservation.getPickupOutlet().getOutletId(),
-                                    rentalReservation.getRentalReservationId(), transitCalendar.getTime());
+                                    rentalReservation.getRentalReservationId(), transitStartDate);
                 } catch (OutletNotFoundException ex) {
                     System.out.println(ex.getMessage());
                 } catch (RentalReservationNotFoundException ex) {
                     System.out.println(ex.getMessage());
                 }
             }
+        } catch (RentalReservationNotFoundException ex) {
+            System.out.println(ex.getMessage());
         }
     }
 }
