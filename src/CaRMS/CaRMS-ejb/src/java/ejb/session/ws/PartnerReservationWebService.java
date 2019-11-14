@@ -46,15 +46,15 @@ import util.exception.UnknownPersistenceException;
 public class PartnerReservationWebService {
     
     @EJB
-    private PartnerSessionBeanLocal partnerSessionBean;
+    private PartnerSessionBeanLocal partnerSessionBeanLocal;
     @EJB
     private OutletSessionBeanLocal outletSessionBeanLocal;
     @EJB
-    private CarCategorySessionBeanLocal carCategorySessionBeanRemote;
+    private CarCategorySessionBeanLocal carCategorySessionBeanLocal;
     @EJB
-    private ModelSessionBeanLocal modelSessionBeanRemote;
+    private ModelSessionBeanLocal modelSessionBeanLocal;
     @EJB
-    private RentalReservationSessionBeanLocal rentalReservationSessionBeanRemote;
+    private RentalReservationSessionBeanLocal rentalReservationSessionBeanLocal;
     @EJB
     private CustomerSessionBeanLocal customerSessionBeanLocal;
     
@@ -65,17 +65,17 @@ public class PartnerReservationWebService {
 
     @WebMethod
     public Long createNewPartner(@WebParam Partner newPartner) throws PartnerNameExistException, UnknownPersistenceException, InputDataValidationException {
-        return partnerSessionBean.createNewPartner(newPartner);
+        return partnerSessionBeanLocal.createNewPartner(newPartner);
     }
     
     @WebMethod
     public Long partnerLogin(@WebParam String partnerName, @WebParam String password) throws InvalidLoginCredentialException {
-        return partnerSessionBean.partnerLogin(partnerName, password);
+        return partnerSessionBeanLocal.partnerLogin(partnerName, password);
     }
     
     @WebMethod
     public Partner retrievePartnerByPartnerId(@WebParam Long partnerId) throws PartnerNotFoundException {
-        return partnerSessionBean.retrievePartnerByPartnerId(partnerId);
+        return partnerSessionBeanLocal.retrievePartnerByPartnerId(partnerId);
     }
     
     @WebMethod
@@ -85,27 +85,27 @@ public class PartnerReservationWebService {
     
     @WebMethod
     public CarCategory retrieveCarCategoryByCarCategoryId(@WebParam Long carCategoryId) throws CarCategoryNotFoundException {
-        return carCategorySessionBeanRemote.retrieveCarCategoryByCarCategoryId(carCategoryId);
+        return carCategorySessionBeanLocal.retrieveCarCategoryByCarCategoryId(carCategoryId);
     }
     
     @WebMethod
     public Model retrieveModelByModelId(Long modelId) throws ModelNotFoundException {
-        return modelSessionBeanRemote.retrieveModelByModelId(modelId);
+        return modelSessionBeanLocal.retrieveModelByModelId(modelId);
     }
     
     @WebMethod
     public BigDecimal calculateTotalRentalFee(@WebParam Long carCategoryId, @WebParam Date pickUpDateTime, @WebParam Date returnDateTime) throws CarCategoryNotFoundException, NoAvailableRentalRateException {
-        return carCategorySessionBeanRemote.calculateTotalRentalFee(carCategoryId, pickUpDateTime, returnDateTime);
+        return carCategorySessionBeanLocal.calculateTotalRentalFee(carCategoryId, pickUpDateTime, returnDateTime);
     }
     
     @WebMethod
     public RentalReservation retrieveRentalReservationByRentalReservationId(@WebParam Long rentalReservationId) throws RentalReservationNotFoundException {
-        return rentalReservationSessionBeanRemote.retrieveRentalReservationByRentalReservationId(rentalReservationId);
+        return rentalReservationSessionBeanLocal.retrieveRentalReservationByRentalReservationId(rentalReservationId);
     }
     
     @WebMethod
     public List<RentalReservation> retrieveAllRentalReservations() {
-        return rentalReservationSessionBeanRemote.retrieveAllRentalReservations();
+        return rentalReservationSessionBeanLocal.retrieveAllRentalReservations();
     }
     
     @WebMethod
@@ -113,22 +113,22 @@ public class PartnerReservationWebService {
             Long pickupOutletId, Long returnOutletId, RentalReservation newRentalReservation)
             throws OutletNotFoundException, CustomerNotFoundException, InputDataValidationException, UnknownPersistenceException,
             CarCategoryNotFoundException, ModelNotFoundException {
-        return rentalReservationSessionBeanRemote.createNewRentalReservation(carCategoryId, modelId, customerId, pickupOutletId, returnOutletId, newRentalReservation);
+        return rentalReservationSessionBeanLocal.createNewRentalReservation(carCategoryId, modelId, customerId, pickupOutletId, returnOutletId, newRentalReservation);
     }
     
     @WebMethod
     public BigDecimal cancelReservation(@WebParam Long rentalReservationId) throws RentalReservationNotFoundException {
-        return rentalReservationSessionBeanRemote.cancelReservation(rentalReservationId);
+        return rentalReservationSessionBeanLocal.cancelReservation(rentalReservationId);
     }
     
     @WebMethod
     public Boolean searchCarByCategory(@WebParam Date pickUpDateTime, @WebParam Date returnDateTime, @WebParam Long pickupOutletId, @WebParam Long returnOutletId, @WebParam Long carCategoryId) throws NoAvailableRentalRateException, CarCategoryNotFoundException, OutletNotFoundException {
-        return rentalReservationSessionBeanRemote.searchCarByCategory(pickUpDateTime, returnDateTime, pickupOutletId, returnOutletId, carCategoryId);
+        return rentalReservationSessionBeanLocal.searchCarByCategory(pickUpDateTime, returnDateTime, pickupOutletId, returnOutletId, carCategoryId);
     }
     
     @WebMethod
     public Boolean searchCarByModel(@WebParam Date pickUpDateTime, @WebParam Date returnDateTime, @WebParam Long pickupOutletId, @WebParam Long returnOutletId, @WebParam Long modelId) throws NoAvailableRentalRateException, CarCategoryNotFoundException, OutletNotFoundException, ModelNotFoundException {
-        return rentalReservationSessionBeanRemote.searchCarByModel(pickUpDateTime, returnDateTime, pickupOutletId, returnOutletId, modelId);
+        return rentalReservationSessionBeanLocal.searchCarByModel(pickUpDateTime, returnDateTime, pickupOutletId, returnOutletId, modelId);
     }
     
 }

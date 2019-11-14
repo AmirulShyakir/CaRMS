@@ -77,7 +77,7 @@ public class TransitDriverDispatchRecordSessionBean implements TransitDriverDisp
         calendar.add(Calendar.DATE, 1);
         Date nextDay = calendar.getTime();
         Query query = em.createQuery("SELECT t FROM TransitDriverDispatchRecord t WHERE t.destinationOutlet.outletId = :inOutletId AND t.transitDate >= :inToday AND t.transitDate < :inNextDay");
-        query.setParameter("inOutletId", today);
+        query.setParameter("inOutletId", outletId);
         query.setParameter("inToday", today);
         query.setParameter("inNextDay", nextDay);
         return query.getResultList();

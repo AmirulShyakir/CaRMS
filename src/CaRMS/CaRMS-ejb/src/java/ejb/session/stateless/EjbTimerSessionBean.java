@@ -7,7 +7,6 @@ package ejb.session.stateless;
 
 import entity.Car;
 import entity.Model;
-import entity.Outlet;
 import entity.RentalReservation;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -69,11 +68,11 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
         System.out.println("number of rental reservations: " + rentalReservationsToBeAllocated.size());
         for (RentalReservation rentalReservation : rentalReservationsToBeAllocated) {
             boolean isAllocated = false;
-            Long pickupOutletId = rentalReservation.getPickupOutlet().getOutletId();
             List<Car> cars = carSessionBeanLocal.retrieveAllCars();
             System.out.println("number of cars : " + cars.size());
             if (rentalReservation.getModel() != null) {
                 for (Car car : cars) {
+                    System.out.println(1 + " " + car);
                     if (car.getModel().equals(rentalReservation.getModel())) {
                         rentalReservation.setCar(car);
                         System.out.println("car is " + car);
@@ -162,6 +161,9 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
                             break;
                         }
                     }
+                }
+                if (isAllocated) {
+                    break;
                 }
                 // then check those currently on rental returning to a different outlet
                 for (Car car : carsOfSameCategory) {
