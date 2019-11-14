@@ -69,8 +69,8 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
                     if (model.getIsEnabled()) {
                         newCar.setModel(model);
                         newCar.setOutlet(outlet);
-                        outlet.getCars().add(newCar);
-                        model.getCars().add(newCar);
+                        outlet.addCar(newCar);
+                        model.addCar(newCar);
                         em.persist(newCar);
                         em.flush();
                         return newCar.getCarId();

@@ -203,6 +203,7 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
         query.setParameter("inPickupDate", pickUpDateTime);
         query.setParameter("inReturnDate", returnDateTime);
         rentalReservations.addAll(query.getResultList());
+        System.out.println("1 - query.getResultList() : " + query.getResultList());
 
         query = em.createQuery("SELECT r FROM RentalReservation r WHERE r.carCategory.carCategoryId = :inCategoryId"
                 + " AND r.startDate >= :inPickupDate AND r.endDate > :inReturnDate"
@@ -211,6 +212,7 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
         query.setParameter("inPickupDate", pickUpDateTime);
         query.setParameter("inReturnDate", returnDateTime);
         rentalReservations.addAll(query.getResultList());
+        System.out.println("2 - query.getResultList() : " + query.getResultList());
 
         query = em.createQuery("SELECT r FROM RentalReservation r WHERE r.carCategory.carCategoryId = :inCategoryId"
                 + " AND r.startDate <= :inPickupDate AND r.endDate >= :inReturnDate"
@@ -219,6 +221,7 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
         query.setParameter("inPickupDate", pickUpDateTime);
         query.setParameter("inReturnDate", returnDateTime);
         rentalReservations.addAll(query.getResultList());
+        System.out.println("3 - query.getResultList() : " + query.getResultList());
 
         GregorianCalendar calendar = new GregorianCalendar(pickUpDateTime.getYear() + 1900,
                 pickUpDateTime.getMonth(), pickUpDateTime.getDate(), pickUpDateTime.getHours(),
@@ -235,12 +238,16 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
         query.setParameter("inTransitDate", transitDate);
         query.setParameter("inPickupOutletId", pickupOutletId);
         rentalReservations.addAll(query.getResultList());
+        System.out.println("4 - query.getResultList() : " + query.getResultList());
 
         CarCategory carCategory = carCategorySessionBeanLocal.retrieveCarCategoryByCarCategoryId(carCategoryId);
         List<Car> cars = new ArrayList<>();
         for (Model model : carCategory.getModels()) {
             cars.addAll(model.getCars());
         }
+        System.out.println("cars : " + cars.size());
+        System.out.println("rentalReservations.size() : " + rentalReservations.size());
+
         if (cars.size() > rentalReservations.size()) {
             return true;
         } else {

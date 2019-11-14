@@ -81,6 +81,7 @@ public class DataInitializationSessionBean {
     @PostConstruct
     public void postConstruct() {
         if (em.find(Car.class, 1l) == null && em.find(RentalRate.class, 1l) == null && em.find(Outlet.class, 1l) == null && em.find(Employee.class, 1l) == null && em.find(Partner.class, 1l) == null && em.find(CarCategory.class, 1l) == null) {
+            System.out.println("###adding data");
             initialiseData();
         }
     }
