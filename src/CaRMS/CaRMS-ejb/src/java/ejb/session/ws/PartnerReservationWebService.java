@@ -5,12 +5,14 @@
  */
 package ejb.session.ws;
 
-import ejb.session.stateless.CarCategorySessionBeanRemote;
-import ejb.session.stateless.ModelSessionBeanRemote;
+import ejb.session.stateless.CarCategorySessionBeanLocal;
+import ejb.session.stateless.CustomerSessionBeanLocal;
+import ejb.session.stateless.ModelSessionBeanLocal;
 import ejb.session.stateless.OutletSessionBeanLocal;
 import ejb.session.stateless.PartnerSessionBeanLocal;
-import ejb.session.stateless.RentalReservationSessionBeanRemote;
+import ejb.session.stateless.RentalReservationSessionBeanLocal;
 import entity.CarCategory;
+import entity.Customer;
 import entity.Model;
 import entity.Outlet;
 import entity.Partner;
@@ -23,6 +25,7 @@ import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.ejb.Stateless;
 import util.exception.CarCategoryNotFoundException;
+import util.exception.CustomerNotFoundException;
 import util.exception.InputDataValidationException;
 import util.exception.InvalidLoginCredentialException;
 import util.exception.ModelNotFoundException;
@@ -46,11 +49,18 @@ public class PartnerReservationWebService {
     @EJB
     private OutletSessionBeanLocal outletSessionBeanLocal;
     @EJB
-    private CarCategorySessionBeanRemote carCategorySessionBeanRemote;
+    private CarCategorySessionBeanLocal carCategorySessionBeanRemote;
     @EJB
-    private ModelSessionBeanRemote modelSessionBeanRemote;
+    private ModelSessionBeanLocal modelSessionBeanRemote;
     @EJB
-    private RentalReservationSessionBeanRemote rentalReservationSessionBeanRemote;
+    private RentalReservationSessionBeanLocal rentalReservationSessionBeanRemote;
+    @EJB
+    private CustomerSessionBeanLocal customerSessionBeanLocal;
+    
+    @WebMethod
+    public Long createNewCustomer(Long partnerId, Customer newCustomer) throws PartnerNotFoundException, UnknownPersistenceException, InputDataValidationException {
+        return customerSessionBeanLocal.createNewCustomer(partnerId, newCustomer);
+    }
 
     @WebMethod
     public Long createNewPartner(@WebParam Partner newPartner) throws PartnerNameExistException, UnknownPersistenceException, InputDataValidationException {
@@ -58,7 +68,7 @@ public class PartnerReservationWebService {
     }
     
     @WebMethod
-    public Partner partnerLogin(@WebParam String partnerName, @WebParam String password) throws InvalidLoginCredentialException {
+    public Long partnerLogin(@WebParam String partnerName, @WebParam String password) throws InvalidLoginCredentialException {
         return partnerSessionBean.partnerLogin(partnerName, password);
     }
     
@@ -93,8 +103,11 @@ public class PartnerReservationWebService {
     }
     
     @WebMethod
-    public Long createNewRentalReservation(@WebParam RentalReservation newRentalReservation) throws InputDataValidationException, UnknownPersistenceException {
-        return rentalReservationSessionBeanRemote.createNewRentalReservation(newRentalReservation);
+    public Long createNewRentalReservation(Long carCategoryId, Long modelId, Long customerId,
+            Long pickupOutletId, Long returnOutletId, RentalReservation newRentalReservation)
+            throws OutletNotFoundException, CustomerNotFoundException, InputDataValidationException, UnknownPersistenceException,
+            CarCategoryNotFoundException, ModelNotFoundException {
+        return rentalReservationSessionBeanRemote.createNewRentalReservation(carCategoryId, modelId, customerId, pickupOutletId, returnOutletId, newRentalReservation);
     }
     
     @WebMethod

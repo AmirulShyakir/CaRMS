@@ -22,7 +22,7 @@ public interface PartnerSessionBeanLocal {
 
     public Long createNewPartner(Partner newPartner) throws PartnerNameExistException, UnknownPersistenceException, InputDataValidationException;
 
-    public Partner partnerLogin(String partnerName, String password) throws InvalidLoginCredentialException;
+    public Long partnerLogin(String partnerName, String password) throws InvalidLoginCredentialException;
 
     public Partner retrievePartnerByPartnerId(Long partnerId) throws PartnerNotFoundException;
     

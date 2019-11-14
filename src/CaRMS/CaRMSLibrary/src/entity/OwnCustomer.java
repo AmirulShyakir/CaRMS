@@ -36,10 +36,6 @@ public class OwnCustomer extends Customer implements Serializable {
     @Column(nullable = true, length = 32, unique = true)
     @NotNull
     @Size(max = 32)
-    private String email;
-    @Column(nullable = true, length = 32, unique = true)
-    @NotNull
-    @Size(max = 32)
     private String phoneNumber;
     @Column(nullable = true, length = 32, unique = true)
     @NotNull
@@ -75,14 +71,6 @@ public class OwnCustomer extends Customer implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getPhoneNumber() {

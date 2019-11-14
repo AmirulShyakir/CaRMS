@@ -11,14 +11,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
 import ws.client.CarCategory;
-import ws.client.CarCategoryNotFoundException;
 import ws.client.CarCategoryNotFoundException_Exception;
+import ws.client.Customer;
+import ws.client.CustomerNotFoundException_Exception;
 import ws.client.InputDataValidationException_Exception;
 import ws.client.InvalidLoginCredentialException;
 import ws.client.InvalidLoginCredentialException_Exception;
 import ws.client.Model;
 import ws.client.ModelNotFoundException_Exception;
-import ws.client.NoAvailableRentalRateException;
 import ws.client.NoAvailableRentalRateException_Exception;
 import ws.client.Outlet;
 import ws.client.OutletNotFoundException_Exception;
@@ -35,9 +35,9 @@ import ws.client.UnknownPersistenceException_Exception;
  */
 class MainApp {
 
-    private Partner currentPartner;
+    private Long currentPartnerId = new Long(0);
 
-    void runApp() throws InvalidLoginCredentialException_Exception {
+    void runApp() throws InvalidLoginCredentialException_Exception, OutletNotFoundException_Exception, CarCategoryNotFoundException_Exception, NoAvailableRentalRateException_Exception, ModelNotFoundException_Exception {
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
 
@@ -54,9 +54,13 @@ class MainApp {
                 response = scanner.nextInt();
 
                 if (response == 1) {
+                    try {
                     doPartnerLogin();
-                    System.out.println("Login successful\n");
-                    menuMain();
+                        System.out.println("Login successful\n");
+                        menuMain();
+                    } catch (InvalidLoginCredentialException_Exception ex) {
+                        System.out.println("Invalid login credential: " + ex.getMessage() + "\n");
+                    }
                 } else if (response == 2) {
                     doSearchCar();
                 } else if (response == 3) {
@@ -83,7 +87,7 @@ class MainApp {
         password = scanner.nextLine().trim();
 
         if (partnerName.length() > 0 && password.length() > 0) {
-            currentPartner = partnerLogin(partnerName, password);
+            currentPartnerId = partnerLogin(partnerName, password);
         } else {
             InvalidLoginCredentialException ex = new InvalidLoginCredentialException();
             throw new InvalidLoginCredentialException_Exception("Missing login credential!", ex);
@@ -137,7 +141,7 @@ class MainApp {
             } else {
                 BigDecimal totalRentalFee = calculateTotalRentalFee(carCategoryId, pickUpDateTime, returnDateTime);
                 System.out.println("There are cars available! Total rental fee is SGD" + totalRentalFee + ". ");
-                if (currentPartner != null) {
+                if (currentPartnerId > 0) {
                     System.out.print("Reserve a car? (Enter 'Y' to reserve a car)> ");
                     String input = scanner.nextLine().trim();
                     if (input.equals("Y")) {
@@ -162,7 +166,7 @@ class MainApp {
         scanner.nextLine();
     }
 
-    private void menuMain() throws OutletNotFoundException_Exception, OutletNotFoundException_Exception, CarCategoryNotFoundException_Exception, CarCategoryNotFoundException_Exception, NoAvailableRentalRateException_Exception, ModelNotFoundException_Exception, ModelNotFoundException_Exception {
+    private void menuMain() throws ModelNotFoundException_Exception, OutletNotFoundException_Exception, CarCategoryNotFoundException_Exception, CarCategoryNotFoundException_Exception, CarCategoryNotFoundException_Exception, CarCategoryNotFoundException_Exception, NoAvailableRentalRateException_Exception, NoAvailableRentalRateException_Exception {
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
 
@@ -170,14 +174,13 @@ class MainApp {
             System.out.println("*** Holiday Reservation System ***\n");
             System.out.println("You are login as " + "partner name" + " rights\n");
             System.out.println("1: Search Car");
-            System.out.println("2: Reserve Car");
-            System.out.println("3: Cancel Reservation");
+            System.out.println("2: Cancel Reservation");
             System.out.println("3: View Reservation Details");
             System.out.println("4: View All Partner Reservations");
             System.out.println("5: Logout\n");
             response = 0;
 
-            while (response < 1 || response > 5) {
+            while (response < 1 || response > 4) {
                 System.out.print("> ");
 
                 response = scanner.nextInt();
@@ -185,9 +188,9 @@ class MainApp {
                 if (response == 1) {
                     doSearchCar();
                 } else if (response == 2) {
-                    doReserveCar();
-                } else if (response == 3) {
                     doCancelReservation();
+                } else if (response == 3) {
+                    doViewReservationDetails();
                 } else if (response == 4) {
                     doViewAllReservations();
                 } else if (response == 5) {
@@ -196,7 +199,7 @@ class MainApp {
                     System.out.println("Invalid option, please try again!\n");
                 }
             }
-            if (response == 5) {
+            if (response == 4) {
                 break;
             }
         }
@@ -207,44 +210,52 @@ class MainApp {
         System.out.println("*** Holiday Reservation System :: Reserve Car ***\n");
 
         RentalReservation rentalReservation = new RentalReservation();
+        Long customerId = new Long(0);
+        String firstName;
+        String lastName;
+        String email;
 
         try {
-            if (response == 1) {
-                rentalReservation.setCarCategory(retrieveCarCategoryByCarCategoryId(carCategoryId));
-            } else if (response == 2) {
-                rentalReservation.setModel(modelSessionBeanRemote.retrieveModelByModelId(modelId));
-            }
-
-            rentalReservation.setCustomer(currentCustomer);
             rentalReservation.setStartDate(pickUpDateTime);
             rentalReservation.setEndDate(returnDateTime);
-            rentalReservation.setPickupOutlet(outletSessionBeanRemote.retrieveOutletByOutletId(pickupOutletId));
-            rentalReservation.setReturnOutlet(outletSessionBeanRemote.retrieveOutletByOutletId(returnOutletId));
             rentalReservation.setPrice(totalRentalFee);
 
-            System.out.println("Would you like to pay now? (Enter 'Y' to enter payment details)> ");
+            System.out.print("Would you like to pay now? (Enter 'Y' to enter payment details)> ");
             String input = scanner.nextLine().trim();
             if (input.equals("Y")) {
+                System.out.print("Enter Credit Card Number> ");
+                String creditCardNumber = scanner.nextLine().trim();
+
+                Customer newCustomer = new Customer();
+                customerId = createNewCustomer(currentPartnerId, newCustomer);
+                newCustomer.setCreditCardNumber(creditCardNumber);
+
+                System.out.print("Enter Customer First Name> ");
+                firstName = scanner.nextLine().trim();
+                System.out.print("Enter Customer Last Name> ");
+                lastName = scanner.nextLine().trim();
+                System.out.print("Enter Email> ");
+                email = scanner.nextLine().trim();
+
                 rentalReservation.setPaid(Boolean.TRUE);
+            } else {
+                rentalReservation.setPaid(Boolean.FALSE);
             }
 
-            System.out.print("Enter Credit Card Number> ");
-            String creditCardNumber = scanner.nextLine().trim();
-            currentCustomer.setCreditCardNumber(creditCardNumber);
-            Long rentalReservationId = rentalReservationSessionBeanRemote.createNewRentalReservation(rentalReservation);
+            Long rentalReservationId = createNewRentalReservation(carCategoryId, modelId, customerId, pickupOutletId, returnOutletId, rentalReservation);
             System.out.println("Rental reservation created with ID: " + rentalReservationId);
-            scanner.nextLine();
-        } catch (CarCategoryNotFoundException ex) {
+
+        } catch (CarCategoryNotFoundException_Exception ex) {
             System.out.println("Car Category not found for ID: " + carCategoryId + "\n");
-        } catch (ModelNotFoundException ex) {
+        } catch (ModelNotFoundException_Exception ex) {
             System.out.println("Model not found!\n");
-        } catch (OutletNotFoundException ex) {
+        } catch (OutletNotFoundException_Exception ex) {
             System.out.println("Outlet not found!\n");
-        } catch (InputDataValidationException ex) {
-            System.err.println(ex.getMessage());
-        } catch (UnknownPersistenceException ex) {
-            System.err.println(ex.getMessage());
-        }
+        } catch (PartnerNotFoundException_Exception ex) {
+            System.out.println("Partner not found!\n");
+        } catch (InputDataValidationException_Exception | UnknownPersistenceException_Exception | CustomerNotFoundException_Exception ex) {
+            System.out.println(ex.getMessage());
+        } 
     }
 
     private void doCancelReservation() {
@@ -256,18 +267,44 @@ class MainApp {
         Long rentalReservationId = scanner.nextLong();
 
         try {
-            BigDecimal penalty = rentalReservationSessionBeanRemote.cancelReservation(rentalReservationId);
-            rentalReservation = rentalReservationSessionBeanRemote.retrieveRentalReservationByRentalReservationId(rentalReservationId);
+            BigDecimal penalty = cancelReservation(rentalReservationId);
+            rentalReservation = retrieveRentalReservationByRentalReservationId(rentalReservationId);
 
             System.out.println("Reservation successfully cancelled!");
 
-            if (rentalReservation.getPaid()) {
+            if (rentalReservation.isPaid()) {
                 System.out.println("You have been refunded SGD" + rentalReservation.getPrice().subtract(penalty) + " after deducting cancellation penalty of SGD" + penalty + ".");
-            } else if (!rentalReservation.getPaid()) {
+            } else if (!rentalReservation.isPaid()) {
                 System.out.println("Your card has been charged SGD" + penalty + " as a cancellation penalty.");
             }
 
-        } catch (RentalReservationNotFoundException ex) {
+        } catch (RentalReservationNotFoundException_Exception ex) {
+            System.out.println("Rental Reservation not found for ID " + rentalReservationId);
+        }
+        System.out.print("Press any key to continue...> ");
+        scanner.nextLine();
+    }
+
+    private void doViewReservationDetails() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("*** CaRMS Reservation Client :: View Reservation Details ***\n");
+        System.out.print("Enter Reservation ID> ");
+        Long rentalReservationId = scanner.nextLong();
+        scanner.nextLine();
+
+        try {
+            RentalReservation rentalReservation = retrieveRentalReservationByRentalReservationId(rentalReservationId);
+            System.out.printf("%4s%20s%20s%20s%12s%12s\n",
+                    "ID", "Start Date",
+                    "End Date", "Rental Fee",
+                    "Paid", "Cancelled");
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            String paid = "false";
+            System.out.printf("%4s%20s%20s%20s%12s%12s\n",
+                    rentalReservation.getRentalReservationId(), sdf.format(rentalReservation.getStartDate()),
+                    sdf.format(rentalReservation.getEndDate()), rentalReservation.getPrice().toString(),
+                    rentalReservation.isPaid().toString(), rentalReservation.isIsCancelled().toString());
+        } catch (RentalReservationNotFoundException_Exception ex) {
             System.out.println("Rental Reservation not found for ID " + rentalReservationId);
         }
         System.out.print("Press any key to continue...> ");
@@ -281,26 +318,32 @@ class MainApp {
         Long rentalReservationId = scanner.nextLong();
 
         try {
-            RentalReservation rentalReservation = rentalReservationSessionBeanRemote.retrieveRentalReservationByRentalReservationId(rentalReservationId);
+            RentalReservation rentalReservation = retrieveRentalReservationByRentalReservationId(rentalReservationId);
             System.out.printf("%4s%20s%20s%9s%3s%3s%129s%64s\n",
                     "Rental Reservation ID", "Start Date",
                     "End Date", "Rental Fee",
                     "Paid? (T/F)", "Cancelled? (T/F)",
                     "Customer Name", "Partner Name");
-            System.out.printf("%4s%20s%20s%9s%3s%3s%129s%64s\n",
+            System.out.printf("%4s%20s%20s%9s%3s%3s\n",
                     rentalReservation.getRentalReservationId(), rentalReservation.getStartDate().toString(),
                     rentalReservation.getEndDate().toString(), rentalReservation.getPrice().toString(),
-                    rentalReservation.getPaid().toString(), rentalReservation.getIsCancelled().toString(),
-                    rentalReservation.getCustomer().getFullName(), rentalReservation.getPartner().getPartnerName());
+                    rentalReservation.isPaid().toString(), rentalReservation.isIsCancelled().toString());
+                    //rentalReservation.getCustomer().getFullName(), rentalReservation.getPartner().getPartnerName());
 
-        } catch (RentalReservationNotFoundException ex) {
+        } catch (RentalReservationNotFoundException_Exception ex) {
             System.out.println("Rental Reservation not found for ID " + rentalReservationId);
         }
         System.out.print("Press any key to continue...> ");
         scanner.nextLine();
     }
 
-    private static Partner partnerLogin(java.lang.String arg0, java.lang.String arg1) throws InvalidLoginCredentialException_Exception {
+    private static Long createNewCustomer(java.lang.Long arg0, ws.client.Customer arg1) throws InputDataValidationException_Exception, UnknownPersistenceException_Exception, PartnerNotFoundException_Exception {
+        ws.client.PartnerReservationWebService_Service service = new ws.client.PartnerReservationWebService_Service();
+        ws.client.PartnerReservationWebService port = service.getPartnerReservationWebServicePort();
+        return port.createNewCustomer(arg0, arg1);
+    }
+
+    private static Long partnerLogin(java.lang.String arg0, java.lang.String arg1) throws InvalidLoginCredentialException_Exception {
         ws.client.PartnerReservationWebService_Service service = new ws.client.PartnerReservationWebService_Service();
         ws.client.PartnerReservationWebService port = service.getPartnerReservationWebServicePort();
         return port.partnerLogin(arg0, arg1);
@@ -324,10 +367,10 @@ class MainApp {
         return port.createNewPartner(arg0);
     }
 
-    private static Long createNewRentalReservation(ws.client.RentalReservation arg0) throws InputDataValidationException_Exception, UnknownPersistenceException_Exception {
+    private static Long createNewRentalReservation(java.lang.Long arg0, java.lang.Long arg1, java.lang.Long arg2, java.lang.Long arg3, java.lang.Long arg4, ws.client.RentalReservation arg5) throws CustomerNotFoundException_Exception, InputDataValidationException_Exception, OutletNotFoundException_Exception, ModelNotFoundException_Exception, UnknownPersistenceException_Exception, CarCategoryNotFoundException_Exception {
         ws.client.PartnerReservationWebService_Service service = new ws.client.PartnerReservationWebService_Service();
         ws.client.PartnerReservationWebService port = service.getPartnerReservationWebServicePort();
-        return port.createNewRentalReservation(arg0);
+        return port.createNewRentalReservation(arg0, arg1, arg2, arg3, arg4, arg5);
     }
 
     private static CarCategory retrieveCarCategoryByCarCategoryId(java.lang.Long arg0) throws CarCategoryNotFoundException_Exception {

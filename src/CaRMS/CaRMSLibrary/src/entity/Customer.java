@@ -40,6 +40,10 @@ public class Customer implements Serializable {
     @NotNull
     @Size(max = 64)
     protected String lastName;
+    @Column(nullable = true, length = 32, unique = true)
+    @NotNull
+    @Size(max = 32)
+    protected String email;
 
     @Column(nullable = true, length = 32)
     @Size(max = 32)
@@ -85,6 +89,14 @@ public class Customer implements Serializable {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getCreditCardNumber() {

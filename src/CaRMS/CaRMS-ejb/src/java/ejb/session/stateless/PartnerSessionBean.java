@@ -83,14 +83,14 @@ public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSess
     }
 
     @Override
-    public Partner partnerLogin(String partnerName, String password) throws InvalidLoginCredentialException {
+    public Long partnerLogin(String partnerName, String password) throws InvalidLoginCredentialException {
         try {
             Query query = em.createQuery("SELECT p FROM Partner p WHERE p.partnerName = :inPartnerName");
             query.setParameter("inPartnerName", partnerName);
             Partner partner = (Partner) query.getSingleResult();
 
             if (partner.getPassword().equals(password)) {
-                return partner;
+                return partner.getPartnerId();
             } else {
                 throw new InvalidLoginCredentialException("Invalid login credential");
             }

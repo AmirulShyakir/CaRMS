@@ -5,6 +5,13 @@
  */
 package holidayreservationsystem;
 
+import ws.client.CarCategoryNotFoundException_Exception;
+import ws.client.InvalidLoginCredentialException_Exception;
+import ws.client.ModelNotFoundException_Exception;
+import ws.client.NoAvailableRentalRateException_Exception;
+import ws.client.OutletNotFoundException_Exception;
+
+
 /**
  *
  * @author sw_be
@@ -13,8 +20,13 @@ public class Main {
 
     /**
      * @param args the command line arguments
+     * @throws ws.client.InvalidLoginCredentialException_Exception
+     * @throws ws.client.OutletNotFoundException_Exception
+     * @throws ws.client.CarCategoryNotFoundException_Exception
+     * @throws ws.client.ModelNotFoundException_Exception
+     * @throws ws.client.NoAvailableRentalRateException_Exception
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InvalidLoginCredentialException_Exception, OutletNotFoundException_Exception, OutletNotFoundException_Exception, CarCategoryNotFoundException_Exception, CarCategoryNotFoundException_Exception, NoAvailableRentalRateException_Exception, ModelNotFoundException_Exception {
         // TODO code application logic here
         MainApp mainApp = new MainApp();
         mainApp.runApp();
