@@ -5,7 +5,6 @@
  */
 package ejb.session.singleton;
 
-import com.sun.media.sound.SF2Layer;
 import ejb.session.stateless.CarCategorySessionBeanLocal;
 import ejb.session.stateless.CarSessionBeanLocal;
 import ejb.session.stateless.EmployeeSessionBeanLocal;
@@ -175,7 +174,7 @@ public class DataInitializationSessionBean {
 
             Car car7 = new Car("SS00C1NS", "RED", CarStatusEnum.AVAILABLE);
             Car car8 = new Car("SS00C2NS", "GREEN", CarStatusEnum.AVAILABLE);
-            Car car9 = new Car("SS00C3NS", "BLUE", CarStatusEnum.AVAILABLE);
+            Car car9 = new Car("SS00C3NS", "BLUE", CarStatusEnum.REPAIR);
 
             Car car10 = new Car("LS00A4ME", "RED", CarStatusEnum.AVAILABLE);
             Car car11 = new Car("LS00B4B5", "GREEN", CarStatusEnum.AVAILABLE);

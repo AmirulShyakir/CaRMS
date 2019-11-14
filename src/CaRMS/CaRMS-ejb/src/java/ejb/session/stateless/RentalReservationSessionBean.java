@@ -75,8 +75,8 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
-    public Long createNewRentalReservation(Long carCategoryId, Long modelId, Long customerId, 
-            Long pickupOutletId, Long returnOutletId, RentalReservation newRentalReservation) 
+    public Long createNewRentalReservation(Long carCategoryId, Long modelId, Long customerId,
+            Long pickupOutletId, Long returnOutletId, RentalReservation newRentalReservation)
             throws OutletNotFoundException, CustomerNotFoundException, InputDataValidationException, UnknownPersistenceException,
             CarCategoryNotFoundException, ModelNotFoundException {
         try {
@@ -94,11 +94,11 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
                 Model model = null;
                 if (carCategoryId > -1) {
                     carCategory = carCategorySessionBeanLocal.retrieveCarCategoryByCarCategoryId(carCategoryId);
+                    newRentalReservation.setCarCategory(carCategory);
                 } else {
                     model = modelSessionBeanLocal.retrieveModelByModelId(modelId);
+                    newRentalReservation.setModel(model);
                 }
-                newRentalReservation.setCarCategory(carCategory);
-                newRentalReservation.setModel(model);
                 em.persist(newRentalReservation);
                 em.flush();
                 return newRentalReservation.getRentalReservationId();
@@ -212,7 +212,7 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
 
         Query query = em.createQuery("SELECT r FROM RentalReservation r WHERE r.carCategory.carCategoryId = :inCategoryId"
                 + " AND r.startDate < :inPickupDate AND r.endDate <= :inReturnDate"
-                + " AND r.isCancelled = TRUE");
+                + " AND r.isCancelled = FALSE");
         query.setParameter("inCategoryId", carCategoryId);
         query.setParameter("inPickupDate", pickUpDateTime);
         query.setParameter("inReturnDate", returnDateTime);
@@ -220,7 +220,7 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
 
         query = em.createQuery("SELECT r FROM RentalReservation r WHERE r.carCategory.carCategoryId = :inCategoryId"
                 + " AND r.startDate >= :inPickupDate AND r.endDate <= :inReturnDate"
-                + " AND r.isCancelled = TRUE");
+                + " AND r.isCancelled = FALSE");
         query.setParameter("inCategoryId", carCategoryId);
         query.setParameter("inPickupDate", pickUpDateTime);
         query.setParameter("inReturnDate", returnDateTime);
@@ -229,7 +229,7 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
 
         query = em.createQuery("SELECT r FROM RentalReservation r WHERE r.carCategory.carCategoryId = :inCategoryId"
                 + " AND r.startDate >= :inPickupDate AND r.endDate > :inReturnDate"
-                + " AND r.isCancelled = TRUE");
+                + " AND r.isCancelled = FALSE");
         query.setParameter("inCategoryId", carCategoryId);
         query.setParameter("inPickupDate", pickUpDateTime);
         query.setParameter("inReturnDate", returnDateTime);
@@ -238,7 +238,7 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
 
         query = em.createQuery("SELECT r FROM RentalReservation r WHERE r.carCategory.carCategoryId = :inCategoryId"
                 + " AND r.startDate <= :inPickupDate AND r.endDate >= :inReturnDate"
-                + " AND r.isCancelled = TRUE");
+                + " AND r.isCancelled = FALSE");
         query.setParameter("inCategoryId", carCategoryId);
         query.setParameter("inPickupDate", pickUpDateTime);
         query.setParameter("inReturnDate", returnDateTime);
@@ -254,7 +254,7 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
         query = em.createQuery("SELECT r FROM RentalReservation r WHERE r.carCategory.carCategoryId = :inCategoryId"
                 + " AND r.startDate < :inPickupDate AND r.endDate > :inTransitDate"
                 + " AND r.returnOutlet.outletId <> :inPickupOutletId"
-                + " AND r.isCancelled = TRUE");
+                + " AND r.isCancelled = FALSE");
         query.setParameter("inCategoryId", carCategoryId);
         query.setParameter("inPickupDate", pickUpDateTime);
         query.setParameter("inTransitDate", transitDate);
@@ -283,7 +283,7 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
 
         Query query = em.createQuery("SELECT r FROM RentalReservation r WHERE r.model.modelId = :inModelId"
                 + " AND r.startDate < :inPickupDate AND r.endDate <= :inReturnDate"
-                + " AND r.isCancelled = TRUE");
+                + " AND r.isCancelled = FALSE");
         query.setParameter("inModelId", modelId);
         query.setParameter("inPickupDate", pickUpDateTime);
         query.setParameter("inReturnDate", returnDateTime);
@@ -291,7 +291,7 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
 
         query = em.createQuery("SELECT r FROM RentalReservation r WHERE r.model.modelId = :inModelId"
                 + " AND r.startDate >= :inPickupDate AND r.endDate <= :inReturnDate"
-                + " AND r.isCancelled = TRUE");
+                + " AND r.isCancelled = FALSE");
         query.setParameter("inModelId", modelId);
         query.setParameter("inPickupDate", pickUpDateTime);
         query.setParameter("inReturnDate", returnDateTime);
@@ -299,7 +299,7 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
 
         query = em.createQuery("SELECT r FROM RentalReservation r WHERE r.model.modelId = :inModelId"
                 + " AND r.startDate >= :inPickupDate AND r.endDate > :inReturnDate"
-                + " AND r.isCancelled = TRUE");
+                + " AND r.isCancelled = FALSE");
         query.setParameter("inModelId", modelId);
         query.setParameter("inPickupDate", pickUpDateTime);
         query.setParameter("inReturnDate", returnDateTime);
@@ -307,7 +307,7 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
 
         query = em.createQuery("SELECT r FROM RentalReservation r WHERE r.model.modelId = :inModelId"
                 + " AND r.startDate <= :inPickupDate AND r.endDate >= :inReturnDate"
-                + " AND r.isCancelled = TRUE");
+                + " AND r.isCancelled = FALSE");
         query.setParameter("inModelId", modelId);
         query.setParameter("inPickupDate", pickUpDateTime);
         query.setParameter("inReturnDate", returnDateTime);
@@ -321,11 +321,12 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
 
         query = em.createQuery("SELECT r FROM RentalReservation r WHERE r.model.modelId = :inModelId"
                 + " AND r.startDate < :inPickupDate AND r.endDate > :inTransitDate"
-                + " AND r.returnOutlet <> :inPickupOutlet"
-                + " AND r.isCancelled = TRUE");
+                + " AND r.returnOutlet.outletId <> :inPickupOutletId"
+                + " AND r.isCancelled = FALSE");
         query.setParameter("inModelId", modelId);
         query.setParameter("inPickupDate", pickUpDateTime);
         query.setParameter("inTransitDate", transitDate);
+        query.setParameter("inPickupOutletId", pickupOutletId);
         rentalReservations.addAll(query.getResultList());
 
         Model model = modelSessionBeanLocal.retrieveModelByModelId(modelId);

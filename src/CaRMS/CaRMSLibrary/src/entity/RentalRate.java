@@ -53,10 +53,10 @@ public class RentalRate implements Serializable {
     private Boolean isEnabled;
 
     // validity period if applicable
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = true) // minimum start date is day before
     private Date startDate;
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = true)
     private Date endDate;
 

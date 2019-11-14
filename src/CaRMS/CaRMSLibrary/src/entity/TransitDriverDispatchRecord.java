@@ -33,7 +33,7 @@ public class TransitDriverDispatchRecord implements Serializable {
 
     @Column(nullable = true)
     private Boolean isCompleted;
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = true)
     private Date transitDate;
 
