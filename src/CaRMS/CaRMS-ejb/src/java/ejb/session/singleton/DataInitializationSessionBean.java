@@ -211,8 +211,8 @@ public class DataInitializationSessionBean {
             startDateTime = sdf.parse("04/12/2019 00:00");
             endDateTime = sdf.parse("04/12/2019 23:59");
             RentalRate luxurySedanWednesday = new RentalRate("Luxury Sedan - Wednesday", BigDecimal.valueOf(330.0), startDateTime, endDateTime);
-            startDateTime = sdf.parse("04/12/2019 00:00");
-            endDateTime = sdf.parse("04/12/2019 23:59");
+            startDateTime = sdf.parse("04/12/2019 12:00");
+            endDateTime = sdf.parse("05/12/2019 12:00");
             RentalRate luxurySedanWeekdayPromo = new RentalRate("Luxury Sedan - Weekday Promo", BigDecimal.valueOf(250.0), startDateTime, endDateTime);
 
             rentalRateSessionBeanLocal.createNewRentalRate(standardSedanId, standardSedanDefault);

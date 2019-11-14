@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.Outlet;
+import java.util.List;
 import java.util.Set;
 import javax.ejb.Local;
 import javax.ejb.Remote;
@@ -13,6 +14,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
+import javax.persistence.Query;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -87,5 +89,11 @@ public class OutletSessionBean implements OutletSessionBeanRemote, OutletSession
         } else {
             throw new OutletNotFoundException("Outlet ID " + outletId + " does not exist!");
         }
+    }
+    
+    @Override
+    public List<Outlet> retrieveAllOutlets() {
+        Query query = em.createQuery("SELECT o FROM Outlet o");
+        return query.getResultList();
     }
 }
