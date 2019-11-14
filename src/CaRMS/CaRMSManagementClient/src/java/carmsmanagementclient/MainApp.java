@@ -7,15 +7,19 @@ package carmsmanagementclient;
 
 import ejb.session.stateless.CarCategorySessionBeanRemote;
 import ejb.session.stateless.CarSessionBeanRemote;
+import ejb.session.stateless.EjbTimerSessionBeanRemote;
 import ejb.session.stateless.EmployeeSessionBeanRemote;
 import ejb.session.stateless.ModelSessionBeanRemote;
 import ejb.session.stateless.RentalRateSessionBeanRemote;
 import ejb.session.stateless.RentalReservationSessionBeanRemote;
 import ejb.session.stateless.TransitDriverDispatchRecordSessionBeanRemote;
 import entity.Employee;
+import java.util.Date;
 import java.util.Scanner;
 import util.exception.InvalidAccessRightException;
 import util.exception.InvalidLoginCredentialException;
+import util.exception.NoAllocatableCarException;
+import util.exception.RentalReservationNotFoundException;
 import util.exception.UnpaidRentalReservationException;
 
 /**
@@ -31,6 +35,7 @@ public class MainApp {
     private TransitDriverDispatchRecordSessionBeanRemote transitDriverDispatchRecordSessionBeanRemote;
     private CarCategorySessionBeanRemote carCategorySessionBeanRemote;
     private RentalReservationSessionBeanRemote rentalReservationSessionBeanRemote;
+    private EjbTimerSessionBeanRemote ejbTimerSessionBeanRemote;
 
     private SalesManagementModule salesManagementModule;
     private CustomerServiceModule customerServiceModule;
@@ -43,7 +48,8 @@ public class MainApp {
     public MainApp(EmployeeSessionBeanRemote employeeSessionBeanRemote, RentalRateSessionBeanRemote rentalRateSessionBeanRemote,
             ModelSessionBeanRemote modelSessionBeanRemote, CarSessionBeanRemote carSessionBeanRemote,
             TransitDriverDispatchRecordSessionBeanRemote transitDriverDispatchRecordSessionBeanRemote,
-            CarCategorySessionBeanRemote carCategorySessionBeanRemote, RentalReservationSessionBeanRemote rentalReservationSessionBeanRemote) {
+            CarCategorySessionBeanRemote carCategorySessionBeanRemote, RentalReservationSessionBeanRemote rentalReservationSessionBeanRemote,
+            EjbTimerSessionBeanRemote ejbTimerSessionBeanRemote) {
         this();
 
         this.employeeSessionBeanRemote = employeeSessionBeanRemote;
@@ -53,6 +59,7 @@ public class MainApp {
         this.transitDriverDispatchRecordSessionBeanRemote = transitDriverDispatchRecordSessionBeanRemote;
         this.carCategorySessionBeanRemote = carCategorySessionBeanRemote;
         this.rentalReservationSessionBeanRemote = rentalReservationSessionBeanRemote;
+        this.ejbTimerSessionBeanRemote = ejbTimerSessionBeanRemote;
     }
 
     public void runApp() {
@@ -62,7 +69,8 @@ public class MainApp {
         while (true) {
             System.out.println("*** Welcome to CaRMS Management Client ***\n");
             System.out.println("1: Login");
-            System.out.println("2: Exit\n");
+            System.out.println("2: Manually Allocate Cars to Current Day Reservations");
+            System.out.println("3: Exit\n");
             response = 0;
 
             while (response < 1 || response > 2) {
@@ -78,12 +86,14 @@ public class MainApp {
                         System.out.println("Invalid login credential: " + ex.getMessage() + "\n");
                     }
                 } else if (response == 2) {
+                    doAllocateCarsToCurrentDayReservations();
+                } else if (response == 3) {
                     break;
                 } else {
                     System.out.println("Invalid option, please try again!\n");
                 }
             }
-            if (response == 2) {
+            if (response == 3) {
                 break;
             }
         }
@@ -147,5 +157,12 @@ public class MainApp {
                 break;
             }
         }
+    }
+
+    private void doAllocateCarsToCurrentDayReservations() throws RentalReservationNotFoundException, NoAllocatableCarException {
+        System.out.println("*** CarMS Reservation Client :: Allocating Cars to Current Day Reservation***\n");
+        Date date = new Date();
+        ejbTimerSessionBeanRemote.allocateCarsToCurrentDayReservations(date);
+        System.out.println("*** CarMS Reservation Client :: Completed Allocation of Cars to Current Day Reservation***\n");
     }
 }

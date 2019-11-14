@@ -51,7 +51,7 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
         allocateCarsToCurrentDayReservations(date);
     }
 
-    public void allocateCarsToCurrentDayReservations(Date date) throws RentalReservationNotFoundException, NoAllocatableCarException {
+    public void allocateCarsToCurrentDayReservations(Date date) {
         Date today = date; // take in date from the cli
         today.setHours(2);
         today.setMinutes(0);

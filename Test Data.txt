@@ -63,13 +63,13 @@ Rental Rate
 ===========
 
 Name, CarCategory, RatePerDay, StartDateTime, EndDateTime
-Standard Sedan - Default, 100, null, null (always valid)
-Standard Sedan - Weekend Promo, 80, 06/12/2019 12:00, 08/12/2019 00:00
-Family Sedan - Default, 200, null, null (always valid)
-Luxury Sedan - Monday, 310, 02/12/2019 00:00, 02/12/2019 23:59
-Luxury Sedan - Tuesday, 320, 03/12/2019 00:00, 03/12/2019 23:59
-Luxury Sedan - Wednesday, 330, 04/12/2019 00:00, 04/12/2019 23:59
-Luxury Sedan - Weekday Promo, 250, 04/12/2019 12:00, 05/12/2019 12:00
+Standard Sedan - Default, Standard Sedan, 100, null, null (always valid)
+Standard Sedan - Weekend Promo, Standard Sedan, 80, 06/12/2019 12:00, 08/12/2019 00:00
+Family Sedan - Default, Family Sedan, 200, null, null (always valid)
+Luxury Sedan - Monday, Luxury Sedan, 310, 02/12/2019 00:00, 02/12/2019 23:59
+Luxury Sedan - Tuesday, Luxury Sedan, 320, 03/12/2019 00:00, 03/12/2019 23:59
+Luxury Sedan - Wednesday, Luxury Sedan, 330, 04/12/2019 00:00, 04/12/2019 23:59
+Luxury Sedan - Weekday Promo, Luxury Sedan, 250, 04/12/2019 12:00, 05/12/2019 12:00
 
 Partner
 =======

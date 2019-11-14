@@ -57,23 +57,6 @@ public class MainApp {
     }
 
     public void runApp() {
-        try {
-            SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-            System.out.print("Enter Pickup Date & Time (DD/MM/YYYY HH:MM)> ");
-            Date pickUpDateTime = inputDateFormat.parse("11/12/2019 20:00");
-            System.out.print("Enter Return Date & Time (DD/MM/YYYY HH:MM)> ");
-            Date returnDateTime = inputDateFormat.parse("13/12/2019 20:00");
-            System.out.print("Enter Pickup Outlet ID> ");
-            Long pickupOutletId = new Long(1);
-            System.out.print("Enter Return Outlet ID> ");
-            Long returnOutletId = new Long(1);
-            Long carCategoryId = new Long(3);
-            boolean status = rentalReservationSessionBeanRemote.searchCarByCategory(pickUpDateTime, returnDateTime, pickupOutletId, returnOutletId, carCategoryId);
-            System.out.println("status : " + status);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
 
@@ -107,11 +90,14 @@ public class MainApp {
                 } else {
                     System.out.println("Invalid option, please try again\n");
                 }
+                if (response == 4) {
+                    break;
+                }
             }
         }
     }
-
     // exception not thrown
+
     private void doRegisterCustomer() {
         Scanner scanner = new Scanner(System.in);
         String username = "";
@@ -155,11 +141,9 @@ public class MainApp {
     }
 
     private void doLogin() throws InvalidLoginCredentialException {
-
         Scanner scanner = new Scanner(System.in);
         String username = "";
         String password = "";
-
         System.out.println("*** CarMS Reservation Client :: Login ***\n");
         System.out.print("Enter username> ");
         username = scanner.nextLine().trim();
@@ -389,5 +373,4 @@ public class MainApp {
         System.out.print("Press any key to continue...> ");
         scanner.nextLine();
     }
-
 }

@@ -48,12 +48,10 @@ public class CustomerServiceModule {
             System.out.println("2: Return Car");
             System.out.println("3: Back\n");
             response = 0;
-
+            
             while (response < 1 || response > 3) {
                 System.out.print("> ");
-
                 response = scanner.nextInt();
-
                 if (response == 1) {
                     doPickupCar();
                 } else if (response == 2) {
@@ -64,7 +62,6 @@ public class CustomerServiceModule {
                     System.out.println("Invalid option, please try again!\n");
                 }
             }
-
             if (response == 3) {
                 break;
             }
