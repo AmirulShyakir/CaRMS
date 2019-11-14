@@ -59,7 +59,7 @@ public class PartnerReservationWebService {
     private CustomerSessionBeanLocal customerSessionBeanLocal;
     
     @WebMethod
-    public Long createNewCustomer(Long partnerId, Customer newCustomer) throws PartnerNotFoundException, UnknownPersistenceException, InputDataValidationException {
+    public Long createNewCustomer(@WebParam Long partnerId, @WebParam Customer newCustomer) throws PartnerNotFoundException, UnknownPersistenceException, InputDataValidationException {
         return customerSessionBeanLocal.createNewCustomer(partnerId, newCustomer);
     }
 
