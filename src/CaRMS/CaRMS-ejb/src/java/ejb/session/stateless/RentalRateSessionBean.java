@@ -147,9 +147,12 @@ public class RentalRateSessionBean implements RentalRateSessionBeanRemote, Renta
     }
 
     @Override
-    public RentalRate retrieveCheapestRentalRate(CarCategory carcategory, Date currentCheckedDate) throws NoAvailableRentalRateException {
-        Query query = em.createQuery("SELECT r FROM RentalRate r WHERE (r.startDate >= :inCurrentCheckedDate AND r.endDate <= :inCurrentCheckedDate) OR (r.startDate IS NULL AND r.endDate IS NULL) ORDER BY r.ratePerDay ASC");
+    public RentalRate retrieveCheapestRentalRate(Long carCategoryId, Date currentCheckedDate) throws NoAvailableRentalRateException {
+        Query query = em.createQuery("SELECT r FROM RentalRate r WHERE (r.carCategory.carCategoryId = :inCarCategoryId)"
+                + " AND (r.startDate >= :inCurrentCheckedDate AND r.endDate <= :inCurrentCheckedDate)"
+                + " OR (r.startDate IS NULL AND r.endDate IS NULL) ORDER BY r.ratePerDay ASC");
         query.setParameter("inCurrentCheckedDate", currentCheckedDate);
+        query.setParameter("inCarCategoryId", carCategoryId);
         List<RentalRate> rentalRates = query.getResultList();
         if (rentalRates.isEmpty()) {
             throw new NoAvailableRentalRateException();

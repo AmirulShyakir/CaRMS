@@ -31,6 +31,6 @@ public interface RentalRateSessionBeanRemote {
 
     public void deleteRentalRate(Long rentalRateId) throws RentalRateNotFoundException;
 
-    public RentalRate retrieveCheapestRentalRate(CarCategory carcategory, Date currentCheckedDate) throws NoAvailableRentalRateException;
+    public RentalRate retrieveCheapestRentalRate(Long carCategoryId, Date currentCheckedDate) throws NoAvailableRentalRateException;
 
 }

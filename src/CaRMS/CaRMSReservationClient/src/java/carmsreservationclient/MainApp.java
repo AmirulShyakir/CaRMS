@@ -13,6 +13,7 @@ import ejb.session.stateless.RentalReservationSessionBeanRemote;
 import entity.CarCategory;
 import entity.Customer;
 import entity.Model;
+import entity.Outlet;
 import entity.OwnCustomer;
 import entity.RentalReservation;
 import java.math.BigDecimal;
@@ -28,6 +29,7 @@ import util.exception.InvalidLoginCredentialException;
 import util.exception.ModelNotFoundException;
 import util.exception.NoAvailableRentalRateException;
 import util.exception.OutletNotFoundException;
+import util.exception.OutsideOperatingHoursException;
 import util.exception.OwnCustomerUsernameExistException;
 import util.exception.RentalReservationNotFoundException;
 import util.exception.UnknownPersistenceException;
@@ -179,11 +181,40 @@ public class MainApp {
             pickUpDateTime = inputDateFormat.parse(scanner.nextLine().trim());
             System.out.print("Enter Return Date & Time (DD/MM/YYYY HH:MM)> ");
             returnDateTime = inputDateFormat.parse(scanner.nextLine().trim());
+
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            List<Outlet> outlets = outletSessionBeanRemote.retrieveAllOutlets();
+            System.out.printf("%4s%64s%20s%20s\n", "ID", "Outlet Name", "Opening Hour", "Closing Hour");
+            for (Outlet outlet : outlets) {
+                String openingHour = "null";
+                if (outlet.getOpeningHour() != null) {
+                    openingHour = sdf.format(outlet.getOpeningHour());
+                }
+                String closingHour = "null";
+                if (outlet.getClosingHour() != null) {
+                    closingHour = sdf.format(outlet.getClosingHour());
+                }
+                System.out.printf("%4s%64s%20s%20s\n", outlet.getOutletId(), outlet.getOutletName(),
+                        openingHour, closingHour);
+            }
+
             System.out.print("Enter Pickup Outlet ID> ");
             pickupOutletId = scanner.nextLong();
             System.out.print("Enter Return Outlet ID> ");
             returnOutletId = scanner.nextLong();
 
+            Outlet pickupOutlet = outletSessionBeanRemote.retrieveOutletByOutletId(pickupOutletId);
+            if (pickupOutlet.getOpeningHour() != null) {
+                if (pickupOutlet.getOpeningHour().after(pickUpDateTime)) {
+                    throw new OutsideOperatingHoursException("Pickup time is before operating hours of the outlet");
+                }
+            }
+            Outlet returnOutlet = outletSessionBeanRemote.retrieveOutletByOutletId(returnOutletId);
+            if (returnOutlet.getClosingHour() != null) {
+                if (returnOutlet.getClosingHour().before(returnDateTime)) {
+                    throw new OutsideOperatingHoursException("Return time is after operating hours of the outlet");
+                }
+            }
             while (true) {
                 System.out.println("*** Search by Car Category or Car Model? ***\n");
                 System.out.println("1: Search by Car Category");
@@ -254,8 +285,9 @@ public class MainApp {
             System.out.println("Model not found!\n");
         } catch (OutletNotFoundException ex) {
             System.out.println("Outlet not found!\n");
+        } catch (OutsideOperatingHoursException ex) {
+            System.out.println(ex.getMessage());
         }
-
         System.out.print("Press any key to continue...> ");
         scanner.nextLine();
     }
@@ -370,6 +402,7 @@ public class MainApp {
         System.out.println("*** CaRMS Reservation Client :: View Reservation Details ***\n");
         System.out.print("Enter Reservation ID> ");
         Long rentalReservationId = scanner.nextLong();
+        scanner.nextLine();
 
         try {
             RentalReservation rentalReservation = rentalReservationSessionBeanRemote.retrieveRentalReservationByRentalReservationId(rentalReservationId);
