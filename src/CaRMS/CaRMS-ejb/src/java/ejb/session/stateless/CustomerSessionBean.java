@@ -47,8 +47,6 @@ public class CustomerSessionBean implements CustomerSessionBeanRemote, CustomerS
         this.validator = validatorFactory.getValidator();
     }
 
-    // Add business logic below. (Right-click in editor and choose
-    // "Insert Code > Add Business Method")
     @Override
     public Long createNewCustomer(Long partnerId, Customer newCustomer) throws PartnerNotFoundException, UnknownPersistenceException, InputDataValidationException {
         try {
