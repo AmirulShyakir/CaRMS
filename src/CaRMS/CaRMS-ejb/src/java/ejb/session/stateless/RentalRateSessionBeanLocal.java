@@ -24,7 +24,7 @@ import util.exception.UnknownPersistenceException;
 @Local
 public interface RentalRateSessionBeanLocal {
 
-    public Long createNewRentalRate(Long carCategoryId, RentalRate newRentalRate) throws RentalRateNameExistException, CarCategoryNotFoundException, UnknownPersistenceException, InputDataValidationException;
+    public Long createNewRentalRate(Long carCategoryId, RentalRate newRentalRate) throws CarCategoryNotFoundException, UnknownPersistenceException, InputDataValidationException;
 
     public List<RentalRate> retrieveAllRentalRates();
 

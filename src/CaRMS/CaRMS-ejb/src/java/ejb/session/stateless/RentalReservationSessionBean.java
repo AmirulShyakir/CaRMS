@@ -11,7 +11,6 @@ import entity.Model;
 import entity.Outlet;
 import entity.RentalReservation;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -21,7 +20,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Set;
-import javafx.util.converter.LocalDateTimeStringConverter;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Remote;
@@ -34,6 +32,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import util.enumeration.CarStatusEnum;
 import util.exception.CarCategoryNotFoundException;
 import util.exception.InputDataValidationException;
 import util.exception.ModelNotFoundException;
@@ -87,9 +86,7 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
 
             if (constraintViolations.isEmpty()) {
                 em.persist(newRentalReservation);
-
                 em.flush();
-
                 return newRentalReservation.getRentalReservationId();
             } else {
                 throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));
@@ -163,7 +160,7 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
         try {
             RentalReservation rentalReservation = retrieveRentalReservationByRentalReservationId(rentalReservationId);
             Car car = rentalReservation.getCar();
-            car.setOnRental(true);
+            car.setCarStatus(CarStatusEnum.ON_RENT);
             car.setOutlet(null);
             car.setRentalReservation(rentalReservation);
             rentalReservation.getPickupOutlet().removeCar(car);
@@ -178,7 +175,7 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
             RentalReservation rentalReservation = retrieveRentalReservationByRentalReservationId(rentalReservationId);
             Outlet returnOutlet = rentalReservation.getReturnOutlet();
             Car car = rentalReservation.getCar();
-            car.setOnRental(false);
+            car.setCarStatus(CarStatusEnum.AVAILABLE);
             car.setOutlet(returnOutlet);
             car.setRentalReservation(null);
             returnOutlet.addCar(car);

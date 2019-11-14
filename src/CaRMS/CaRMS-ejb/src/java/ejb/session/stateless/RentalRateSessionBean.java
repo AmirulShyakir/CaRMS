@@ -25,7 +25,6 @@ import javax.validation.ValidatorFactory;
 import util.exception.CarCategoryNotFoundException;
 import util.exception.InputDataValidationException;
 import util.exception.NoAvailableRentalRateException;
-import util.exception.RentalRateNameExistException;
 import util.exception.RentalRateNotFoundException;
 import util.exception.UnknownPersistenceException;
 
@@ -55,30 +54,27 @@ public class RentalRateSessionBean implements RentalRateSessionBeanRemote, Renta
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
-    public Long createNewRentalRate(Long carCategoryId, RentalRate newRentalRate) throws RentalRateNameExistException, CarCategoryNotFoundException, UnknownPersistenceException, InputDataValidationException {
+    public Long createNewRentalRate(Long carCategoryId, RentalRate newRentalRate) throws CarCategoryNotFoundException, UnknownPersistenceException, InputDataValidationException {
         try {
             Set<ConstraintViolation<RentalRate>> constraintViolations = validator.validate(newRentalRate);
 
             if (constraintViolations.isEmpty()) {
                 try {
                     CarCategory carCategory = carCategorySessionBeanLocal.retrieveCarCategoryByCarCategoryId(carCategoryId);
-                    em.persist(newRentalRate);
                     carCategory.addRentalRate(newRentalRate);
+                    newRentalRate.setCarCategory(carCategory);
+                    em.persist(newRentalRate);
                     em.flush();
                     return newRentalRate.getRentalRateId();
                 } catch (CarCategoryNotFoundException ex) {
-                    throw new CarCategoryNotFoundException();
+                    throw new CarCategoryNotFoundException("Car Category ID: " + carCategoryId + " not found!");
                 }
             } else {
                 throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));
             }
         } catch (PersistenceException ex) {
             if (ex.getCause() != null && ex.getCause().getClass().getName().equals("org.eclipse.persistence.exceptions.DatabaseException")) {
-                if (ex.getCause().getCause() != null && ex.getCause().getCause().getClass().getName().equals("java.sql.SQLIntegrityConstraintViolationException")) {
-                    throw new RentalRateNameExistException();
-                } else {
-                    throw new UnknownPersistenceException(ex.getMessage());
-                }
+                throw new UnknownPersistenceException(ex.getMessage());
             } else {
                 throw new UnknownPersistenceException(ex.getMessage());
             }
@@ -149,7 +145,7 @@ public class RentalRateSessionBean implements RentalRateSessionBeanRemote, Renta
             throw new RentalRateNotFoundException("Rental rate of ID: " + rentalRateId + " not found!");
         }
     }
-    
+
     @Override
     public RentalRate retrieveCheapestRentalRate(CarCategory carcategory, Date currentCheckedDate) throws NoAvailableRentalRateException {
         Query query = em.createQuery("SELECT r FROM RentalRate r WHERE r.startDate >= :inCurrentCheckedDate AND r.endDate <= :inCurrentCheckedDate ORDER BY r.ratePerDay ASC");
@@ -160,5 +156,5 @@ public class RentalRateSessionBean implements RentalRateSessionBeanRemote, Renta
         }
         return (RentalRate) query.getSingleResult();
     }
-    
+
 }

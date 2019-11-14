@@ -6,7 +6,9 @@
 package ejb.session.stateless;
 
 import entity.Employee;
+import entity.Outlet;
 import java.util.Set;
+import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
@@ -23,6 +25,7 @@ import util.exception.EmployeeNotFoundException;
 import util.exception.EmployeeUsernameExistException;
 import util.exception.InputDataValidationException;
 import util.exception.InvalidLoginCredentialException;
+import util.exception.OutletNotFoundException;
 import util.exception.UnknownPersistenceException;
 
 /**
@@ -36,6 +39,9 @@ public class EmployeeSessionBean implements EmployeeSessionBeanRemote, EmployeeS
 
     @PersistenceContext(unitName = "CaRMS-ejbPU")
     private EntityManager em;
+    
+    @EJB
+    private OutletSessionBeanLocal outletSessionBeanLocal;
 
     private final ValidatorFactory validatorFactory;
     private final Validator validator;
@@ -48,14 +54,16 @@ public class EmployeeSessionBean implements EmployeeSessionBeanRemote, EmployeeS
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
-    public Long createNewEmployee(Employee newEmployee) throws EmployeeUsernameExistException, UnknownPersistenceException, InputDataValidationException {
+    public Long createNewEmployee(Long outletId, Employee newEmployee) throws OutletNotFoundException, EmployeeUsernameExistException, UnknownPersistenceException, InputDataValidationException {
         try {
             Set<ConstraintViolation<Employee>> constraintViolations = validator.validate(newEmployee);
 
             if (constraintViolations.isEmpty()) {
+                Outlet outlet = outletSessionBeanLocal.retrieveOutletByOutletId(outletId);
+                newEmployee.setOutlet(outlet);
+                outlet.getEmployees().add(newEmployee);
                 em.persist(newEmployee);
                 em.flush();
-
                 return newEmployee.getEmployeeId();
             } else {
                 throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));
@@ -63,13 +71,15 @@ public class EmployeeSessionBean implements EmployeeSessionBeanRemote, EmployeeS
         } catch (PersistenceException ex) {
             if (ex.getCause() != null && ex.getCause().getClass().getName().equals("org.eclipse.persistence.exceptions.DatabaseException")) {
                 if (ex.getCause().getCause() != null && ex.getCause().getCause().getClass().getName().equals("java.sql.SQLIntegrityConstraintViolationException")) {
-                    throw new EmployeeUsernameExistException();
+                    throw new EmployeeUsernameExistException("Username : " + newEmployee.getUsername() + " exists!");
                 } else {
                     throw new UnknownPersistenceException(ex.getMessage());
                 }
             } else {
                 throw new UnknownPersistenceException(ex.getMessage());
             }
+        } catch (OutletNotFoundException ex) {
+            throw new OutletNotFoundException("Outlet not found for ID: " + outletId);
         }
     }
 

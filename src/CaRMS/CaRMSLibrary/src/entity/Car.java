@@ -18,6 +18,7 @@ import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
+import util.enumeration.CarStatusEnum;
 
 /**
  *
@@ -41,7 +42,7 @@ public class Car implements Serializable {
     private String colour;
     @Column(nullable = false)
     @NotNull
-    private Boolean onRental; // true means on rental, false means in outlet
+    private CarStatusEnum carStatus; // true means on rental, false means in outlet
     @Column(nullable = false)
     @NotNull
     private Boolean isDisabled;
@@ -56,16 +57,23 @@ public class Car implements Serializable {
     private RentalReservation rentalReservation;
 
     public Car() {
-        this.onRental = false;
         this.isDisabled = false;
     }
 
-    public Car(String licensePlate, String colour, Model model) {
+    public Car(String licensePlate, String colour) {
         this();
 
         this.licensePlate = licensePlate;
         this.colour = colour;
-        this.model = model;
+        this.carStatus = CarStatusEnum.AVAILABLE;
+    }
+
+    public Car(String licensePlate, String colour, CarStatusEnum carStatus) {
+        this();
+
+        this.licensePlate = licensePlate;
+        this.colour = colour;
+        this.carStatus = carStatus;
     }
 
     public Long getCarId() {
@@ -88,12 +96,12 @@ public class Car implements Serializable {
         this.colour = colour;
     }
 
-    public Boolean getOnRental() {
-        return onRental;
+    public CarStatusEnum getCarStatus() {
+        return carStatus;
     }
 
-    public void setOnRental(Boolean onRental) {
-        this.onRental = onRental;
+    public void setCarStatus(CarStatusEnum carStatus) {
+        this.carStatus = carStatus;
     }
 
     @XmlTransient

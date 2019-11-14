@@ -22,7 +22,7 @@ import util.exception.UnknownPersistenceException;
  */
 public interface RentalRateSessionBeanRemote {
 
-    public Long createNewRentalRate(Long carCategoryId, RentalRate newRentalRate) throws RentalRateNameExistException, CarCategoryNotFoundException, UnknownPersistenceException, InputDataValidationException;
+    public Long createNewRentalRate(Long carCategoryId, RentalRate newRentalRate) throws CarCategoryNotFoundException, UnknownPersistenceException, InputDataValidationException;
 
     public List<RentalRate> retrieveAllRentalRates();
 

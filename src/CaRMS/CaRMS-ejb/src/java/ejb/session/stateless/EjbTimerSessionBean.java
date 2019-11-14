@@ -23,6 +23,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import util.enumeration.CarStatusEnum;
 import util.exception.NoAllocatableCarException;
 import util.exception.OutletNotFoundException;
 import util.exception.RentalReservationNotFoundException;
@@ -79,7 +80,7 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
                 // current outlet has no cars to fulfill the rental reservation
                 List<Car> carsOfSameModel = rentalReservation.getModel().getCars();
                 for (Car car : carsOfSameModel) {
-                    if ((!car.getOnRental()) && car.getRentalReservation() == null) {
+                    if ((car.getCarStatus() == CarStatusEnum.AVAILABLE) && car.getRentalReservation() == null) {
                         rentalReservation.setCar(car);
                         break;
                     }
@@ -89,7 +90,7 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
                 }
                 // then check those currently on rental returning to same outlet
                 for (Car car : cars) {
-                    if ((car.getOnRental()) && car.getRentalReservation().getReturnOutlet().equals(rentalReservation.getPickupOutlet())) {
+                    if ((car.getCarStatus() == CarStatusEnum.ON_RENT) && car.getRentalReservation().getReturnOutlet().equals(rentalReservation.getPickupOutlet())) {
                         if (car.getRentalReservation().getEndDate().before(rentalReservation.getStartDate())) {
                             rentalReservation.setCar(car);
                             break;
@@ -98,7 +99,7 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
                 }
                 // then check those currently on rental returning to a different outlet
                 for (Car car : cars) {
-                    if ((car.getOnRental()) && car.getRentalReservation().getReturnOutlet().equals(rentalReservation.getPickupOutlet())) {
+                    if ((car.getCarStatus() == CarStatusEnum.ON_RENT) && car.getRentalReservation().getReturnOutlet().equals(rentalReservation.getPickupOutlet())) {
                         GregorianCalendar transitCalendar = new GregorianCalendar(
                                 car.getRentalReservation().getEndDate().getYear() + 1900,
                                 car.getRentalReservation().getEndDate().getMonth(),
@@ -133,7 +134,7 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
                     carsOfSameCategory.addAll(model.getCars());
                 }
                 for (Car car : carsOfSameCategory) {
-                    if ((!car.getOnRental()) && car.getRentalReservation() == null) { // already available in outlet
+                    if ((car.getCarStatus() == CarStatusEnum.AVAILABLE) && car.getRentalReservation() == null) { // already available in outlet
                         rentalReservation.setCar(car);
                         isAllocated = true;
                         break;
@@ -144,7 +145,7 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
                 }
                 // check returning cars
                 for (Car car : carsOfSameCategory) {
-                    if ((car.getOnRental()) && car.getRentalReservation().getReturnOutlet().equals(rentalReservation.getPickupOutlet())) {
+                    if ((car.getCarStatus() == CarStatusEnum.ON_RENT) && car.getRentalReservation().getReturnOutlet().equals(rentalReservation.getPickupOutlet())) {
                         if (car.getRentalReservation().getEndDate().before(rentalReservation.getStartDate())) {
                             rentalReservation.setCar(car);
                             break;
@@ -153,7 +154,7 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
                 }
                 // then check those currently on rental returning to a different outlet
                 for (Car car : carsOfSameCategory) {
-                    if ((car.getOnRental()) && car.getRentalReservation().getReturnOutlet().equals(rentalReservation.getPickupOutlet())) {
+                    if ((car.getCarStatus() == CarStatusEnum.ON_RENT) && car.getRentalReservation().getReturnOutlet().equals(rentalReservation.getPickupOutlet())) {
                         GregorianCalendar transitCalendar = new GregorianCalendar(
                                 car.getRentalReservation().getEndDate().getYear() + 1900,
                                 car.getRentalReservation().getEndDate().getMonth(),

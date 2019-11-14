@@ -10,6 +10,7 @@ import util.exception.EmployeeNotFoundException;
 import util.exception.EmployeeUsernameExistException;
 import util.exception.InputDataValidationException;
 import util.exception.InvalidLoginCredentialException;
+import util.exception.OutletNotFoundException;
 import util.exception.UnknownPersistenceException;
 
 /**
@@ -18,10 +19,10 @@ import util.exception.UnknownPersistenceException;
  */
 public interface EmployeeSessionBeanLocal {
    
-    public Long createNewEmployee(Employee newEmployee) throws EmployeeUsernameExistException, UnknownPersistenceException, InputDataValidationException;
-
     public Employee login(String username, String password) throws InvalidLoginCredentialException;
 
     public Employee retrieveEmployeeByEmployeeId(Long employeeId) throws EmployeeNotFoundException;
+
+    public Long createNewEmployee(Long outletId, Employee newEmployee) throws OutletNotFoundException, EmployeeUsernameExistException, UnknownPersistenceException, InputDataValidationException;
     
 }

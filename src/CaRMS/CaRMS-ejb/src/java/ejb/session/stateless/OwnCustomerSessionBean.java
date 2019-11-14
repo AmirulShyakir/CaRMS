@@ -54,7 +54,6 @@ public class OwnCustomerSessionBean implements OwnCustomerSessionBeanRemote, Own
             if (constraintViolations.isEmpty()) {
                 em.persist(newOwnCustomer);
                 em.flush();
-
                 return newOwnCustomer.getCustomerId();
             } else {
                 throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));

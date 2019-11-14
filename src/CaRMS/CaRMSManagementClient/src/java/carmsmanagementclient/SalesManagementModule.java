@@ -279,8 +279,6 @@ public class SalesManagementModule {
             System.out.println("Invalid Date/Time Format!");
         } catch (CarCategoryNotFoundException ex) {
             System.out.println("No such Car Category of ID: " + carCategoryId);
-        } catch (RentalRateNameExistException ex) {
-            System.out.println("Rental Name " + rentalRate.getRentalRateName() + " already exists!");
         } catch (UnknownPersistenceException ex) {
             System.out.println("UnknownPersistenceException when creating new Rental Rate");
         } catch (InputDataValidationException ex) {

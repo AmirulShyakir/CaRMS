@@ -65,7 +65,6 @@ public class CarCategorySessionBean implements CarCategorySessionBeanRemote, Car
             if (constraintViolations.isEmpty()) {
                 em.persist(newCarCategory);
                 em.flush();
-
                 return newCarCategory.getCarCategoryId();
             } else {
                 throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));

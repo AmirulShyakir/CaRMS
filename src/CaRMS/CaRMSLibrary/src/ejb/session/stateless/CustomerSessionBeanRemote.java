@@ -7,6 +7,9 @@ package ejb.session.stateless;
 
 import entity.Customer;
 import util.exception.CustomerNotFoundException;
+import util.exception.InputDataValidationException;
+import util.exception.PartnerNotFoundException;
+import util.exception.UnknownPersistenceException;
 
 /**
  *
@@ -15,5 +18,7 @@ import util.exception.CustomerNotFoundException;
 public interface CustomerSessionBeanRemote {
 
     public Customer retrieveCustomerByCustomerId(Long customerId) throws CustomerNotFoundException;
+
+    public Long createNewCustomer(Long partnerId, Customer newCustomer) throws PartnerNotFoundException, UnknownPersistenceException, InputDataValidationException;
 
 }

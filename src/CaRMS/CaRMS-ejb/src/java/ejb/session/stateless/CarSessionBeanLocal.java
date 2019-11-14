@@ -6,12 +6,9 @@
 package ejb.session.stateless;
 
 import entity.Car;
-import java.util.Date;
 import java.util.List;
 import javax.ejb.Local;
-import util.exception.CarCategoryNotFoundException;
 import util.exception.CarNotFoundException;
-import util.exception.DeleteCarException;
 import util.exception.InputDataValidationException;
 import util.exception.LicensePlateExistException;
 import util.exception.ModelDisabledException;

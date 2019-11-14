@@ -22,6 +22,7 @@ import javax.validation.ValidatorFactory;
 import util.exception.InputDataValidationException;
 import util.exception.InvalidLoginCredentialException;
 import util.exception.PartnerNameExistException;
+import util.exception.PartnerNotFoundException;
 import util.exception.UnknownPersistenceException;
 
 /**
@@ -54,7 +55,6 @@ public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSess
             if (constraintViolations.isEmpty()) {
                 em.persist(newPartner);
                 em.flush();
-
                 return newPartner.getPartnerId();
             } else {
                 throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));
@@ -98,4 +98,16 @@ public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSess
             throw new InvalidLoginCredentialException("Invalid login credential");
         }
     }
+
+    @Override
+    public Partner retrievePartnerByPartnerId(Long partnerId) throws PartnerNotFoundException {
+        Partner car = em.find(Partner.class, partnerId);
+
+        if (car != null) {
+            return car;
+        } else {
+            throw new PartnerNotFoundException("Partner ID " + partnerId + " does not exist!");
+        }
+    }
+
 }

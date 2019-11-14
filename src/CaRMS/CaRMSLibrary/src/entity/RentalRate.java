@@ -38,7 +38,7 @@ public class RentalRate implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long rentalRateId;
-    @Column(nullable = false, length = 16, unique = true)
+    @Column(nullable = false, length = 16)
     @NotNull
     @Size(max = 16)
     private String rentalRateName;
@@ -47,7 +47,7 @@ public class RentalRate implements Serializable {
     @DecimalMin("0.00")
     @Digits(integer = 9, fraction = 2)
     private BigDecimal ratePerDay;
-    
+
     @Column(nullable = false)
     @NotNull
     private Boolean isEnabled;
@@ -71,12 +71,20 @@ public class RentalRate implements Serializable {
         this.rentalDays = new ArrayList<>();
     }
 
-    public RentalRate(String rentalRateName, BigDecimal ratePerDay, CarCategory category) {
+    public RentalRate(String rentalRateName, BigDecimal ratePerDay) {
         this();
 
         this.rentalRateName = rentalRateName;
         this.ratePerDay = ratePerDay;
-        this.carCategory = category;
+    }
+
+    public RentalRate(String rentalRateName, BigDecimal ratePerDay, Date startDate, Date endDate) {
+        this();
+        
+        this.rentalRateName = rentalRateName;
+        this.ratePerDay = ratePerDay;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     public Long getRentalRateId() {

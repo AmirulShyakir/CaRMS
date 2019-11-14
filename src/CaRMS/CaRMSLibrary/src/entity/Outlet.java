@@ -41,11 +41,9 @@ public class Outlet implements Serializable {
     private String outletAddress;
     @Temporal(TemporalType.DATE)
     @Column(nullable = true)
-    @NotNull
     private Date openingHour;
     @Temporal(TemporalType.DATE)
-    @Column(nullable = false)
-    @NotNull
+    @Column(nullable = true)
     private Date closingHour;
 
     @OneToMany(mappedBy = "outlet")
@@ -59,6 +57,13 @@ public class Outlet implements Serializable {
         this.cars = new ArrayList<>();
         this.employees = new ArrayList<>();
         this.transitDriverDispatchRecords = new ArrayList<>();
+    }
+
+    public Outlet(String outletName, String outletAddress) {
+        this(); 
+        
+        this.outletName = outletName;
+        this.outletAddress = outletAddress;
     }
 
     public Outlet(String outletName, String outletAddress, Date openingHour, Date closingHour) {

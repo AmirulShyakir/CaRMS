@@ -64,7 +64,7 @@ public class Employee implements Serializable {
         this.transitDriverDispatchRecords = new ArrayList<>();
     }
 
-    public Employee(String firstName, String lastName, String username, String password, EmployeeRoleEnum employeeRole, Outlet outlet) {
+    public Employee(String firstName, String lastName, String username, String password, EmployeeRoleEnum employeeRole) {
         this();
 
         this.firstName = firstName;
@@ -72,7 +72,6 @@ public class Employee implements Serializable {
         this.username = username;
         this.password = password;
         this.employeeRole = employeeRole;
-        this.outlet = outlet;
     }
 
     public Long getEmployeeId() {

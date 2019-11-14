@@ -52,7 +52,6 @@ public class OutletSessionBean implements OutletSessionBeanRemote, OutletSession
             if (constraintViolations.isEmpty()) {
                 em.persist(newOutlet);
                 em.flush();
-
                 return newOutlet.getOutletId();
             } else {
                 throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));
@@ -83,7 +82,6 @@ public class OutletSessionBean implements OutletSessionBeanRemote, OutletSession
     @Override
     public Outlet retrieveOutletByOutletId(Long outletId) throws OutletNotFoundException {
         Outlet outlet = em.find(Outlet.class, outletId);
-
         if (outlet != null) {
             return outlet;
         } else {

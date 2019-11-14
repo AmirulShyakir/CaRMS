@@ -41,9 +41,9 @@ public class ModelSessionBean implements ModelSessionBeanRemote, ModelSessionBea
 
     private final ValidatorFactory validatorFactory;
     private final Validator validator;
-    
+
     @EJB
-    private CarCategorySessionBeanLocal carCategorySessionBeanLocal;    
+    private CarCategorySessionBeanLocal carCategorySessionBeanLocal;
 
     public ModelSessionBean() {
         this.validatorFactory = Validation.buildDefaultValidatorFactory();
@@ -59,13 +59,13 @@ public class ModelSessionBean implements ModelSessionBeanRemote, ModelSessionBea
 
             if (constraintViolations.isEmpty()) {
                 try {
-                    em.persist(newModel);
                     CarCategory carCategory = carCategorySessionBeanLocal.retrieveCarCategoryByCarCategoryId(carCategoryId);
                     newModel.setCarCategory(carCategory);
+                    em.persist(newModel);
                     em.flush();
                     return newModel.getModelId();
                 } catch (CarCategoryNotFoundException ex) {
-                    throw new CarCategoryNotFoundException();
+                    throw new CarCategoryNotFoundException("Car Category not found for ID: " + carCategoryId);
                 }
             } else {
                 throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));
@@ -73,7 +73,7 @@ public class ModelSessionBean implements ModelSessionBeanRemote, ModelSessionBea
         } catch (PersistenceException ex) {
             if (ex.getCause() != null && ex.getCause().getClass().getName().equals("org.eclipse.persistence.exceptions.DatabaseException")) {
                 if (ex.getCause().getCause() != null && ex.getCause().getCause().getClass().getName().equals("java.sql.SQLIntegrityConstraintViolationException")) {
-                    throw new ModelNameExistException();
+                    throw new ModelNameExistException("Model name: " + newModel.getModelName() + " exists!");
                 } else {
                     throw new UnknownPersistenceException(ex.getMessage());
                 }

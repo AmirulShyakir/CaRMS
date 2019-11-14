@@ -73,22 +73,22 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
                         model.getCars().add(newCar);
                         em.persist(newCar);
                         em.flush();
+                        return newCar.getCarId();
                     } else {
                         throw new ModelDisabledException();
                     }
                 } catch (ModelNotFoundException ex) {
-                    throw new ModelNotFoundException();
+                    throw new ModelNotFoundException("Model Not Found for ID: " + modelId);
                 } catch (OutletNotFoundException ex) {
-                    throw new OutletNotFoundException();
+                    throw new OutletNotFoundException("Outlet Not Found for ID: " + outletId);
                 }
-                return newCar.getCarId();
             } else {
                 throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));
             }
         } catch (PersistenceException ex) {
             if (ex.getCause() != null && ex.getCause().getClass().getName().equals("org.eclipse.persistence.exceptions.DatabaseException")) {
                 if (ex.getCause().getCause() != null && ex.getCause().getCause().getClass().getName().equals("java.sql.SQLIntegrityConstraintViolationException")) {
-                    throw new LicensePlateExistException();
+                    throw new LicensePlateExistException("License Plate: " + newCar.getLicensePlate() + " exists!");
                 } else {
                     throw new UnknownPersistenceException(ex.getMessage());
                 }
