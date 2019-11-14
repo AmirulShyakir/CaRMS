@@ -158,7 +158,6 @@ public class MainApp {
     }
 
     private void doSearchCar() {
-
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
         SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
@@ -201,17 +200,18 @@ public class MainApp {
             }
 
             if (!canReserve) {
-                System.out.println("No cars are available under the provided criteria! ");
+                System.out.println("No cars are available under the provided criteria!");
             } else {
                 BigDecimal totalRentalFee = carCategorySessionBeanRemote.calculateTotalRentalFee(carCategoryId, pickUpDateTime, returnDateTime);
                 System.out.println("There are cars available! Total rental fee is SGD" + totalRentalFee + ". ");
-                System.out.println("Reserve a car? (Enter 'Y' to reserve a car)> ");
-                String input = scanner.nextLine().trim();
-                if (input.equals("Y")) {
+                if (currentCustomer != null) {
+                    System.out.print("Reserve a car? (Enter 'Y' to reserve a car)> ");
+                    String input = scanner.nextLine().trim();
                     doReserveCar(response, carCategoryId, modelId, pickUpDateTime, returnDateTime, pickupOutletId, returnOutletId, totalRentalFee);
+                } else {
+                    System.out.println("Please login first!");
                 }
             }
-
         } catch (ParseException ex) {
             System.out.println("Invalid date input!\n");
         } catch (NoAvailableRentalRateException ex) {
@@ -223,7 +223,6 @@ public class MainApp {
         } catch (OutletNotFoundException ex) {
             System.out.println("Outlet not found!\n");
         }
-
         System.out.print("Press any key to continue...> ");
         scanner.nextLine();
     }
@@ -359,7 +358,6 @@ public class MainApp {
         }
         System.out.print("Press any key to continue...> ");
         scanner.nextLine();
-
     }
 
     private void doViewAllReservations() {

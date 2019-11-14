@@ -121,7 +121,7 @@ public class CarCategorySessionBean implements CarCategorySessionBeanRemote, Car
                     pickUpDateTime.getMinutes(),
                     pickUpDateTime.getSeconds());
 
-            for (int i = 0; i < daysToRent; i++) {
+            for (int i = 0; i <= daysToRent; i++) {
                 RentalRate cheapestRentalRate = rentalRateSessionBeanLocal.retrieveCheapestRentalRate(carCategory, transitCalendar.getTime());
                 transitCalendar.add(Calendar.DATE, 1);
                 totalRentalFee = totalRentalFee.add(cheapestRentalRate.getRatePerDay());

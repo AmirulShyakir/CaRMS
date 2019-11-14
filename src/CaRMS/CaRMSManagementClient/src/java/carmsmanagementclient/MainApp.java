@@ -86,7 +86,13 @@ public class MainApp {
                         System.out.println("Invalid login credential: " + ex.getMessage() + "\n");
                     }
                 } else if (response == 2) {
-                    doAllocateCarsToCurrentDayReservations();
+                    try {
+                        doAllocateCarsToCurrentDayReservations();
+                    } catch (NoAllocatableCarException ex) {
+                        System.out.println("There are no allocatable cars for today");
+                    } catch (RentalReservationNotFoundException ex) {
+                        System.out.println("There are no rental reservations to be allocated");
+                    }
                 } else if (response == 3) {
                     break;
                 } else {
