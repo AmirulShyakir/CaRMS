@@ -90,7 +90,7 @@ public class PartnerReservationWebService {
     
     @WebMethod
     public Model retrieveModelByModelId(@WebParam Long modelId) throws ModelNotFoundException {
-        return modelSessionBeanRemote.retrieveModelByModelId(modelId);
+        return modelSessionBeanLocal.retrieveModelByModelId(modelId);
     }
     
     @WebMethod
