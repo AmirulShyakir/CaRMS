@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 import util.exception.CarCategoryNotFoundException;
+import util.exception.CustomerNotFoundException;
 import util.exception.InputDataValidationException;
 import util.exception.InvalidLoginCredentialException;
 import util.exception.ModelNotFoundException;
@@ -90,14 +91,14 @@ public class MainApp {
                 } else {
                     System.out.println("Invalid option, please try again\n");
                 }
-                if (response == 4) {
-                    break;
-                }
+            }
+            if (response == 4) {
+                break;
             }
         }
     }
-    // exception not thrown
 
+    // exception not thrown
     private void doRegisterCustomer() {
         Scanner scanner = new Scanner(System.in);
         String username = "";
@@ -161,8 +162,8 @@ public class MainApp {
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
         SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        Long carCategoryId = new Long(0); // to avoid error
-        Long modelId = new Long(0); // to avoid error
+        Long carCategoryId = new Long(-1); // to avoid error
+        Long modelId = new Long(-1); // to avoid error
         Date pickUpDateTime;
         Long pickupOutletId;
         Date returnDateTime;
@@ -274,21 +275,12 @@ public class MainApp {
 
         RentalReservation rentalReservation = new RentalReservation();
 
-        try {
-            if (response == 1) {
-                rentalReservation.setCarCategory(carCategorySessionBeanRemote.retrieveCarCategoryByCarCategoryId(carCategoryId));
-            } else if (response == 2) {
-                rentalReservation.setModel(modelSessionBeanRemote.retrieveModelByModelId(modelId));
-            }
-
-            rentalReservation.setCustomer(currentCustomer);
+        try {            
             rentalReservation.setStartDate(pickUpDateTime);
             rentalReservation.setEndDate(returnDateTime);
-            rentalReservation.setPickupOutlet(outletSessionBeanRemote.retrieveOutletByOutletId(pickupOutletId));
-            rentalReservation.setReturnOutlet(outletSessionBeanRemote.retrieveOutletByOutletId(returnOutletId));
             rentalReservation.setPrice(totalRentalFee);
 
-            System.out.println("Would you like to pay now? (Enter 'Y' to enter payment details)> ");
+            System.out.print("Would you like to pay now? (Enter 'Y' to enter payment details)> ");
             String input = scanner.nextLine().trim();
             if (input.equals("Y")) {
                 rentalReservation.setPaid(Boolean.TRUE);
@@ -297,7 +289,7 @@ public class MainApp {
             System.out.print("Enter Credit Card Number> ");
             String creditCardNumber = scanner.nextLine().trim();
             currentCustomer.setCreditCardNumber(creditCardNumber);
-            Long rentalReservationId = rentalReservationSessionBeanRemote.createNewRentalReservation(rentalReservation);
+            Long rentalReservationId = rentalReservationSessionBeanRemote.createNewRentalReservation(carCategoryId, modelId, currentCustomer.getCustomerId(), pickupOutletId, returnOutletId, rentalReservation);
             System.out.println("Rental reservation created with ID: " + rentalReservationId);
             scanner.nextLine();
         } catch (CarCategoryNotFoundException ex) {
@@ -307,9 +299,11 @@ public class MainApp {
         } catch (OutletNotFoundException ex) {
             System.out.println("Outlet not found!\n");
         } catch (InputDataValidationException ex) {
-            System.err.println(ex.getMessage());
+            System.out.println(ex.getMessage());
         } catch (UnknownPersistenceException ex) {
-            System.err.println(ex.getMessage());
+            System.out.println(ex.getMessage());
+        } catch (CustomerNotFoundException ex) {
+            System.out.println(ex.getMessage());
         }
     }
 

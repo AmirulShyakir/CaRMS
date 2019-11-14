@@ -156,5 +156,4 @@ public class RentalRateSessionBean implements RentalRateSessionBeanRemote, Renta
         }
         return rentalRates.get(0);
     }
-
 }

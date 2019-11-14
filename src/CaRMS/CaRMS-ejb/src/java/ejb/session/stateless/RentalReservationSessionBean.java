@@ -7,6 +7,7 @@ package ejb.session.stateless;
 
 import entity.Car;
 import entity.CarCategory;
+import entity.Customer;
 import entity.Model;
 import entity.Outlet;
 import entity.RentalReservation;
@@ -34,6 +35,7 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import util.enumeration.CarStatusEnum;
 import util.exception.CarCategoryNotFoundException;
+import util.exception.CustomerNotFoundException;
 import util.exception.InputDataValidationException;
 import util.exception.ModelNotFoundException;
 import util.exception.NoAvailableRentalRateException;
@@ -59,7 +61,7 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
     @EJB
     private CustomerSessionBeanLocal customerSessionBeanLocal;
     @EJB
-    private CarSessionBeanLocal carSessionBeanLocal;
+    private OutletSessionBeanLocal outletSessionBeanLocal;
     @EJB
     private CarCategorySessionBeanLocal carCategorySessionBeanLocal;
     @EJB
@@ -70,21 +72,33 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
         this.validator = validatorFactory.getValidator();
     }
 
-    public RentalReservationSessionBean(CustomerSessionBeanLocal customerSessionBeanLocal, CarSessionBeanLocal carSessionBeanLocal) {
-        this();
-
-        this.customerSessionBeanLocal = customerSessionBeanLocal;
-        this.carSessionBeanLocal = carSessionBeanLocal;
-    }
-
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
-    public Long createNewRentalReservation(RentalReservation newRentalReservation) throws InputDataValidationException, UnknownPersistenceException {
+    public Long createNewRentalReservation(Long carCategoryId, Long modelId, Long customerId, 
+            Long pickupOutletId, Long returnOutletId, RentalReservation newRentalReservation) 
+            throws OutletNotFoundException, CustomerNotFoundException, InputDataValidationException, UnknownPersistenceException,
+            CarCategoryNotFoundException, ModelNotFoundException {
         try {
             Set<ConstraintViolation<RentalReservation>> constraintViolations = validator.validate(newRentalReservation);
 
             if (constraintViolations.isEmpty()) {
+                Customer customer = customerSessionBeanLocal.retrieveCustomerByCustomerId(customerId);
+                Outlet pickupOutlet = outletSessionBeanLocal.retrieveOutletByOutletId(pickupOutletId);
+                Outlet returnOutlet = outletSessionBeanLocal.retrieveOutletByOutletId(returnOutletId);
+                newRentalReservation.setCustomer(customer);
+                newRentalReservation.setPickupOutlet(pickupOutlet);
+                newRentalReservation.setReturnOutlet(returnOutlet);
+                customer.addRentalReservation(newRentalReservation);
+                CarCategory carCategory = null;
+                Model model = null;
+                if (carCategoryId > -1) {
+                    carCategory = carCategorySessionBeanLocal.retrieveCarCategoryByCarCategoryId(carCategoryId);
+                } else {
+                    model = modelSessionBeanLocal.retrieveModelByModelId(modelId);
+                }
+                newRentalReservation.setCarCategory(carCategory);
+                newRentalReservation.setModel(model);
                 em.persist(newRentalReservation);
                 em.flush();
                 return newRentalReservation.getRentalReservationId();
@@ -97,6 +111,14 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
             } else {
                 throw new UnknownPersistenceException(ex.getMessage());
             }
+        } catch (OutletNotFoundException ex) {
+            throw new OutletNotFoundException("Outlet IDs: " + pickupOutletId + " and " + returnOutletId + " either or both does not exist!");
+        } catch (CustomerNotFoundException ex) {
+            throw new CustomerNotFoundException("Customer ID: " + customerId + " does not exist!");
+        } catch (CarCategoryNotFoundException ex) {
+            throw new CarCategoryNotFoundException("Car Category ID: " + carCategoryId + " does not exist!");
+        } catch (ModelNotFoundException ex) {
+            throw new ModelNotFoundException("Model ID: " + modelId + " does not exist!");
         }
     }
 
