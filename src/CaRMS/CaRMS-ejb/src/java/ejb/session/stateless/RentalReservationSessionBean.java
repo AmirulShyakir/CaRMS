@@ -43,7 +43,7 @@ import util.exception.UnknownPersistenceException;
 
 /**
  *
- * @author dtjldamien
+ * @author sw_be
  */
 @Stateless
 @Local(RentalReservationSessionBeanLocal.class)
