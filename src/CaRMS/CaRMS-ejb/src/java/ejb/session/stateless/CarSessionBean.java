@@ -22,6 +22,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import util.enumeration.CarStatusEnum;
 import util.exception.CarNotFoundException;
 import util.exception.InputDataValidationException;
 import util.exception.LicensePlateExistException;
@@ -69,6 +70,7 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
                     if (model.getIsEnabled()) {
                         newCar.setModel(model);
                         newCar.setOutlet(outlet);
+                        newCar.setCarStatus(CarStatusEnum.AVAILABLE);
                         outlet.addCar(newCar);
                         model.addCar(newCar);
                         em.persist(newCar);

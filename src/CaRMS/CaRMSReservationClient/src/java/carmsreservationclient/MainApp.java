@@ -454,7 +454,7 @@ public class MainApp {
     private void doViewAllReservations() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("*** CaRMS Reservation Client :: View All Reservations ***\n");
-        List<RentalReservation> rentalReservations = rentalReservationSessionBeanRemote.retrieveAllRentalReservations();
+        List<RentalReservation> rentalReservations = rentalReservationSessionBeanRemote.retrieveCustomerRentalReservations(currentCustomer.getCustomerId());
         System.out.printf("%4s%20s%20s\n", "ID", "Start Date", "End Date");
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         for (RentalReservation rentalReservation : rentalReservations) {
