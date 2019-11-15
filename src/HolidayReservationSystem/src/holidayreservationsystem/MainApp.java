@@ -182,7 +182,6 @@ class MainApp {
 
         while (true) {
             System.out.println("*** Holiday Reservation System ***\n");
-            System.out.println("You are login as " + "partner name" + " rights\n");
             System.out.println("1: Search Car");
             System.out.println("2: View Reservation Details");
             System.out.println("3: View All Partner Reservations");

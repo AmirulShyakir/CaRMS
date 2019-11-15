@@ -92,12 +92,14 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
                 customer.addRentalReservation(newRentalReservation);
                 CarCategory carCategory = null;
                 Model model = null;
-                if (carCategoryId > -1) {
-                    carCategory = carCategorySessionBeanLocal.retrieveCarCategoryByCarCategoryId(carCategoryId);
+                if (modelId > 0) {
+                    model = modelSessionBeanLocal.retrieveModelByModelId(modelId);
+                    carCategory = model.getCarCategory();
+                    newRentalReservation.setModel(model);
                     newRentalReservation.setCarCategory(carCategory);
                 } else {
-                    model = modelSessionBeanLocal.retrieveModelByModelId(modelId);
-                    newRentalReservation.setModel(model);
+                    carCategory = carCategorySessionBeanLocal.retrieveCarCategoryByCarCategoryId(carCategoryId);
+                    newRentalReservation.setCarCategory(carCategory);
                 }
                 em.persist(newRentalReservation);
                 em.flush();
@@ -145,6 +147,20 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
     @Override
     public List<RentalReservation> retrieveAllRentalReservations() {
         Query query = em.createQuery("SELECT r FROM RentalReservation r");
+        return query.getResultList();
+    }
+    
+    @Override
+    public List<RentalReservation> retrievePartnerRentalReservations(Long partnerId) {
+        Query query = em.createQuery("SELECT r FROM RentalReservation r WHERE r.partner.partnerId = :inPartnerId");
+        query.setParameter("inPartnerId", partnerId);
+        return query.getResultList();
+    }
+    
+    @Override
+    public List<RentalReservation> retrieveCustomerRentalReservations(Long customerId) {
+        Query query = em.createQuery("SELECT r FROM RentalReservation r WHERE r.customer.customerId = :inCustomerId");
+        query.setParameter("inCustomerId", customerId);
         return query.getResultList();
     }
 

@@ -40,4 +40,8 @@ public interface RentalReservationSessionBeanRemote {
 
     public Boolean searchCarByModel(Date pickUpDateTime, Date returnDateTime, Long pickupOutletId, Long returnOutletId, Long modelId) throws NoAvailableRentalRateException, CarCategoryNotFoundException, OutletNotFoundException, ModelNotFoundException;
 
+    public List<RentalReservation> retrievePartnerRentalReservations(Long partnerId);
+
+    public List<RentalReservation> retrieveCustomerRentalReservations(Long customerId);
+
 }

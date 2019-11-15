@@ -175,6 +175,7 @@ public class MainApp {
         String inputDate = scanner.nextLine().trim();
         try {
             Date date = sdf.parse(inputDate);
+            System.out.println(ejbTimerSessionBeanRemote);
             ejbTimerSessionBeanRemote.allocateCarsToCurrentDayReservations(date);
             System.out.println("*** CarMS Reservation Client :: Completed Allocation of Cars for reservations on " + inputDate + " ***\n");
         } catch (ParseException ex) {
