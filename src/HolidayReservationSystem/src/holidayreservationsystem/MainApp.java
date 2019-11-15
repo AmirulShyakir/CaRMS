@@ -103,8 +103,8 @@ class MainApp {
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
         SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        Long carCategoryId = new Long(0); // to avoid error
-        Long modelId = new Long(0); // to avoid error
+        Long carCategoryId = new Long(-1); // to avoid error
+        Long modelId = new Long(-1); // to avoid error
         Date pickUpDateTime;
         Long pickupOutletId;
         Date returnDateTime;
@@ -184,10 +184,9 @@ class MainApp {
             System.out.println("*** Holiday Reservation System ***\n");
             System.out.println("You are login as " + "partner name" + " rights\n");
             System.out.println("1: Search Car");
-            System.out.println("2: Cancel Reservation");
-            System.out.println("3: View Reservation Details");
-            System.out.println("4: View All Partner Reservations");
-            System.out.println("5: Logout\n");
+            System.out.println("2: View Reservation Details");
+            System.out.println("3: View All Partner Reservations");
+            System.out.println("4: Logout\n");
             response = 0;
 
             while (response < 1 || response > 4) {
@@ -198,12 +197,10 @@ class MainApp {
                 if (response == 1) {
                     doSearchCar();
                 } else if (response == 2) {
-                    doCancelReservation();
-                } else if (response == 3) {
                     doViewReservationDetails();
-                } else if (response == 4) {
+                } else if (response == 3) {
                     doViewAllReservations();
-                } else if (response == 5) {
+                } else if (response == 4) {
                     break;
                 } else {
                     System.out.println("Invalid option, please try again!\n");
@@ -275,13 +272,11 @@ class MainApp {
         }
     }
 
-    private void doCancelReservation() {
+    private void doCancelReservation(Long rentalReservationId) {
         Scanner scanner = new Scanner(System.in);
         RentalReservation rentalReservation;
 
         System.out.println("*** Holiday Reservation System :: Cancel Reservation ***\n");
-        System.out.print("Enter Reservation ID> ");
-        Long rentalReservationId = scanner.nextLong();
 
         try {
             BigDecimal penalty = cancelReservation(rentalReservationId);
@@ -290,9 +285,9 @@ class MainApp {
             System.out.println("Reservation successfully cancelled!");
 
             if (rentalReservation.isPaid()) {
-                System.out.println("You have been refunded SGD" + rentalReservation.getPrice().subtract(penalty) + " after deducting cancellation penalty of SGD" + penalty + ".");
+                System.out.println("You have been refunded SGD $" + rentalReservation.getPrice().subtract(penalty) + " after deducting cancellation penalty of SGD" + penalty + ".");
             } else if (!rentalReservation.isPaid()) {
-                System.out.println("Your card has been charged SGD" + penalty + " as a cancellation penalty.");
+                System.out.println("Your card has been charged SGD $" + penalty + " as a cancellation penalty.");
             }
 
         } catch (RentalReservationNotFoundException_Exception ex) {
@@ -316,15 +311,20 @@ class MainApp {
                     "End Date", "Rental Fee",
                     "Paid", "Cancelled");
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-            String paid = "false";
             System.out.printf("%4s%20s%20s%20s%12s%12s\n",
                     rentalReservation.getRentalReservationId(), sdf.format(rentalReservation.getStartDate()),
                     sdf.format(rentalReservation.getEndDate()), rentalReservation.getPrice().toString(),
                     rentalReservation.isPaid().toString(), rentalReservation.isIsCancelled().toString());
+            System.out.print("Would you like to cancel the reservation? (Enter 'Y' to enter cancel the reservation)> ");
+            String input = scanner.nextLine().trim();
+            if (input.equals("Y")) {
+                doCancelReservation(rentalReservationId);
+            } else {
+                System.out.print("Press any key to continue...> ");
+            }
         } catch (RentalReservationNotFoundException_Exception ex) {
             System.out.println("Rental Reservation not found for ID " + rentalReservationId);
         }
-        System.out.print("Press any key to continue...> ");
         scanner.nextLine();
     }
 
@@ -426,5 +426,4 @@ class MainApp {
         ws.client.PartnerReservationWebService port = service.getPartnerReservationWebServicePort();
         return port.searchCarByModel(arg0, arg1, arg2, arg3, arg4);
     }
-
 }

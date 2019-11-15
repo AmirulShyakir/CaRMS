@@ -313,13 +313,12 @@ public class MainApp {
             System.out.println("*** CaRMS Reservation Client ***\n");
             System.out.println("You are login as " + currentCustomer.getFullName() + "\n");
             System.out.println("1: Search Car");
-            System.out.println("2: Cancel Reservation");
-            System.out.println("3: View Reservation Details");
-            System.out.println("4: View All My Reservations");
-            System.out.println("5: Logout\n");
+            System.out.println("2: View Reservation Details");
+            System.out.println("3: View All My Reservations");
+            System.out.println("4: Logout\n");
             response = 0;
 
-            while (response < 1 || response > 5) {
+            while (response < 1 || response > 4) {
                 System.out.print("> ");
 
                 response = scanner.nextInt();
@@ -327,18 +326,16 @@ public class MainApp {
                 if (response == 1) {
                     doSearchCar();
                 } else if (response == 2) {
-                    doCancelReservation();
-                } else if (response == 3) {
                     doViewReservationDetails();
-                } else if (response == 4) {
+                } else if (response == 3) {
                     doViewAllReservations();
-                } else if (response == 5) {
+                } else if (response == 4) {
                     break;
                 } else {
                     System.out.println("Invalid option, please try again!\n");
                 }
             }
-            if (response == 5) {
+            if (response == 4) {
                 break;
             }
         }
@@ -382,15 +379,11 @@ public class MainApp {
         }
     }
 
-    private void doCancelReservation() {
+    private void doCancelReservation(Long rentalReservationId) {
         Scanner scanner = new Scanner(System.in);
         RentalReservation rentalReservation;
 
         System.out.println("*** CaRMS Reservation Client :: Cancel Reservation ***\n");
-        System.out.print("Enter Reservation ID> ");
-        Long rentalReservationId = scanner.nextLong();
-        scanner.nextLine();
-
         try {
             BigDecimal penalty = rentalReservationSessionBeanRemote.cancelReservation(rentalReservationId);
             rentalReservation = rentalReservationSessionBeanRemote.retrieveRentalReservationByRentalReservationId(rentalReservationId);
@@ -434,10 +427,16 @@ public class MainApp {
                     sdf.format(rentalReservation.getEndDate()), rentalReservation.getPrice().toString(),
                     rentalReservation.getPaid().toString(), rentalReservation.getIsCancelled().toString(),
                     rentalReservation.getCarCategory().getCarCategoryName(), modelName);
+            System.out.print("Would you like to cancel the reservation? (Enter 'Y' to enter cancel the reservation)> ");
+            String input = scanner.nextLine().trim();
+            if (input.equals("Y")) {
+                doCancelReservation(rentalReservationId);
+            } else {
+                System.out.print("Press any key to continue...> ");
+            }
         } catch (RentalReservationNotFoundException ex) {
             System.out.println("Rental Reservation not found for ID " + rentalReservationId);
         }
-        System.out.print("Press any key to continue...> ");
         scanner.nextLine();
     }
 

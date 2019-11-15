@@ -8,7 +8,6 @@ package holidayreservationsystem;
 import javax.xml.datatype.DatatypeConfigurationException;
 import ws.client.CarCategoryNotFoundException_Exception;
 import ws.client.InvalidLoginCredentialException_Exception;
-import ws.client.Model;
 import ws.client.ModelNotFoundException_Exception;
 import ws.client.NoAvailableRentalRateException_Exception;
 import ws.client.OutletNotFoundException_Exception;
