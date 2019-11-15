@@ -78,25 +78,10 @@
 
 <xs:element name="searchCarByModelResponse" type="tns:searchCarByModelResponse"/>
 
-<xs:complexType name="retrievePartnerByPartnerId">
+<xs:complexType name="createNewCustomer">
 <xs:sequence>
 <xs:element name="arg0" type="xs:long" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="retrievePartnerByPartnerIdResponse">
-<xs:sequence>
-<xs:element name="return" type="tns:partner" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="partner">
-<xs:sequence>
-<xs:element name="customers" type="tns:customer" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-<xs:element name="partnerId" type="xs:long" minOccurs="0"/>
-<xs:element name="partnerName" type="xs:string" minOccurs="0"/>
-<xs:element name="password" type="xs:string" minOccurs="0"/>
-<xs:element name="rentalReservations" type="tns:rentalReservation" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element name="arg1" type="tns:customer" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 
@@ -112,6 +97,16 @@
 </xs:sequence>
 </xs:complexType>
 
+<xs:complexType name="partner">
+<xs:sequence>
+<xs:element name="customers" type="tns:customer" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+<xs:element name="partnerId" type="xs:long" minOccurs="0"/>
+<xs:element name="partnerName" type="xs:string" minOccurs="0"/>
+<xs:element name="password" type="xs:string" minOccurs="0"/>
+<xs:element name="rentalReservations" type="tns:rentalReservation" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
 <xs:complexType name="rentalReservation">
 <xs:sequence>
 <xs:element name="endDate" type="xs:dateTime" minOccurs="0"/>
@@ -123,22 +118,15 @@
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="PartnerNotFoundException">
-<xs:sequence>
-<xs:element name="message" type="xs:string" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="createNewCustomer">
-<xs:sequence>
-<xs:element name="arg0" type="xs:long" minOccurs="0"/>
-<xs:element name="arg1" type="tns:customer" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
 <xs:complexType name="createNewCustomerResponse">
 <xs:sequence>
 <xs:element name="return" type="xs:long" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="PartnerNotFoundException">
+<xs:sequence>
+<xs:element name="message" type="xs:string" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 
@@ -151,6 +139,18 @@
 <xs:complexType name="InputDataValidationException">
 <xs:sequence>
 <xs:element name="message" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="retrievePartnerByPartnerId">
+<xs:sequence>
+<xs:element name="arg0" type="xs:long" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="retrievePartnerByPartnerIdResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:partner" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 

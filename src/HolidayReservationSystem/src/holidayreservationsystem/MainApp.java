@@ -390,7 +390,7 @@ class MainApp {
         ws.client.PartnerReservationWebService port = service.getPartnerReservationWebServicePort();
         return port.retrieveModelByModelId(arg0);
     }
-
+    
     private static Outlet retrieveOutletByOutletId(java.lang.Long arg0) throws OutletNotFoundException_Exception {
         ws.client.PartnerReservationWebService_Service service = new ws.client.PartnerReservationWebService_Service();
         ws.client.PartnerReservationWebService port = service.getPartnerReservationWebServicePort();
