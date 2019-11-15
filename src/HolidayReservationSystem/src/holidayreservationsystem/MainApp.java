@@ -311,9 +311,15 @@ class MainApp {
                     "End Date", "Rental Fee",
                     "Paid", "Cancelled");
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            
+            XMLGregorianCalendar startGregorianCalendar = rentalReservation.getStartDate();
+            XMLGregorianCalendar endGregorianCalendar = rentalReservation.getEndDate();
+            Date startDate = startGregorianCalendar.toGregorianCalendar().getTime();
+            Date endDate = endGregorianCalendar.toGregorianCalendar().getTime();
+            
             System.out.printf("%4s%20s%20s%20s%12s%12s\n",
-                    rentalReservation.getRentalReservationId(), sdf.format(rentalReservation.getStartDate()),
-                    sdf.format(rentalReservation.getEndDate()), rentalReservation.getPrice().toString(),
+                    rentalReservation.getRentalReservationId(), sdf.format(startDate),
+                    sdf.format(endDate), rentalReservation.getPrice().toString(),
                     rentalReservation.isPaid().toString(), rentalReservation.isIsCancelled().toString());
             System.out.print("Would you like to cancel the reservation? (Enter 'Y' to enter cancel the reservation)> ");
             String input = scanner.nextLine().trim();
@@ -334,10 +340,17 @@ class MainApp {
         List<RentalReservation> rentalReservations = retrieveAllRentalReservations();
         System.out.printf("%4s%20s%20s\n", "ID", "Start Date", "End Date");
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        
         for (RentalReservation rentalReservation : rentalReservations) {
+            
+            XMLGregorianCalendar startGregorianCalendar = rentalReservation.getStartDate();
+            XMLGregorianCalendar endGregorianCalendar = rentalReservation.getEndDate();
+            Date startDate = startGregorianCalendar.toGregorianCalendar().getTime();
+            Date endDate = endGregorianCalendar.toGregorianCalendar().getTime();
+            
             System.out.printf("%4s%20s%20s\n", rentalReservation.getRentalReservationId(),
-                    sdf.format(rentalReservation.getStartDate()),
-                    sdf.format(rentalReservation.getEndDate()));
+                    sdf.format(startDate),
+                    sdf.format(endDate));
         }
         System.out.print("Press any key to continue...> ");
         scanner.nextLine();
@@ -390,7 +403,7 @@ class MainApp {
         ws.client.PartnerReservationWebService port = service.getPartnerReservationWebServicePort();
         return port.retrieveModelByModelId(arg0);
     }
-    
+
     private static Outlet retrieveOutletByOutletId(java.lang.Long arg0) throws OutletNotFoundException_Exception {
         ws.client.PartnerReservationWebService_Service service = new ws.client.PartnerReservationWebService_Service();
         ws.client.PartnerReservationWebService port = service.getPartnerReservationWebServicePort();
