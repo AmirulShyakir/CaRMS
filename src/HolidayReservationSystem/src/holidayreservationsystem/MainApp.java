@@ -256,7 +256,7 @@ class MainApp {
                 rentalReservation.setPaid(Boolean.FALSE);
             }
             customerId = createNewCustomer(currentPartnerId, newCustomer);
-            Long rentalReservationId = createNewRentalReservation(carCategoryId, modelId, customerId, pickupOutletId, returnOutletId, rentalReservation);
+            Long rentalReservationId = createNewPartnerRentalReservation(carCategoryId, currentPartnerId, modelId, customerId, pickupOutletId, returnOutletId, rentalReservation);
             System.out.println("Rental reservation created with ID: " + rentalReservationId);
 
         } catch (CarCategoryNotFoundException_Exception ex) {
@@ -311,12 +311,12 @@ class MainApp {
                     "End Date", "Rental Fee",
                     "Paid", "Cancelled");
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-            
+
             XMLGregorianCalendar startGregorianCalendar = rentalReservation.getStartDate();
             XMLGregorianCalendar endGregorianCalendar = rentalReservation.getEndDate();
             Date startDate = startGregorianCalendar.toGregorianCalendar().getTime();
             Date endDate = endGregorianCalendar.toGregorianCalendar().getTime();
-            
+
             System.out.printf("%4s%20s%20s%20s%12s%12s\n",
                     rentalReservation.getRentalReservationId(), sdf.format(startDate),
                     sdf.format(endDate), rentalReservation.getPrice().toString(),
@@ -340,14 +340,14 @@ class MainApp {
         List<RentalReservation> rentalReservations = retrieveAllRentalReservations();
         System.out.printf("%4s%20s%20s\n", "ID", "Start Date", "End Date");
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        
+
         for (RentalReservation rentalReservation : rentalReservations) {
-            
+
             XMLGregorianCalendar startGregorianCalendar = rentalReservation.getStartDate();
             XMLGregorianCalendar endGregorianCalendar = rentalReservation.getEndDate();
             Date startDate = startGregorianCalendar.toGregorianCalendar().getTime();
             Date endDate = endGregorianCalendar.toGregorianCalendar().getTime();
-            
+
             System.out.printf("%4s%20s%20s\n", rentalReservation.getRentalReservationId(),
                     sdf.format(startDate),
                     sdf.format(endDate));
@@ -360,6 +360,12 @@ class MainApp {
         ws.client.PartnerReservationWebService_Service service = new ws.client.PartnerReservationWebService_Service();
         ws.client.PartnerReservationWebService port = service.getPartnerReservationWebServicePort();
         return port.createNewCustomer(arg0, arg1);
+    }
+
+    private static Long createNewPartnerRentalReservation(java.lang.Long arg0, java.lang.Long arg1, java.lang.Long arg2, java.lang.Long arg3, java.lang.Long arg4, java.lang.Long arg5, ws.client.RentalReservation arg6) throws OutletNotFoundException_Exception, InputDataValidationException_Exception, UnknownPersistenceException_Exception, CarCategoryNotFoundException_Exception, CustomerNotFoundException_Exception, PartnerNotFoundException_Exception, ModelNotFoundException_Exception {
+        ws.client.PartnerReservationWebService_Service service = new ws.client.PartnerReservationWebService_Service();
+        ws.client.PartnerReservationWebService port = service.getPartnerReservationWebServicePort();
+        return port.createNewPartnerRentalReservation(arg0, arg1, arg2, arg3, arg4, arg5, arg6);
     }
 
     private static Long partnerLogin(java.lang.String arg0, java.lang.String arg1) throws InvalidLoginCredentialException_Exception {

@@ -15,6 +15,7 @@ import util.exception.InputDataValidationException;
 import util.exception.ModelNotFoundException;
 import util.exception.NoAvailableRentalRateException;
 import util.exception.OutletNotFoundException;
+import util.exception.PartnerNotFoundException;
 import util.exception.RentalReservationNotFoundException;
 import util.exception.UnknownPersistenceException;
 
@@ -26,6 +27,11 @@ public interface RentalReservationSessionBeanRemote {
 
     public Long createNewRentalReservation(Long carCategoryId, Long modelId, Long customerId, Long pickupOutletId, Long returnOutletId, RentalReservation newRentalReservation) throws OutletNotFoundException, CustomerNotFoundException, InputDataValidationException, UnknownPersistenceException, CarCategoryNotFoundException, ModelNotFoundException;
 
+    public Long createNewPartnerRentalReservation(Long carCategoryId, Long partnerId, Long modelId, Long customerId,
+            Long pickupOutletId, Long returnOutletId, RentalReservation newRentalReservation)
+            throws OutletNotFoundException, CustomerNotFoundException, InputDataValidationException, UnknownPersistenceException,
+            CarCategoryNotFoundException, ModelNotFoundException, PartnerNotFoundException;
+    
     public RentalReservation retrieveRentalReservationByRentalReservationId(Long rentalReservationId) throws RentalReservationNotFoundException;
 
     public List<RentalReservation> retrieveAllRentalReservations();
