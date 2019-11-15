@@ -80,7 +80,6 @@ public class MainApp {
             System.out.println("2: Register as customer");
             System.out.println("3: Search Car");
             System.out.println("4: Exit\n");
-            System.out.println("5: Create new Customer");
             response = 0;
 
             while (response < 1 || response > 5) {
@@ -102,8 +101,8 @@ public class MainApp {
                     doSearchCar();
                 } else if (response == 4) {
                     break;
-                } else if (response == 5) {
-                    doCreateNewCustomer();
+                //} else if (response == 5) {
+                //    doCreateNewCustomer();
                 } else {
                     System.out.println("Invalid option, please try again\n");
                 }
