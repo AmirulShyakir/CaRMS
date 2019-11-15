@@ -70,6 +70,10 @@
 
 <xs:element name="retrievePartnerByPartnerIdResponse" type="tns:retrievePartnerByPartnerIdResponse"/>
 
+<xs:element name="retrievePartnerRentalReservations" type="tns:retrievePartnerRentalReservations"/>
+
+<xs:element name="retrievePartnerRentalReservationsResponse" type="tns:retrievePartnerRentalReservationsResponse"/>
+
 <xs:element name="retrieveRentalReservationByRentalReservationId" type="tns:retrieveRentalReservationByRentalReservationId"/>
 
 <xs:element name="retrieveRentalReservationByRentalReservationIdResponse" type="tns:retrieveRentalReservationByRentalReservationIdResponse"/>
@@ -421,6 +425,18 @@
 <xs:complexType name="retrieveCarCategoryByCarCategoryIdResponse">
 <xs:sequence>
 <xs:element name="return" type="tns:carCategory" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="retrievePartnerRentalReservations">
+<xs:sequence>
+<xs:element name="arg0" type="xs:long" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="retrievePartnerRentalReservationsResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:rentalReservation" minOccurs="0" maxOccurs="unbounded"/>
 </xs:sequence>
 </xs:complexType>
 

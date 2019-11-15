@@ -109,6 +109,11 @@ public class PartnerReservationWebService {
     }
     
     @WebMethod
+    public List<RentalReservation> retrievePartnerRentalReservations(@WebParam Long partnerId) {
+        return rentalReservationSessionBeanLocal.retrievePartnerRentalReservations(partnerId);
+    }
+    
+    @WebMethod
     public Long createNewRentalReservation(@WebParam Long carCategoryId, @WebParam Long modelId, @WebParam Long customerId,
             @WebParam Long pickupOutletId, @WebParam Long returnOutletId, @WebParam RentalReservation newRentalReservation)
             throws OutletNotFoundException, CustomerNotFoundException, InputDataValidationException, UnknownPersistenceException,

@@ -336,7 +336,7 @@ class MainApp {
     private void doViewAllReservations() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("*** Holiday Reservation System :: View All Reservations ***\n");
-        List<RentalReservation> rentalReservations = retrieveAllRentalReservations();
+        List<RentalReservation> rentalReservations = retrievePartnerRentalReservations(currentPartnerId);
         System.out.printf("%4s%20s%20s\n", "ID", "Start Date", "End Date");
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
@@ -431,6 +431,12 @@ class MainApp {
         ws.client.PartnerReservationWebService_Service service = new ws.client.PartnerReservationWebService_Service();
         ws.client.PartnerReservationWebService port = service.getPartnerReservationWebServicePort();
         return port.retrieveAllRentalReservations();
+    }
+    
+    private static java.util.List<ws.client.RentalReservation> retrievePartnerRentalReservations(java.lang.Long arg0) {
+        ws.client.PartnerReservationWebService_Service service = new ws.client.PartnerReservationWebService_Service();
+        ws.client.PartnerReservationWebService port = service.getPartnerReservationWebServicePort();
+        return port.retrievePartnerRentalReservations(arg0);
     }
 
     private static Boolean searchCarByCategory(XMLGregorianCalendar arg0, XMLGregorianCalendar arg1, Long arg2, Long arg3, Long arg4) throws OutletNotFoundException_Exception, CarCategoryNotFoundException_Exception, NoAvailableRentalRateException_Exception {
