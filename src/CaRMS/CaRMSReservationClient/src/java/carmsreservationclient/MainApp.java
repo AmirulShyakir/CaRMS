@@ -6,6 +6,7 @@
 package carmsreservationclient;
 
 import ejb.session.stateless.CarCategorySessionBeanRemote;
+import ejb.session.stateless.CustomerSessionBeanRemote;
 import ejb.session.stateless.ModelSessionBeanRemote;
 import ejb.session.stateless.OutletSessionBeanRemote;
 import ejb.session.stateless.OwnCustomerSessionBeanRemote;
@@ -31,6 +32,7 @@ import util.exception.NoAvailableRentalRateException;
 import util.exception.OutletNotFoundException;
 import util.exception.OutsideOperatingHoursException;
 import util.exception.OwnCustomerUsernameExistException;
+import util.exception.PartnerNotFoundException;
 import util.exception.RentalReservationNotFoundException;
 import util.exception.UnknownPersistenceException;
 
@@ -45,13 +47,19 @@ public class MainApp {
     private RentalReservationSessionBeanRemote rentalReservationSessionBeanRemote;
     private ModelSessionBeanRemote modelSessionBeanRemote;
     private OutletSessionBeanRemote outletSessionBeanRemote;
+    private CustomerSessionBeanRemote customerSessionBeanRemote;
 
     private Customer currentCustomer;
 
     public MainApp() {
     }
 
-    public MainApp(OwnCustomerSessionBeanRemote ownCustomerSessionBeanRemote, CarCategorySessionBeanRemote carCategorySessionBeanRemote, RentalReservationSessionBeanRemote rentalReservationSessionBeanRemote, ModelSessionBeanRemote modelSessionBeanRemote, OutletSessionBeanRemote outletSessionBeanRemote) {
+    public MainApp(OwnCustomerSessionBeanRemote ownCustomerSessionBeanRemote,
+            CarCategorySessionBeanRemote carCategorySessionBeanRemote,
+            RentalReservationSessionBeanRemote rentalReservationSessionBeanRemote,
+            ModelSessionBeanRemote modelSessionBeanRemote,
+            OutletSessionBeanRemote outletSessionBeanRemote,
+            CustomerSessionBeanRemote customerSessionBeanRemote) {
         this();
 
         this.ownCustomerSessionBeanRemote = ownCustomerSessionBeanRemote;
@@ -59,6 +67,7 @@ public class MainApp {
         this.rentalReservationSessionBeanRemote = rentalReservationSessionBeanRemote;
         this.modelSessionBeanRemote = modelSessionBeanRemote;
         this.outletSessionBeanRemote = outletSessionBeanRemote;
+        this.customerSessionBeanRemote = customerSessionBeanRemote;
     }
 
     public void runApp() {
@@ -71,9 +80,10 @@ public class MainApp {
             System.out.println("2: Register as customer");
             System.out.println("3: Search Car");
             System.out.println("4: Exit\n");
+            System.out.println("5: Create new Customer");
             response = 0;
 
-            while (response < 1 || response > 4) {
+            while (response < 1 || response > 5) {
                 System.out.print("> ");
 
                 response = scanner.nextInt();
@@ -92,6 +102,8 @@ public class MainApp {
                     doSearchCar();
                 } else if (response == 4) {
                     break;
+                } else if (response == 5) {
+                    doCreateNewCustomer();
                 } else {
                     System.out.println("Invalid option, please try again\n");
                 }
@@ -453,5 +465,39 @@ public class MainApp {
         }
         System.out.print("Press any key to continue...> ");
         scanner.nextLine();
+    }
+
+    private void doCreateNewCustomer() {
+        Scanner scanner = new Scanner(System.in);
+        String firstName;
+        String lastName;
+        String email;
+        Customer newCustomer = new Customer();
+        System.out.print("Enter customer first name> ");
+        firstName = scanner.nextLine().trim();
+        System.out.print("Enter customer last name> ");
+        lastName = scanner.nextLine().trim();
+        System.out.print("Enter email> ");
+        email = scanner.nextLine().trim();
+        newCustomer.setFirstName(firstName);
+        newCustomer.setLastName(lastName);
+        newCustomer.setEmail(email);
+
+        System.out.print("Would you like to pay now? (Enter 'Y' to enter payment details)> ");
+        String input = scanner.nextLine().trim();
+        if (input.equals("Y")) {
+            System.out.print("Enter credit card number> ");
+            String creditCardNumber = scanner.nextLine().trim();
+            newCustomer.setCreditCardNumber(creditCardNumber);
+        }
+        try {
+            System.out.println("new customer: " + customerSessionBeanRemote.createNewCustomer(new Long(1), newCustomer));
+        } catch (InputDataValidationException ex) {
+            System.out.println("customer creation exception: InputDataValidationException");
+        } catch (PartnerNotFoundException ex) {
+            System.out.println("customer creation exception: PartnerNotFoundException");
+        } catch (UnknownPersistenceException ex) {
+            System.out.println("customer creation exception: UnknownPersistenceException");
+        }
     }
 }

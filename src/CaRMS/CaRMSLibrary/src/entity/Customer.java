@@ -40,7 +40,7 @@ public class Customer implements Serializable {
     @NotNull
     @Size(max = 64)
     protected String lastName;
-    @Column(nullable = true, length = 32, unique = true)
+    @Column(nullable = false, length = 32, unique = true)
     @NotNull
     @Size(max = 32)
     protected String email;
@@ -53,7 +53,7 @@ public class Customer implements Serializable {
     @JoinColumn(nullable = true)
     private Partner partner;
     @OneToMany(mappedBy = "customer")
-    private List<RentalReservation> rentalReservations;
+    protected List<RentalReservation> rentalReservations;
 
     public Customer() {
         rentalReservations = new ArrayList<>();
