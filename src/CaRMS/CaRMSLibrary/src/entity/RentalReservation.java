@@ -68,8 +68,6 @@ public class RentalReservation implements Serializable {
     private CarCategory carCategory;
     @OneToOne(optional = true)
     private Model model;
-    @OneToMany(mappedBy = "rentalReservation")
-    private List<RentalDay> rentalDays;
     @OneToOne(optional = true)
     @JoinColumn(nullable = true)
     private TransitDriverDispatchRecord transitDriverDispatchRecord;
@@ -91,7 +89,6 @@ public class RentalReservation implements Serializable {
     public RentalReservation() {
         this.isCancelled = false;
         this.isComplete = false;
-        this.rentalDays = new ArrayList<>();
     }
 
     public Long getRentalReservationId() {
@@ -159,27 +156,6 @@ public class RentalReservation implements Serializable {
 
     public void setModel(Model model) {
         this.model = model;
-    }
-
-    @XmlTransient
-    public List<RentalDay> getRentalDays() {
-        return rentalDays;
-    }
-
-    public void setRentalDays(List<RentalDay> rentalDays) {
-        this.rentalDays = rentalDays;
-    }
-
-    public void addRentalDay(RentalDay rentalDay) {
-        if (!this.rentalDays.contains(rentalDay)) {
-            this.rentalDays.add(rentalDay);
-        }
-    }
-
-    public void removeRentalDay(RentalDay rentalDay) {
-        if (this.rentalDays.contains(rentalDay)) {
-            this.rentalDays.remove(rentalDay);
-        }
     }
 
     @XmlTransient

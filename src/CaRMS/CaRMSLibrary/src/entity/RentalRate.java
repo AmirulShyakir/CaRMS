@@ -64,12 +64,9 @@ public class RentalRate implements Serializable {
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
     private CarCategory carCategory;
-    @OneToMany(mappedBy = "rentalRate")
-    private List<RentalDay> rentalDays;
 
     public RentalRate() {
         this.isEnabled = true;
-        this.rentalDays = new ArrayList<>();
     }
 
     public RentalRate(String rentalRateName, BigDecimal ratePerDay) {
@@ -135,26 +132,6 @@ public class RentalRate implements Serializable {
 
     public void setCarCategory(CarCategory carCategory) {
         this.carCategory = carCategory;
-    }
-
-    public List<RentalDay> getRentalDays() {
-        return rentalDays;
-    }
-
-    public void setRentalDays(List<RentalDay> rentalDays) {
-        this.rentalDays = rentalDays;
-    }
-
-    public void addRentalDay(RentalDay rentalDay) {
-        if (!this.rentalDays.contains(rentalDay)) {
-            this.rentalDays.add(rentalDay);
-        }
-    }
-
-    public void removeRentalDay(RentalDay rentalDay) {
-        if (this.rentalDays.contains(rentalDay)) {
-            this.rentalDays.remove(rentalDay);
-        }
     }
 
     public Boolean getIsEnabled() {
