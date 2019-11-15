@@ -117,6 +117,14 @@ public class PartnerReservationWebService {
     }
     
     @WebMethod
+    public Long createNewPartnerRentalReservation(@WebParam Long carCategoryId, @WebParam Long partnerId, @WebParam Long modelId, @WebParam Long customerId,
+            @WebParam Long pickupOutletId, @WebParam Long returnOutletId, @WebParam RentalReservation newRentalReservation)
+            throws OutletNotFoundException, CustomerNotFoundException, InputDataValidationException, UnknownPersistenceException,
+            CarCategoryNotFoundException, ModelNotFoundException, PartnerNotFoundException {
+        return rentalReservationSessionBeanLocal.createNewPartnerRentalReservation(carCategoryId, partnerId, modelId, customerId, pickupOutletId, returnOutletId, newRentalReservation);
+    }
+    
+    @WebMethod
     public BigDecimal cancelReservation(@WebParam Long rentalReservationId) throws RentalReservationNotFoundException {
         return rentalReservationSessionBeanLocal.cancelReservation(rentalReservationId);
     }

@@ -10,6 +10,7 @@ import entity.CarCategory;
 import entity.Customer;
 import entity.Model;
 import entity.Outlet;
+import entity.Partner;
 import entity.RentalReservation;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -21,6 +22,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Remote;
@@ -40,6 +43,7 @@ import util.exception.InputDataValidationException;
 import util.exception.ModelNotFoundException;
 import util.exception.NoAvailableRentalRateException;
 import util.exception.OutletNotFoundException;
+import util.exception.PartnerNotFoundException;
 import util.exception.RentalReservationNotFoundException;
 import util.exception.UnknownPersistenceException;
 
@@ -60,6 +64,8 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
 
     @EJB
     private CustomerSessionBeanLocal customerSessionBeanLocal;
+    @EJB
+    private PartnerSessionBeanLocal partnerSessionBeanLocal;
     @EJB
     private OutletSessionBeanLocal outletSessionBeanLocal;
     @EJB
@@ -121,6 +127,58 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
             throw new CarCategoryNotFoundException("Car Category ID: " + carCategoryId + " does not exist!");
         } catch (ModelNotFoundException ex) {
             throw new ModelNotFoundException("Model ID: " + modelId + " does not exist!");
+        }
+    }
+    
+    @Override
+    public Long createNewPartnerRentalReservation(Long carCategoryId, Long partnerId, Long modelId, Long customerId,
+            Long pickupOutletId, Long returnOutletId, RentalReservation newRentalReservation)
+            throws OutletNotFoundException, CustomerNotFoundException, InputDataValidationException, UnknownPersistenceException,
+            CarCategoryNotFoundException, ModelNotFoundException, PartnerNotFoundException {
+        try {
+            Set<ConstraintViolation<RentalReservation>> constraintViolations = validator.validate(newRentalReservation);
+
+            if (constraintViolations.isEmpty()) {
+                Customer customer = customerSessionBeanLocal.retrieveCustomerByCustomerId(customerId);
+                Partner partner = partnerSessionBeanLocal.retrievePartnerByPartnerId(partnerId);
+                Outlet pickupOutlet = outletSessionBeanLocal.retrieveOutletByOutletId(pickupOutletId);
+                Outlet returnOutlet = outletSessionBeanLocal.retrieveOutletByOutletId(returnOutletId);
+                newRentalReservation.setCustomer(customer);
+                newRentalReservation.setPartner(partner);
+                newRentalReservation.setPickupOutlet(pickupOutlet);
+                newRentalReservation.setReturnOutlet(returnOutlet);
+                customer.addRentalReservation(newRentalReservation);
+                CarCategory carCategory = null;
+                Model model = null;
+                if (carCategoryId > -1) {
+                    carCategory = carCategorySessionBeanLocal.retrieveCarCategoryByCarCategoryId(carCategoryId);
+                    newRentalReservation.setCarCategory(carCategory);
+                } else {
+                    model = modelSessionBeanLocal.retrieveModelByModelId(modelId);
+                    newRentalReservation.setModel(model);
+                }
+                em.persist(newRentalReservation);
+                em.flush();
+                return newRentalReservation.getRentalReservationId();
+            } else {
+                throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));
+            }
+        } catch (PersistenceException ex) {
+            if (ex.getCause() != null && ex.getCause().getClass().getName().equals("org.eclipse.persistence.exceptions.DatabaseException")) {
+                throw new UnknownPersistenceException(ex.getMessage());
+            } else {
+                throw new UnknownPersistenceException(ex.getMessage());
+            }
+        } catch (OutletNotFoundException ex) {
+            throw new OutletNotFoundException("Outlet IDs: " + pickupOutletId + " and " + returnOutletId + " either or both does not exist!");
+        } catch (CustomerNotFoundException ex) {
+            throw new CustomerNotFoundException("Customer ID: " + customerId + " does not exist!");
+        } catch (CarCategoryNotFoundException ex) {
+            throw new CarCategoryNotFoundException("Car Category ID: " + carCategoryId + " does not exist!");
+        } catch (ModelNotFoundException ex) {
+            throw new ModelNotFoundException("Model ID: " + modelId + " does not exist!");
+        } catch (PartnerNotFoundException ex) {
+            throw new PartnerNotFoundException("Partner ID: " + partnerId + " does not exist!");
         }
     }
 
