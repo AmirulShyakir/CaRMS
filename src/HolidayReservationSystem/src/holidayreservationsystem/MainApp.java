@@ -165,8 +165,6 @@ class MainApp {
             }
         } catch (ParseException ex) {
             System.out.println("Invalid date input!\n");
-        } catch (NoAvailableRentalRateException_Exception ex) {
-            System.out.println("There are no available rental rates for the period!\n");
         } catch (CarCategoryNotFoundException_Exception ex) {
             System.out.println("Car Category not found for ID: " + carCategoryId + "\n");
         } catch (ModelNotFoundException_Exception ex) {

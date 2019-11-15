@@ -34,4 +34,8 @@ public interface CarSessionBeanRemote {
 
     public List<Car> retrieveCarsByOutletId(Long outletId);
 
+    public List<Car> retrieveCarsByModelId(Long modelId);
+
+    public List<Car> retrieveCarsByCarCategoryId(Long carCategoryId);
+
 }

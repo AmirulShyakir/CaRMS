@@ -73,9 +73,10 @@ public class CustomerServiceModule {
         System.out.println("*** CarMS Management Client :: Sales Management :: Pickup Car***\n");
         System.out.print("Enter Rental Reservation ID> ");
         Long rentalReservationId = scanner.nextLong();
+        scanner.nextLine();
         try {
             RentalReservation rentalReservation = rentalReservationSessionBeanRemote.retrieveRentalReservationByRentalReservationId(rentalReservationId);
-            if (rentalReservation.getPaid()) {
+            if (!rentalReservation.getPaid()) {
                 System.out.print("Pay rental fee? (Enter 'Y' to pay)> ");
                 String input = scanner.nextLine().trim();
                 if (!input.equals("Y")) {
@@ -98,6 +99,7 @@ public class CustomerServiceModule {
         System.out.println("*** CarMS Management Client :: Sales Management :: Return Car***\n");
         System.out.print("Enter Rental Reservation ID> ");
         Long rentalReservationId = scanner.nextLong();
+        scanner.nextLine();
         try {
             rentalReservationSessionBeanRemote.returnCar(rentalReservationId);
             System.out.println("Car returned by customer");

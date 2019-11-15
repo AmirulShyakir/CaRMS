@@ -35,5 +35,9 @@ public interface CarSessionBeanLocal {
     public void deleteCar(Long carId) throws CarNotFoundException;
 
     public List<Car> retrieveCarsByOutletId(Long outletId);
+
+    public List<Car> retrieveCarsByModelId(Long modelId);
+
+    public List<Car> retrieveCarsByCarCategoryId(Long carCategoryId);
     
 }

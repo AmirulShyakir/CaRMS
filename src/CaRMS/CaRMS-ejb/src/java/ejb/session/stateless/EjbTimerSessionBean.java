@@ -6,9 +6,7 @@
 package ejb.session.stateless;
 
 import entity.Car;
-import entity.Model;
 import entity.RentalReservation;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -65,39 +63,38 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
         query.setParameter("inStartDate", start);
         query.setParameter("inEndDate", end);
         List<RentalReservation> rentalReservationsToBeAllocated = query.getResultList();
-        System.out.println("number of rental reservations: " + rentalReservationsToBeAllocated.size());
         for (RentalReservation rentalReservation : rentalReservationsToBeAllocated) {
             boolean isAllocated = false;
-            List<Car> cars = carSessionBeanLocal.retrieveAllCars();
-            System.out.println("number of cars : " + cars.size());
             if (rentalReservation.getModel() != null) {
+                List<Car> cars = carSessionBeanLocal.retrieveCarsByModelId(rentalReservation.getModel().getModelId());
                 for (Car car : cars) {
-                    System.out.println(1 + " " + car);
-                    if (car.getModel().equals(rentalReservation.getModel())) {
+                    if ((car.getCarStatus() == CarStatusEnum.AVAILABLE && car.getRentalReservation() == null)
+                            && car.getOutlet().getOutletId().equals(rentalReservation.getPickupOutlet().getOutletId())) {
                         rentalReservation.setCar(car);
-                        System.out.println("car is " + car);
+                        car.setRentalReservation(rentalReservation);
                         isAllocated = true;
                         break;
                     }
                 }
                 if (isAllocated) {
-                    break;
+                    continue;
                 }
                 // current outlet has no cars to fulfill the rental reservation
-                List<Car> carsOfSameModel = rentalReservation.getModel().getCars();
-                for (Car car : carsOfSameModel) {
-                    if ((car.getCarStatus() == CarStatusEnum.AVAILABLE) && car.getRentalReservation() == null) {
+                for (Car car : cars) {
+                    if (car.getCarStatus() == CarStatusEnum.AVAILABLE && car.getRentalReservation() == null) {
                         rentalReservation.setCar(car);
+                        car.setRentalReservation(rentalReservation);
                         isAllocated = true;
                         break;
                     }
                 }
                 if (isAllocated) {
-                    break;
+                    continue;
                 }
                 // then check those currently on rental returning to same outlet
                 for (Car car : cars) {
-                    if ((car.getCarStatus() == CarStatusEnum.ON_RENT) && car.getRentalReservation().getReturnOutlet().equals(rentalReservation.getPickupOutlet())) {
+                    if ((car.getCarStatus() == CarStatusEnum.ON_RENT && car.getRentalReservation() == null)
+                            && car.getRentalReservation().getReturnOutlet().getOutletName().equals(rentalReservation.getPickupOutlet().getOutletName())) {
                         if (car.getRentalReservation().getEndDate().before(rentalReservation.getStartDate())) {
                             rentalReservation.setCar(car);
                             isAllocated = true;
@@ -107,7 +104,8 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
                 }
                 // then check those currently on rental returning to a different outlet
                 for (Car car : cars) {
-                    if ((car.getCarStatus() == CarStatusEnum.ON_RENT) && car.getRentalReservation().getReturnOutlet().equals(rentalReservation.getPickupOutlet())) {
+                    if ((car.getCarStatus() == CarStatusEnum.ON_RENT) && car.getRentalReservation() == null
+                            && car.getRentalReservation().getReturnOutlet().equals(rentalReservation.getPickupOutlet())) {
                         GregorianCalendar transitCalendar = new GregorianCalendar(
                                 car.getRentalReservation().getEndDate().getYear() + 1900,
                                 car.getRentalReservation().getEndDate().getMonth(),
@@ -123,38 +121,43 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
                     }
                 }
                 if (isAllocated) {
-                    break;
+                    continue;
                 }
             } else { // rental reservation by car category
+                List<Car> cars = carSessionBeanLocal.retrieveCarsByCarCategoryId(
+                        rentalReservation.getCarCategory().getCarCategoryId());
                 for (Car car : cars) {
-                    if (car.getModel().getCarCategory().equals(rentalReservation.getCarCategory())) {
+                    if (car.getModel().getCarCategory().getCarCategoryName().equals(
+                            rentalReservation.getCarCategory().getCarCategoryName())
+                            && car.getRentalReservation() == null
+                            && car.getOutlet().getOutletId().equals(rentalReservation.getPickupOutlet().getOutletId())) {
                         rentalReservation.setCar(car);
+                        car.setRentalReservation(rentalReservation);
                         isAllocated = true;
                         break;
                     }
                 }
                 if (isAllocated) {
-                    break;
+                    continue;
                 }
                 // current outlet has no cars to fulfil the current rental reservation
-                List<Model> models = rentalReservation.getCarCategory().getModels();
-                List<Car> carsOfSameCategory = new ArrayList<>();
-                for (Model model : models) {
-                    carsOfSameCategory.addAll(model.getCars());
-                }
+                Long carCategoryId = rentalReservation.getCarCategory().getCarCategoryId();
+                List<Car> carsOfSameCategory = carSessionBeanLocal.retrieveCarsByCarCategoryId(carCategoryId);
                 for (Car car : carsOfSameCategory) {
                     if ((car.getCarStatus() == CarStatusEnum.AVAILABLE) && car.getRentalReservation() == null) { // already available in outlet
                         rentalReservation.setCar(car);
+                        car.setRentalReservation(rentalReservation);
                         isAllocated = true;
                         break;
                     }
                 }
                 if (isAllocated) {
-                    break;
+                    continue;
                 }
-                // check returning cars
+                // check returning cars to same outlet
                 for (Car car : carsOfSameCategory) {
-                    if ((car.getCarStatus() == CarStatusEnum.ON_RENT) && car.getRentalReservation().getReturnOutlet().equals(rentalReservation.getPickupOutlet())) {
+                    if ((car.getCarStatus() == CarStatusEnum.ON_RENT) && car.getRentalReservation().getReturnOutlet().getOutletName()
+                            .equals(rentalReservation.getPickupOutlet().getOutletName())) {
                         if (car.getRentalReservation().getEndDate().before(rentalReservation.getStartDate())) {
                             rentalReservation.setCar(car);
                             isAllocated = true;
@@ -163,7 +166,7 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
                     }
                 }
                 if (isAllocated) {
-                    break;
+                    continue;
                 }
                 // then check those currently on rental returning to a different outlet
                 for (Car car : carsOfSameCategory) {
@@ -185,17 +188,17 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
                     }
                 }
                 if (isAllocated) {
-                    break;
+                    continue;
                 }
             }
         }
-        generateTransitDriverDispatchRecords(rentalReservationsToBeAllocated);
+        generateTransitDriverDispatchRecords(date, rentalReservationsToBeAllocated);
     }
 
-    public void generateTransitDriverDispatchRecords(List<RentalReservation> rentalReservationsToBeAllocated) {
+    public void generateTransitDriverDispatchRecords(Date date, List<RentalReservation> rentalReservationsToBeAllocated) {
         try {
             for (RentalReservation rentalReservation : rentalReservationsToBeAllocated) {
-                Date transitStartDate = new Date();
+                Date transitStartDate = date;
                 Long rentalReservationId = rentalReservation.getRentalReservationId();
                 RentalReservation newRentalReservation = rentalReservationSessionBeanLocal.retrieveRentalReservationByRentalReservationId(rentalReservationId);
                 if (rentalReservation.getCar().getOutlet() != null) { // car is currently in outlet

@@ -128,6 +128,20 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
     }
 
     @Override
+    public List<Car> retrieveCarsByModelId(Long modelId) {
+        Query query = em.createQuery("SELECT c FROM Car c WHERE c.model.modelId = :inModelId");
+        query.setParameter("inModelId", modelId);
+        return query.getResultList();
+    }
+
+    @Override
+    public List<Car> retrieveCarsByCarCategoryId(Long carCategoryId) {
+        Query query = em.createQuery("SELECT c FROM Car c WHERE c.model.carCategory.carCategoryId = :inCarCategoryId");
+        query.setParameter("inCarCategoryId", carCategoryId);
+        return query.getResultList();
+    }
+
+    @Override
     public void updateCar(Car car) throws CarNotFoundException, InputDataValidationException {
         if (car != null && car.getCarId() != null) {
             Set<ConstraintViolation<Car>> constraintViolations = validator.validate(car);
@@ -155,7 +169,7 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
             carToRemove.setIsDisabled(true);
         }
     }
-    
+
     @Override
     public List<Car> retrieveCarsByOutletId(Long outletId) {
         Query query = em.createQuery("SELECT c FROM Car c WHERE c.outlet.outletId = :inOutletId");

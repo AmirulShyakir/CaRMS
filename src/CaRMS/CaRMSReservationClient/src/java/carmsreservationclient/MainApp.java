@@ -185,14 +185,15 @@ public class MainApp {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
             List<Outlet> outlets = outletSessionBeanRemote.retrieveAllOutlets();
             System.out.printf("%4s%64s%20s%20s\n", "ID", "Outlet Name", "Opening Hour", "Closing Hour");
+            SimpleDateFormat operatingHours = new SimpleDateFormat("HH:mm");
             for (Outlet outlet : outlets) {
                 String openingHour = "null";
                 if (outlet.getOpeningHour() != null) {
-                    openingHour = sdf.format(outlet.getOpeningHour());
+                    openingHour = operatingHours.format(outlet.getOpeningHour());
                 }
                 String closingHour = "null";
                 if (outlet.getClosingHour() != null) {
-                    closingHour = sdf.format(outlet.getClosingHour());
+                    closingHour = operatingHours.format(outlet.getClosingHour());
                 }
                 System.out.printf("%4s%64s%20s%20s\n", outlet.getOutletId(), outlet.getOutletName(),
                         openingHour, closingHour);
@@ -205,14 +206,26 @@ public class MainApp {
 
             Outlet pickupOutlet = outletSessionBeanRemote.retrieveOutletByOutletId(pickupOutletId);
             if (pickupOutlet.getOpeningHour() != null) {
-                if (pickupOutlet.getOpeningHour().after(pickUpDateTime)) {
-                    throw new OutsideOperatingHoursException("Pickup time is before operating hours of the outlet");
+                if ((pickUpDateTime.getHours() < pickupOutlet.getOpeningHour().getHours())
+                        || (pickUpDateTime.getHours() == pickupOutlet.getOpeningHour().getHours()
+                        && pickUpDateTime.getMinutes() < pickupOutlet.getOpeningHour().getMinutes())) {
+                    throw new OutsideOperatingHoursException("Pickup time is before opening hours of the outlet");
+                } else if ((returnDateTime.getHours() < pickupOutlet.getOpeningHour().getHours())
+                        || (returnDateTime.getHours() == pickupOutlet.getOpeningHour().getHours()
+                        && returnDateTime.getMinutes() < pickupOutlet.getOpeningHour().getMinutes())) {
+                    throw new OutsideOperatingHoursException("Return time is before opening hours of the outlet");
                 }
             }
             Outlet returnOutlet = outletSessionBeanRemote.retrieveOutletByOutletId(returnOutletId);
             if (returnOutlet.getClosingHour() != null) {
-                if (returnOutlet.getClosingHour().before(returnDateTime)) {
+                if ((pickUpDateTime.getHours() > pickupOutlet.getClosingHour().getHours())
+                        || (pickUpDateTime.getHours() == pickupOutlet.getClosingHour().getHours()
+                        && pickUpDateTime.getMinutes() > pickupOutlet.getClosingHour().getMinutes())) {
                     throw new OutsideOperatingHoursException("Return time is after operating hours of the outlet");
+                } else if ((returnDateTime.getHours() > pickupOutlet.getClosingHour().getHours())
+                        || (returnDateTime.getHours() == pickupOutlet.getClosingHour().getHours()
+                        && returnDateTime.getMinutes() > pickupOutlet.getClosingHour().getMinutes())) {
+                    throw new OutsideOperatingHoursException("Pickup time is after operating hours of the outlet");
                 }
             }
             while (true) {
@@ -406,15 +419,21 @@ public class MainApp {
 
         try {
             RentalReservation rentalReservation = rentalReservationSessionBeanRemote.retrieveRentalReservationByRentalReservationId(rentalReservationId);
-            System.out.printf("%4s%20s%20s%20s%12s%12s\n",
+            System.out.printf("%4s%20s%20s%20s%12s%12s%32s%32s\n",
                     "ID", "Start Date",
                     "End Date", "Rental Fee",
-                    "Paid", "Cancelled");
+                    "Paid", "Cancelled",
+                    "Car Category", "Model");
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-            System.out.printf("%4s%20s%20s%20s%12s%12s\n",
+            String modelName = "null";
+            if (rentalReservation.getModel() != null) {
+                modelName = rentalReservation.getModel().getMakeName() + " " + rentalReservation.getModel().getModelName();
+            }
+            System.out.printf("%4s%20s%20s%20s%12s%12s%32s%32s\n",
                     rentalReservation.getRentalReservationId(), sdf.format(rentalReservation.getStartDate()),
                     sdf.format(rentalReservation.getEndDate()), rentalReservation.getPrice().toString(),
-                    rentalReservation.getPaid().toString(), rentalReservation.getIsCancelled().toString());
+                    rentalReservation.getPaid().toString(), rentalReservation.getIsCancelled().toString(),
+                    rentalReservation.getCarCategory().getCarCategoryName(), modelName);
         } catch (RentalReservationNotFoundException ex) {
             System.out.println("Rental Reservation not found for ID " + rentalReservationId);
         }

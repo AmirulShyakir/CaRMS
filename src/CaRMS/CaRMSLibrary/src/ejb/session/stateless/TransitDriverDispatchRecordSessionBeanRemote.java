@@ -22,7 +22,7 @@ public interface TransitDriverDispatchRecordSessionBeanRemote {
 
     public Long createNewTranspatchDriverRecord(Long destinationOutletId, Long rentalReservationId, Date transitDate) throws RentalReservationNotFoundException, OutletNotFoundException;
 
-    public List<TransitDriverDispatchRecord> retrieveTransitDriverDispatchRecordByOutletId(Long outletId);
+    public List<TransitDriverDispatchRecord> retrieveTransitDriverDispatchRecordByOutletId(Date date, Long outletId);
 
     public TransitDriverDispatchRecord retrieveTransitDriverDispatchRecordByTransitDriverDispatchRecordId(Long transitDriverDispatchRecordId) throws TransitDriverDispatchRecordNotFoundException;
 

@@ -68,17 +68,17 @@ public class TransitDriverDispatchRecordSessionBean implements TransitDriverDisp
     }
 
     @Override
-    public List<TransitDriverDispatchRecord> retrieveTransitDriverDispatchRecordByOutletId(Long outletId) {
-        Date today = new Date();
-        today.setHours(0);
-        today.setMinutes(0);
-        today.setSeconds(0);
-        GregorianCalendar calendar = new GregorianCalendar(today.getYear() + 1900, today.getMonth(), today.getDate(), today.getHours(), today.getMinutes(), today.getSeconds());
+    public List<TransitDriverDispatchRecord> retrieveTransitDriverDispatchRecordByOutletId(Date date, Long outletId) {
+        date.setHours(0);
+        date.setMinutes(0);
+        date.setSeconds(0);
+        GregorianCalendar calendar = new GregorianCalendar(date.getYear() + 1900,
+                date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds());
         calendar.add(Calendar.DATE, 1);
         Date nextDay = calendar.getTime();
         Query query = em.createQuery("SELECT t FROM TransitDriverDispatchRecord t WHERE t.destinationOutlet.outletId = :inOutletId AND t.transitDate >= :inToday AND t.transitDate < :inNextDay");
         query.setParameter("inOutletId", outletId);
-        query.setParameter("inToday", today);
+        query.setParameter("inToday", date);
         query.setParameter("inNextDay", nextDay);
         return query.getResultList();
     }

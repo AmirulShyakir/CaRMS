@@ -55,9 +55,12 @@ public class RentalReservation implements Serializable {
     @DecimalMin("0.00")
     @Digits(integer = 9, fraction = 2)
     private BigDecimal price;
-    @Column (nullable = false)
+    @Column(nullable = false)
     @NotNull
     private Boolean isCancelled;
+    @Column(nullable = false)
+    @NotNull
+    private Boolean isComplete;
 
     @OneToOne(optional = true)
     private Car car;
@@ -87,6 +90,7 @@ public class RentalReservation implements Serializable {
     // one to many rental day
     public RentalReservation() {
         this.isCancelled = false;
+        this.isComplete = false;
         this.rentalDays = new ArrayList<>();
     }
 
@@ -229,6 +233,14 @@ public class RentalReservation implements Serializable {
 
     public void setIsCancelled(Boolean isCancelled) {
         this.isCancelled = isCancelled;
+    }
+
+    public Boolean getIsComplete() {
+        return isComplete;
+    }
+
+    public void setIsComplete(Boolean isComplete) {
+        this.isComplete = isComplete;
     }
 
     @Override

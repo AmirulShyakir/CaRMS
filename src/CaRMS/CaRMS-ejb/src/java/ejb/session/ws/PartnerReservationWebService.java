@@ -89,7 +89,7 @@ public class PartnerReservationWebService {
     }
     
     @WebMethod
-    public Model retrieveModelByModelId(Long modelId) throws ModelNotFoundException {
+    public Model retrieveModelByModelId(@WebParam Long modelId) throws ModelNotFoundException {
         return modelSessionBeanLocal.retrieveModelByModelId(modelId);
     }
     
@@ -109,8 +109,8 @@ public class PartnerReservationWebService {
     }
     
     @WebMethod
-    public Long createNewRentalReservation(Long carCategoryId, Long modelId, Long customerId,
-            Long pickupOutletId, Long returnOutletId, RentalReservation newRentalReservation)
+    public Long createNewRentalReservation(@WebParam Long carCategoryId, @WebParam Long modelId, @WebParam Long customerId,
+            @WebParam Long pickupOutletId, @WebParam Long returnOutletId, @WebParam RentalReservation newRentalReservation)
             throws OutletNotFoundException, CustomerNotFoundException, InputDataValidationException, UnknownPersistenceException,
             CarCategoryNotFoundException, ModelNotFoundException {
         return rentalReservationSessionBeanLocal.createNewRentalReservation(carCategoryId, modelId, customerId, pickupOutletId, returnOutletId, newRentalReservation);
@@ -130,5 +130,4 @@ public class PartnerReservationWebService {
     public Boolean searchCarByModel(@WebParam Date pickUpDateTime, @WebParam Date returnDateTime, @WebParam Long pickupOutletId, @WebParam Long returnOutletId, @WebParam Long modelId) throws NoAvailableRentalRateException, CarCategoryNotFoundException, OutletNotFoundException, ModelNotFoundException {
         return rentalReservationSessionBeanLocal.searchCarByModel(pickUpDateTime, returnDateTime, pickupOutletId, returnOutletId, modelId);
     }
-    
 }

@@ -201,6 +201,7 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
             car.setOutlet(returnOutlet);
             car.setRentalReservation(null);
             returnOutlet.addCar(car);
+            rentalReservation.setIsComplete(Boolean.TRUE);
         } catch (RentalReservationNotFoundException ex) {
             throw new RentalReservationNotFoundException("Rental Reservation ID: " + rentalReservationId + "not found!");
         }
