@@ -559,7 +559,7 @@ public class SalesManagementModule {
         try {
             Car car = carSessionBeanRemote.retrieveCarByCarId(carId);
             System.out.printf("%4s%32s%16s%16s%22s\n", "ID", "Car Category", "Make", "Model", "License Plate Number");
-            System.out.printf("%%4s%32s%16s%16s%22s\n", car.getCarId(),
+            System.out.printf("%4s%32s%16s%16s%22s\n", car.getCarId(),
                     car.getModel().getCarCategory().getCarCategoryName(),
                     car.getModel().getMakeName(), car.getModel().getModelName(),
                     car.getLicensePlate());

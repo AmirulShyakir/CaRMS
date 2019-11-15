@@ -114,6 +114,8 @@ public class CarCategorySessionBean implements CarCategorySessionBeanRemote, Car
     @Override
     public BigDecimal calculateTotalRentalFee(Long carCategoryId, Date pickUpDateTime, Date returnDateTime) throws NoAvailableRentalRateException {
         BigDecimal totalRentalFee = new BigDecimal(0);
+        returnDateTime.setHours(pickUpDateTime.getHours());
+        returnDateTime.setMinutes(pickUpDateTime.getMinutes());
 
         try {
             LocalDateTime pickUpTemporal = pickUpDateTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
@@ -128,10 +130,12 @@ public class CarCategorySessionBean implements CarCategorySessionBeanRemote, Car
                     pickUpDateTime.getMinutes(),
                     pickUpDateTime.getSeconds());
 
-            for (int i = 0; i <= daysToRent; i++) {
+            for (int i = 0; i < daysToRent; i++) {
                 RentalRate cheapestRentalRate = rentalRateSessionBeanLocal.retrieveCheapestRentalRate(carCategoryId, transitCalendar.getTime());
                 transitCalendar.add(Calendar.DATE, 1);
-                totalRentalFee = totalRentalFee.add(cheapestRentalRate.getRatePerDay());
+                BigDecimal dailyCheapestRentalRate = cheapestRentalRate.getRatePerDay();
+                totalRentalFee = totalRentalFee.add(dailyCheapestRentalRate);
+                System.out.println("Rental Fee is " + dailyCheapestRentalRate + " " + transitCalendar.toString());
             }
             return totalRentalFee;
         } catch (NoAvailableRentalRateException ex) {

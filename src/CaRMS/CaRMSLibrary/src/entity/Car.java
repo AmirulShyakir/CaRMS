@@ -58,6 +58,7 @@ public class Car implements Serializable {
 
     public Car() {
         this.isDisabled = false;
+        this.carStatus = CarStatusEnum.AVAILABLE;
     }
 
     public Car(String licensePlate, String colour) {
@@ -65,7 +66,6 @@ public class Car implements Serializable {
 
         this.licensePlate = licensePlate;
         this.colour = colour;
-        this.carStatus = CarStatusEnum.AVAILABLE;
     }
 
     public Car(String licensePlate, String colour, CarStatusEnum carStatus) {
