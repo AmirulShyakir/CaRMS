@@ -25,6 +25,7 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -127,6 +128,7 @@ public class RentalRate implements Serializable {
         this.endDate = endDate;
     }
 
+    @XmlTransient
     public CarCategory getCarCategory() {
         return carCategory;
     }
@@ -187,5 +189,4 @@ public class RentalRate implements Serializable {
     public String toString() {
         return "entity.RentalRate[ id=" + rentalRateId + " ]";
     }
-
 }

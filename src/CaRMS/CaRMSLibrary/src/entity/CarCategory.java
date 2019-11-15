@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -66,6 +67,7 @@ public class CarCategory implements Serializable {
         this.carCategoryName = carCategoryName;
     }
 
+    @XmlTransient
     public List<Model> getModels() {
         return models;
     }
@@ -73,7 +75,7 @@ public class CarCategory implements Serializable {
     public void setModels(List<Model> models) {
         this.models = models;
     }
-    
+
     public void addModel(Model model) {
         if (!this.models.contains(model)) {
             this.models.add(model);
@@ -93,7 +95,7 @@ public class CarCategory implements Serializable {
     public void setRentalRates(List<RentalRate> rentalRates) {
         this.rentalRates = rentalRates;
     }
-    
+
     public void addRentalRate(RentalRate rentalRate) {
         if (!this.rentalRates.contains(rentalRate)) {
             this.rentalRates.add(rentalRate);
@@ -105,7 +107,7 @@ public class CarCategory implements Serializable {
             this.rentalRates.remove(rentalRate);
         }
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 0;
