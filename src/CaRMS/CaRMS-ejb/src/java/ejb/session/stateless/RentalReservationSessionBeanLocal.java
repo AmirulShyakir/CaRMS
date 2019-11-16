@@ -50,4 +50,8 @@ public interface RentalReservationSessionBeanLocal {
 
     public List<RentalReservation> retrieveCustomerRentalReservations(Long customerId);
 
+    public List<RentalReservation> retrieveCustomerRentalReservationsByPickupOutletId(Long outletId);
+
+    public List<RentalReservation> retrieveCustomerRentalReservationsByReturnOutletId(Long outletId);
+
 }

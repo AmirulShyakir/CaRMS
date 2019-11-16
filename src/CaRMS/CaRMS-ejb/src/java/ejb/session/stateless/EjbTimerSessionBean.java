@@ -206,12 +206,12 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
             for (RentalReservation rentalReservation : rentalReservationsToBeAllocated) {
                 Date transitStartDate = date;
                 GregorianCalendar transitCalendar = new GregorianCalendar(
-                        rentalReservation.getEndDate().getYear() + 1900,
-                        rentalReservation.getEndDate().getMonth(),
-                        rentalReservation.getEndDate().getDate(),
-                        rentalReservation.getEndDate().getHours(),
-                        rentalReservation.getEndDate().getMinutes(),
-                        rentalReservation.getEndDate().getSeconds());
+                        rentalReservation.getStartDate().getYear() + 1900,
+                        rentalReservation.getStartDate().getMonth(),
+                        rentalReservation.getStartDate().getDate(),
+                        rentalReservation.getStartDate().getHours(),
+                        rentalReservation.getStartDate().getMinutes(),
+                        rentalReservation.getStartDate().getSeconds());
                 transitCalendar.add(Calendar.HOUR, -2);
                 transitStartDate = transitCalendar.getTime();
                 transitDriverDispatchRecordSessionBeanLocal.

@@ -69,7 +69,7 @@ public class TransitDriverDispatchRecordSessionBean implements TransitDriverDisp
 
     @Override
     public List<TransitDriverDispatchRecord> retrieveTransitDriverDispatchRecordByOutletId(Date date, Long outletId) {
-        date.setHours(0);
+        date.setHours(2);
         date.setMinutes(0);
         date.setSeconds(0);
         GregorianCalendar calendar = new GregorianCalendar(date.getYear() + 1900,
@@ -100,7 +100,7 @@ public class TransitDriverDispatchRecordSessionBean implements TransitDriverDisp
         try {
             Employee dispatchDriver = employeeSessionBeanLocal.retrieveEmployeeByEmployeeId(dispatchDriverId);
             TransitDriverDispatchRecord transitDriverDispatchRecord = retrieveTransitDriverDispatchRecordByTransitDriverDispatchRecordId(transitDriverDispatchRecordId);
-            if (dispatchDriver.getOutlet().getOutletName().equals(transitDriverDispatchRecord.getRentalReservation().getCar().getOutlet().getOutletName())) {
+            if (dispatchDriver.getOutlet().getOutletName().equals(transitDriverDispatchRecord.getDestinationOutlet().getOutletName())) {
                 transitDriverDispatchRecord.setDispatchDriver(dispatchDriver);
                 dispatchDriver.addTransitDriverDispatchRecord(transitDriverDispatchRecord);
             } else {

@@ -31,7 +31,7 @@ public interface RentalReservationSessionBeanRemote {
             Long pickupOutletId, Long returnOutletId, RentalReservation newRentalReservation)
             throws OutletNotFoundException, CustomerNotFoundException, InputDataValidationException, UnknownPersistenceException,
             CarCategoryNotFoundException, ModelNotFoundException, PartnerNotFoundException;
-    
+
     public RentalReservation retrieveRentalReservationByRentalReservationId(Long rentalReservationId) throws RentalReservationNotFoundException;
 
     public List<RentalReservation> retrieveAllRentalReservations();
@@ -49,5 +49,9 @@ public interface RentalReservationSessionBeanRemote {
     public List<RentalReservation> retrievePartnerRentalReservations(Long partnerId);
 
     public List<RentalReservation> retrieveCustomerRentalReservations(Long customerId);
+
+    public List<RentalReservation> retrieveCustomerRentalReservationsByPickupOutletId(Long outletId);
+
+    public List<RentalReservation> retrieveCustomerRentalReservationsByReturnOutletId(Long outletId);
 
 }

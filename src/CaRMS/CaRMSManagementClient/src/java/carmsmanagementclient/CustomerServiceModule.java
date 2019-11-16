@@ -8,6 +8,8 @@ package carmsmanagementclient;
 import ejb.session.stateless.RentalReservationSessionBeanRemote;
 import entity.Employee;
 import entity.RentalReservation;
+import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Scanner;
 import util.enumeration.EmployeeRoleEnum;
 import util.exception.InvalidAccessRightException;
@@ -48,7 +50,7 @@ public class CustomerServiceModule {
             System.out.println("2: Return Car");
             System.out.println("3: Back\n");
             response = 0;
-            
+
             while (response < 1 || response > 3) {
                 System.out.print("> ");
                 response = scanner.nextInt();
@@ -71,6 +73,15 @@ public class CustomerServiceModule {
     private void doPickupCar() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("*** CarMS Management Client :: Sales Management :: Pickup Car***\n");
+        List<RentalReservation> rentalReservations = rentalReservationSessionBeanRemote.
+                retrieveCustomerRentalReservationsByPickupOutletId(currentEmployee.getOutlet().getOutletId());
+        System.out.printf("%4s%20s%20s\n", "ID", "Start Date", "End Date");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        for (RentalReservation rentalReservation : rentalReservations) {
+            System.out.printf("%4s%20s%20s\n", rentalReservation.getRentalReservationId(),
+                    sdf.format(rentalReservation.getStartDate()),
+                    sdf.format(rentalReservation.getEndDate()));
+        }
         System.out.print("Enter Rental Reservation ID> ");
         Long rentalReservationId = scanner.nextLong();
         scanner.nextLine();
@@ -81,6 +92,8 @@ public class CustomerServiceModule {
                 String input = scanner.nextLine().trim();
                 if (!input.equals("Y")) {
                     throw new UnpaidRentalReservationException("Please pay for the rental reservation before!");
+                } else {
+                    System.out.println("Charged " + rentalReservation.getPrice().toString() + " to credit card: " + rentalReservation.getCreditCardNumber());
                 }
             }
             rentalReservationSessionBeanRemote.pickupCar(rentalReservationId);
@@ -97,6 +110,16 @@ public class CustomerServiceModule {
     private void doReturnCar() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("*** CarMS Management Client :: Sales Management :: Return Car***\n");
+        List<RentalReservation> rentalReservations = rentalReservationSessionBeanRemote.
+                retrieveCustomerRentalReservationsByReturnOutletId(currentEmployee.getOutlet().getOutletId());
+        System.out.printf("%4s%20s%20s\n", "ID", "Start Date", "End Date");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        for (RentalReservation rentalReservation : rentalReservations) {
+            System.out.printf("%4s%20s%20s\n", rentalReservation.getRentalReservationId(),
+                    sdf.format(rentalReservation.getStartDate()),
+                    sdf.format(rentalReservation.getEndDate()));
+        }
+
         System.out.print("Enter Rental Reservation ID> ");
         Long rentalReservationId = scanner.nextLong();
         scanner.nextLine();

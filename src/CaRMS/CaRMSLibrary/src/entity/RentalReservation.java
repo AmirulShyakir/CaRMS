@@ -59,10 +59,13 @@ public class RentalReservation implements Serializable {
     @Column(nullable = false)
     @NotNull
     private Boolean isComplete;
+    @Column(nullable = false)
+    @NotNull
+    private Boolean isReturned;
     @Column(nullable = false, length = 32)
     @Size(max = 32)
     private String creditCardNumber;
-    
+
     @OneToOne(optional = true)
     private Car car;
     @OneToOne(optional = true)
@@ -90,6 +93,7 @@ public class RentalReservation implements Serializable {
     public RentalReservation() {
         this.isCancelled = false;
         this.isComplete = false;
+        this.isReturned = false;
     }
 
     public Long getRentalReservationId() {
@@ -226,6 +230,14 @@ public class RentalReservation implements Serializable {
 
     public void setCreditCardNumber(String creditCardNumber) {
         this.creditCardNumber = creditCardNumber;
+    }
+
+    public Boolean getIsReturned() {
+        return isReturned;
+    }
+
+    public void setIsReturned(Boolean isReturned) {
+        this.isReturned = isReturned;
     }
 
     @Override

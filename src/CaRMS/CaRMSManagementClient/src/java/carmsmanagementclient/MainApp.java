@@ -10,6 +10,7 @@ import ejb.session.stateless.CarSessionBeanRemote;
 import ejb.session.stateless.EjbTimerSessionBeanRemote;
 import ejb.session.stateless.EmployeeSessionBeanRemote;
 import ejb.session.stateless.ModelSessionBeanRemote;
+import ejb.session.stateless.OutletSessionBeanRemote;
 import ejb.session.stateless.RentalRateSessionBeanRemote;
 import ejb.session.stateless.RentalReservationSessionBeanRemote;
 import ejb.session.stateless.TransitDriverDispatchRecordSessionBeanRemote;
@@ -45,6 +46,7 @@ public class MainApp {
     private CarCategorySessionBeanRemote carCategorySessionBeanRemote;
     private RentalReservationSessionBeanRemote rentalReservationSessionBeanRemote;
     private EjbTimerSessionBeanRemote ejbTimerSessionBeanRemote;
+    private OutletSessionBeanRemote outletSessionBeanRemote;
 
     private SalesManagementModule salesManagementModule;
     private CustomerServiceModule customerServiceModule;
@@ -58,7 +60,7 @@ public class MainApp {
             ModelSessionBeanRemote modelSessionBeanRemote, CarSessionBeanRemote carSessionBeanRemote,
             TransitDriverDispatchRecordSessionBeanRemote transitDriverDispatchRecordSessionBeanRemote,
             CarCategorySessionBeanRemote carCategorySessionBeanRemote, RentalReservationSessionBeanRemote rentalReservationSessionBeanRemote,
-            EjbTimerSessionBeanRemote ejbTimerSessionBeanRemote) {
+            EjbTimerSessionBeanRemote ejbTimerSessionBeanRemote, OutletSessionBeanRemote outletSessionBeanRemote) {
         this();
 
         this.employeeSessionBeanRemote = employeeSessionBeanRemote;
@@ -69,6 +71,7 @@ public class MainApp {
         this.carCategorySessionBeanRemote = carCategorySessionBeanRemote;
         this.rentalReservationSessionBeanRemote = rentalReservationSessionBeanRemote;
         this.ejbTimerSessionBeanRemote = ejbTimerSessionBeanRemote;
+        this.outletSessionBeanRemote = outletSessionBeanRemote;
     }
 
     public void runApp() {
@@ -86,7 +89,7 @@ public class MainApp {
             response = 0;
 
             // remember to change response boundaries when removing evaluation test
-            while (response < 1 || response > 3) {
+            while (response < 1 || response > 5) {
                 System.out.print("> ");
 
                 response = scanner.nextInt();
@@ -108,12 +111,12 @@ public class MainApp {
                     }
                 } else if (response == 3) {
                     break;
-                /*
+                
                 } else if (response == 4) {
                     doEvaluationPartOne();
                 } else if (response == 5) {
                     doEvaluationPartThree();
-                */
+                
                 } else {
                     System.out.println("Invalid option, please try again!\n");
                 }
@@ -162,7 +165,7 @@ public class MainApp {
                     if (response == 1) {
                         salesManagementModule = new SalesManagementModule(currentEmployee, rentalRateSessionBeanRemote,
                                 modelSessionBeanRemote, carSessionBeanRemote, transitDriverDispatchRecordSessionBeanRemote,
-                                carCategorySessionBeanRemote);
+                                carCategorySessionBeanRemote, outletSessionBeanRemote);
                         salesManagementModule.menuSalesManagement();
                     } else if (response == 2) {
                         customerServiceModule = new CustomerServiceModule(currentEmployee, rentalReservationSessionBeanRemote);

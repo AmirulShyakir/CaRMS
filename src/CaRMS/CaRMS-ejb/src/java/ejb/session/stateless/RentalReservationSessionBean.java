@@ -127,7 +127,7 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
             throw new ModelNotFoundException("Model ID: " + modelId + " does not exist!");
         }
     }
-    
+
     @Override
     public Long createNewPartnerRentalReservation(Long carCategoryId, Long partnerId, Long modelId, Long customerId,
             Long pickupOutletId, Long returnOutletId, RentalReservation newRentalReservation)
@@ -205,18 +205,36 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
         Query query = em.createQuery("SELECT r FROM RentalReservation r");
         return query.getResultList();
     }
-    
+
     @Override
     public List<RentalReservation> retrievePartnerRentalReservations(Long partnerId) {
         Query query = em.createQuery("SELECT r FROM RentalReservation r WHERE r.partner.partnerId = :inPartnerId");
         query.setParameter("inPartnerId", partnerId);
         return query.getResultList();
     }
-    
+
     @Override
     public List<RentalReservation> retrieveCustomerRentalReservations(Long customerId) {
         Query query = em.createQuery("SELECT r FROM RentalReservation r WHERE r.customer.customerId = :inCustomerId");
         query.setParameter("inCustomerId", customerId);
+        return query.getResultList();
+    }
+
+    @Override
+    public List<RentalReservation> retrieveCustomerRentalReservationsByPickupOutletId(Long outletId) {
+        Query query = em.createQuery("SELECT r FROM RentalReservation r WHERE r.isReturned = FALSE"
+                + " AND r.car IS NOT NULL"
+                + " AND r.pickupOutlet.outletId = :inOutletId ");
+        query.setParameter("inOutletId", outletId);
+        return query.getResultList();
+    }
+
+    @Override
+    public List<RentalReservation> retrieveCustomerRentalReservationsByReturnOutletId(Long outletId) {
+        Query query = em.createQuery("SELECT r FROM RentalReservation r WHERE r.isReturned = FALSE"
+                + " AND r.car IS NOT NULL"
+                + " AND r.returnOutlet = :inOutletId");
+        query.setParameter("inOutletId", outletId);
         return query.getResultList();
     }
 
@@ -257,6 +275,7 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
             car.setCarStatus(CarStatusEnum.ON_RENT);
             car.setOutlet(null);
             car.setRentalReservation(rentalReservation);
+            rentalReservation.setPaid(Boolean.TRUE);
             rentalReservation.getPickupOutlet().removeCar(car);
         } catch (RentalReservationNotFoundException ex) {
             throw new RentalReservationNotFoundException("Rental Reservation ID: " + rentalReservationId + "not found!");

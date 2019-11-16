@@ -47,7 +47,6 @@ public class MainApp {
     private RentalReservationSessionBeanRemote rentalReservationSessionBeanRemote;
     private ModelSessionBeanRemote modelSessionBeanRemote;
     private OutletSessionBeanRemote outletSessionBeanRemote;
-    private CustomerSessionBeanRemote customerSessionBeanRemote;
 
     private Customer currentCustomer;
 
@@ -58,8 +57,7 @@ public class MainApp {
             CarCategorySessionBeanRemote carCategorySessionBeanRemote,
             RentalReservationSessionBeanRemote rentalReservationSessionBeanRemote,
             ModelSessionBeanRemote modelSessionBeanRemote,
-            OutletSessionBeanRemote outletSessionBeanRemote,
-            CustomerSessionBeanRemote customerSessionBeanRemote) {
+            OutletSessionBeanRemote outletSessionBeanRemote) {
         this();
 
         this.ownCustomerSessionBeanRemote = ownCustomerSessionBeanRemote;
@@ -67,7 +65,6 @@ public class MainApp {
         this.rentalReservationSessionBeanRemote = rentalReservationSessionBeanRemote;
         this.modelSessionBeanRemote = modelSessionBeanRemote;
         this.outletSessionBeanRemote = outletSessionBeanRemote;
-        this.customerSessionBeanRemote = customerSessionBeanRemote;
     }
 
     public void runApp() {
@@ -84,7 +81,7 @@ public class MainApp {
             response = 0;
 
             // remember to change response boundaries when removing evaluation test
-            while (response < 1 || response > 4) {
+            while (response < 1 || response > 5) {
                 System.out.print("> ");
 
                 response = scanner.nextInt();
@@ -103,8 +100,8 @@ public class MainApp {
                     doSearchCar();
                 } else if (response == 4) {
                     break;
-                    //} else if (response == 5) {
-                    //    doEvaluationPartTwo();
+                } else if (response == 5) {
+                    doEvaluationPartTwo();
                 } else {
                     System.out.println("Invalid option, please try again\n");
                 }
@@ -365,7 +362,7 @@ public class MainApp {
             System.out.print("Enter Credit Card Number> ");
             String creditCardNumber = scanner.nextLine().trim();
             rentalReservation.setCreditCardNumber(creditCardNumber);
-            
+
             System.out.print("Would you like to pay now? (Enter 'Y' to enter payment details)> ");
             String input = scanner.nextLine().trim();
             if (input.equals("Y")) {
@@ -404,9 +401,9 @@ public class MainApp {
 
             if (rentalReservation.getPaid()) {
                 System.out.println("You have been refunded SGD $"
-                        + rentalReservation.getPrice().subtract(penalty) + " to your card " 
-                        + rentalReservation.getCreditCardNumber() + 
-                        " after deducting cancellation penalty of SGD" + penalty + ".");
+                        + rentalReservation.getPrice().subtract(penalty) + " to your card "
+                        + rentalReservation.getCreditCardNumber()
+                        + " after deducting cancellation penalty of SGD" + penalty + ".");
             } else {
                 System.out.println("Your card : " + rentalReservation.getCreditCardNumber() + " has been charged SGD $" + penalty + " as a cancellation penalty.");
             }
@@ -491,6 +488,7 @@ public class MainApp {
             rentalReservation1.setEndDate(endDate);
             rentalReservation1.setPrice(BigDecimal.valueOf(380));
             rentalReservation1.setPaid(Boolean.FALSE);
+            rentalReservation1.setCreditCardNumber("1099001461");
             Long rentalReservation1Id = rentalReservationSessionBeanRemote.createNewRentalReservation(
                     new Long("3"), new Long("1"), aliceCustomerId, new Long("1"), new Long("1"), rentalReservation1);
             System.out.println("Reserved Toyota Corolla"
@@ -516,6 +514,7 @@ public class MainApp {
             rentalReservation2.setEndDate(endDate);
             rentalReservation2.setPrice(BigDecimal.valueOf(300));
             rentalReservation2.setPaid(Boolean.FALSE);
+            rentalReservation2.setCreditCardNumber("1099001461");
             Long rentalReservation2Id = rentalReservationSessionBeanRemote.createNewRentalReservation(
                     new Long("3"), new Long("1"), bobCustomerId, new Long("1"), new Long("1"), rentalReservation2);
             System.out.println("Reserved Toyota Corolla"
@@ -541,6 +540,7 @@ public class MainApp {
             rentalReservation3.setEndDate(endDate);
             rentalReservation3.setPrice(BigDecimal.valueOf(180));
             rentalReservation3.setPaid(Boolean.FALSE);
+            rentalReservation3.setCreditCardNumber("1099001461");
             Long rentalReservation3Id = rentalReservationSessionBeanRemote.createNewRentalReservation(
                     new Long("3"), new Long("1"), charlesCustomerId, new Long("2"), new Long("2"), rentalReservation3);
             System.out.println("Reserved Toyota Corolla"

@@ -29,8 +29,6 @@ public class Main {
     private static ModelSessionBeanRemote modelSessionBeanRemote;
     @EJB
     private static OutletSessionBeanRemote outletSessionBeanRemote;
-    @EJB
-    private static CustomerSessionBeanRemote customerSessionBeanRemote;
 
     /**
      * @param args the command line arguments
@@ -38,8 +36,7 @@ public class Main {
     public static void main(String[] args) {
         // TODO code application logic here
         MainApp mainApp = new MainApp(ownCustomerSessionBeanRemote, carCategorySessionBeanRemote,
-                rentalReservationSessionBeanRemote, modelSessionBeanRemote, outletSessionBeanRemote,
-                customerSessionBeanRemote);
+                rentalReservationSessionBeanRemote, modelSessionBeanRemote, outletSessionBeanRemote);
         mainApp.runApp();
     }
 }
