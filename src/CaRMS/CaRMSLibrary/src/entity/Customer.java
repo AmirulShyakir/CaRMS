@@ -59,14 +59,6 @@ public class Customer implements Serializable {
         rentalReservations = new ArrayList<>();
     }
 
-    public Customer(String firstName, String lastName, String creditCardNumber) {
-        this();
-        
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.creditCardNumber = creditCardNumber;
-    }
-
     public Long getCustomerId() {
         return customerId;
     }

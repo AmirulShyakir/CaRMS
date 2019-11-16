@@ -39,7 +39,7 @@ public class RentalRate implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long rentalRateId;
-    @Column(nullable = false, length = 32)
+    @Column(nullable = false, length = 32, unique = true)
     @NotNull
     @Size(max = 32)
     private String rentalRateName;
@@ -64,9 +64,12 @@ public class RentalRate implements Serializable {
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
     private CarCategory carCategory;
+    @OneToMany(mappedBy = "rentalRate")
+    private List<RentalDay> rentalDays;
 
     public RentalRate() {
         this.isEnabled = true;
+        this.rentalDays = new ArrayList<>();
     }
 
     public RentalRate(String rentalRateName, BigDecimal ratePerDay) {
@@ -74,15 +77,6 @@ public class RentalRate implements Serializable {
 
         this.rentalRateName = rentalRateName;
         this.ratePerDay = ratePerDay;
-    }
-
-    public RentalRate(String rentalRateName, BigDecimal ratePerDay, Date startDate, Date endDate) {
-        this();
-        
-        this.rentalRateName = rentalRateName;
-        this.ratePerDay = ratePerDay;
-        this.startDate = startDate;
-        this.endDate = endDate;
     }
 
     public Long getRentalRateId() {
@@ -132,6 +126,26 @@ public class RentalRate implements Serializable {
 
     public void setCarCategory(CarCategory carCategory) {
         this.carCategory = carCategory;
+    }
+
+    public List<RentalDay> getRentalDays() {
+        return rentalDays;
+    }
+
+    public void setRentalDays(List<RentalDay> rentalDays) {
+        this.rentalDays = rentalDays;
+    }
+
+    public void addRentalDay(RentalDay rentalDay) {
+        if (!this.rentalDays.contains(rentalDay)) {
+            this.rentalDays.add(rentalDay);
+        }
+    }
+
+    public void removeRentalDay(RentalDay rentalDay) {
+        if (this.rentalDays.contains(rentalDay)) {
+            this.rentalDays.remove(rentalDay);
+        }
     }
 
     public Boolean getIsEnabled() {

@@ -143,4 +143,19 @@ public class PartnerReservationWebService {
     public Boolean searchCarByModel(@WebParam Date pickUpDateTime, @WebParam Date returnDateTime, @WebParam Long pickupOutletId, @WebParam Long returnOutletId, @WebParam Long modelId) throws NoAvailableRentalRateException, CarCategoryNotFoundException, OutletNotFoundException, ModelNotFoundException {
         return rentalReservationSessionBeanLocal.searchCarByModel(pickUpDateTime, returnDateTime, pickupOutletId, returnOutletId, modelId);
     }
+    
+    @WebMethod
+    public List<Model> retrieveAllModels()  {
+        return modelSessionBeanLocal.retrieveAllModels();
+    }
+    
+    @WebMethod
+    public List<CarCategory> retrieveAllCarCategories() {
+        return carCategorySessionBeanLocal.retrieveAllCarCategories();
+    }
+    
+    @WebMethod
+    public List<Outlet> retrieveAllOutlets() {
+        return outletSessionBeanLocal.retrieveAllOutlets();
+    }
 }

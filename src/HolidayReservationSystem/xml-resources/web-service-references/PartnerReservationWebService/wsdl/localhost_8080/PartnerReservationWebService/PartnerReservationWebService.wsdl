@@ -4,24 +4,6 @@
 <xsd:import namespace="http://ws.session.ejb/" schemaLocation="http://localhost:8080/PartnerReservationWebService/PartnerReservationWebService?xsd=1"/>
 </xsd:schema>
 </types>
-<message name="retrieveCarCategoryByCarCategoryId">
-<part name="parameters" element="tns:retrieveCarCategoryByCarCategoryId"/>
-</message>
-<message name="retrieveCarCategoryByCarCategoryIdResponse">
-<part name="parameters" element="tns:retrieveCarCategoryByCarCategoryIdResponse"/>
-</message>
-<message name="CarCategoryNotFoundException">
-<part name="fault" element="tns:CarCategoryNotFoundException"/>
-</message>
-<message name="retrieveRentalReservationByRentalReservationId">
-<part name="parameters" element="tns:retrieveRentalReservationByRentalReservationId"/>
-</message>
-<message name="retrieveRentalReservationByRentalReservationIdResponse">
-<part name="parameters" element="tns:retrieveRentalReservationByRentalReservationIdResponse"/>
-</message>
-<message name="RentalReservationNotFoundException">
-<part name="fault" element="tns:RentalReservationNotFoundException"/>
-</message>
 <message name="searchCarByModel">
 <part name="parameters" element="tns:searchCarByModel"/>
 </message>
@@ -31,77 +13,14 @@
 <message name="NoAvailableRentalRateException">
 <part name="fault" element="tns:NoAvailableRentalRateException"/>
 </message>
+<message name="CarCategoryNotFoundException">
+<part name="fault" element="tns:CarCategoryNotFoundException"/>
+</message>
 <message name="OutletNotFoundException">
 <part name="fault" element="tns:OutletNotFoundException"/>
 </message>
 <message name="ModelNotFoundException">
 <part name="fault" element="tns:ModelNotFoundException"/>
-</message>
-<message name="calculateTotalRentalFee">
-<part name="parameters" element="tns:calculateTotalRentalFee"/>
-</message>
-<message name="calculateTotalRentalFeeResponse">
-<part name="parameters" element="tns:calculateTotalRentalFeeResponse"/>
-</message>
-<message name="cancelReservation">
-<part name="parameters" element="tns:cancelReservation"/>
-</message>
-<message name="cancelReservationResponse">
-<part name="parameters" element="tns:cancelReservationResponse"/>
-</message>
-<message name="retrieveModelByModelId">
-<part name="parameters" element="tns:retrieveModelByModelId"/>
-</message>
-<message name="retrieveModelByModelIdResponse">
-<part name="parameters" element="tns:retrieveModelByModelIdResponse"/>
-</message>
-<message name="retrieveOutletByOutletId">
-<part name="parameters" element="tns:retrieveOutletByOutletId"/>
-</message>
-<message name="retrieveOutletByOutletIdResponse">
-<part name="parameters" element="tns:retrieveOutletByOutletIdResponse"/>
-</message>
-<message name="retrieveAllRentalReservations">
-<part name="parameters" element="tns:retrieveAllRentalReservations"/>
-</message>
-<message name="retrieveAllRentalReservationsResponse">
-<part name="parameters" element="tns:retrieveAllRentalReservationsResponse"/>
-</message>
-<message name="searchCarByCategory">
-<part name="parameters" element="tns:searchCarByCategory"/>
-</message>
-<message name="searchCarByCategoryResponse">
-<part name="parameters" element="tns:searchCarByCategoryResponse"/>
-</message>
-<message name="createNewRentalReservation">
-<part name="parameters" element="tns:createNewRentalReservation"/>
-</message>
-<message name="createNewRentalReservationResponse">
-<part name="parameters" element="tns:createNewRentalReservationResponse"/>
-</message>
-<message name="CustomerNotFoundException">
-<part name="fault" element="tns:CustomerNotFoundException"/>
-</message>
-<message name="InputDataValidationException">
-<part name="fault" element="tns:InputDataValidationException"/>
-</message>
-<message name="UnknownPersistenceException">
-<part name="fault" element="tns:UnknownPersistenceException"/>
-</message>
-<message name="retrievePartnerByPartnerId">
-<part name="parameters" element="tns:retrievePartnerByPartnerId"/>
-</message>
-<message name="retrievePartnerByPartnerIdResponse">
-<part name="parameters" element="tns:retrievePartnerByPartnerIdResponse"/>
-</message>
-<message name="PartnerNotFoundException">
-<part name="fault" element="tns:PartnerNotFoundException"/>
-</message>
-<message name="createNewCustomer">
-<part name="parameters" element="tns:createNewCustomer"/>
-</message>
-<message name="createNewCustomerResponse">
-<part name="parameters" element="tns:createNewCustomerResponse"/>
 </message>
 <message name="createNewPartner">
 <part name="parameters" element="tns:createNewPartner"/>
@@ -112,6 +31,12 @@
 <message name="PartnerNameExistException">
 <part name="fault" element="tns:PartnerNameExistException"/>
 </message>
+<message name="UnknownPersistenceException">
+<part name="fault" element="tns:UnknownPersistenceException"/>
+</message>
+<message name="InputDataValidationException">
+<part name="fault" element="tns:InputDataValidationException"/>
+</message>
 <message name="partnerLogin">
 <part name="parameters" element="tns:partnerLogin"/>
 </message>
@@ -120,6 +45,99 @@
 </message>
 <message name="InvalidLoginCredentialException">
 <part name="fault" element="tns:InvalidLoginCredentialException"/>
+</message>
+<message name="retrieveAllCarCategories">
+<part name="parameters" element="tns:retrieveAllCarCategories"/>
+</message>
+<message name="retrieveAllCarCategoriesResponse">
+<part name="parameters" element="tns:retrieveAllCarCategoriesResponse"/>
+</message>
+<message name="calculateTotalRentalFee">
+<part name="parameters" element="tns:calculateTotalRentalFee"/>
+</message>
+<message name="calculateTotalRentalFeeResponse">
+<part name="parameters" element="tns:calculateTotalRentalFeeResponse"/>
+</message>
+<message name="retrieveAllRentalReservations">
+<part name="parameters" element="tns:retrieveAllRentalReservations"/>
+</message>
+<message name="retrieveAllRentalReservationsResponse">
+<part name="parameters" element="tns:retrieveAllRentalReservationsResponse"/>
+</message>
+<message name="retrieveAllModels">
+<part name="parameters" element="tns:retrieveAllModels"/>
+</message>
+<message name="retrieveAllModelsResponse">
+<part name="parameters" element="tns:retrieveAllModelsResponse"/>
+</message>
+<message name="retrieveOutletByOutletId">
+<part name="parameters" element="tns:retrieveOutletByOutletId"/>
+</message>
+<message name="retrieveOutletByOutletIdResponse">
+<part name="parameters" element="tns:retrieveOutletByOutletIdResponse"/>
+</message>
+<message name="createNewRentalReservation">
+<part name="parameters" element="tns:createNewRentalReservation"/>
+</message>
+<message name="createNewRentalReservationResponse">
+<part name="parameters" element="tns:createNewRentalReservationResponse"/>
+</message>
+<message name="CustomerNotFoundException">
+<part name="fault" element="tns:CustomerNotFoundException"/>
+</message>
+<message name="retrievePartnerByPartnerId">
+<part name="parameters" element="tns:retrievePartnerByPartnerId"/>
+</message>
+<message name="retrievePartnerByPartnerIdResponse">
+<part name="parameters" element="tns:retrievePartnerByPartnerIdResponse"/>
+</message>
+<message name="PartnerNotFoundException">
+<part name="fault" element="tns:PartnerNotFoundException"/>
+</message>
+<message name="cancelReservation">
+<part name="parameters" element="tns:cancelReservation"/>
+</message>
+<message name="cancelReservationResponse">
+<part name="parameters" element="tns:cancelReservationResponse"/>
+</message>
+<message name="RentalReservationNotFoundException">
+<part name="fault" element="tns:RentalReservationNotFoundException"/>
+</message>
+<message name="retrieveModelByModelId">
+<part name="parameters" element="tns:retrieveModelByModelId"/>
+</message>
+<message name="retrieveModelByModelIdResponse">
+<part name="parameters" element="tns:retrieveModelByModelIdResponse"/>
+</message>
+<message name="searchCarByCategory">
+<part name="parameters" element="tns:searchCarByCategory"/>
+</message>
+<message name="searchCarByCategoryResponse">
+<part name="parameters" element="tns:searchCarByCategoryResponse"/>
+</message>
+<message name="retrieveAllOutlets">
+<part name="parameters" element="tns:retrieveAllOutlets"/>
+</message>
+<message name="retrieveAllOutletsResponse">
+<part name="parameters" element="tns:retrieveAllOutletsResponse"/>
+</message>
+<message name="createNewCustomer">
+<part name="parameters" element="tns:createNewCustomer"/>
+</message>
+<message name="createNewCustomerResponse">
+<part name="parameters" element="tns:createNewCustomerResponse"/>
+</message>
+<message name="retrieveCarCategoryByCarCategoryId">
+<part name="parameters" element="tns:retrieveCarCategoryByCarCategoryId"/>
+</message>
+<message name="retrieveCarCategoryByCarCategoryIdResponse">
+<part name="parameters" element="tns:retrieveCarCategoryByCarCategoryIdResponse"/>
+</message>
+<message name="retrieveRentalReservationByRentalReservationId">
+<part name="parameters" element="tns:retrieveRentalReservationByRentalReservationId"/>
+</message>
+<message name="retrieveRentalReservationByRentalReservationIdResponse">
+<part name="parameters" element="tns:retrieveRentalReservationByRentalReservationIdResponse"/>
 </message>
 <message name="retrievePartnerRentalReservations">
 <part name="parameters" element="tns:retrievePartnerRentalReservations"/>
@@ -134,16 +152,6 @@
 <part name="parameters" element="tns:createNewPartnerRentalReservationResponse"/>
 </message>
 <portType name="PartnerReservationWebService">
-<operation name="retrieveCarCategoryByCarCategoryId">
-<input wsam:Action="http://ws.session.ejb/PartnerReservationWebService/retrieveCarCategoryByCarCategoryIdRequest" message="tns:retrieveCarCategoryByCarCategoryId"/>
-<output wsam:Action="http://ws.session.ejb/PartnerReservationWebService/retrieveCarCategoryByCarCategoryIdResponse" message="tns:retrieveCarCategoryByCarCategoryIdResponse"/>
-<fault message="tns:CarCategoryNotFoundException" name="CarCategoryNotFoundException" wsam:Action="http://ws.session.ejb/PartnerReservationWebService/retrieveCarCategoryByCarCategoryId/Fault/CarCategoryNotFoundException"/>
-</operation>
-<operation name="retrieveRentalReservationByRentalReservationId">
-<input wsam:Action="http://ws.session.ejb/PartnerReservationWebService/retrieveRentalReservationByRentalReservationIdRequest" message="tns:retrieveRentalReservationByRentalReservationId"/>
-<output wsam:Action="http://ws.session.ejb/PartnerReservationWebService/retrieveRentalReservationByRentalReservationIdResponse" message="tns:retrieveRentalReservationByRentalReservationIdResponse"/>
-<fault message="tns:RentalReservationNotFoundException" name="RentalReservationNotFoundException" wsam:Action="http://ws.session.ejb/PartnerReservationWebService/retrieveRentalReservationByRentalReservationId/Fault/RentalReservationNotFoundException"/>
-</operation>
 <operation name="searchCarByModel">
 <input wsam:Action="http://ws.session.ejb/PartnerReservationWebService/searchCarByModelRequest" message="tns:searchCarByModel"/>
 <output wsam:Action="http://ws.session.ejb/PartnerReservationWebService/searchCarByModelResponse" message="tns:searchCarByModelResponse"/>
@@ -152,37 +160,40 @@
 <fault message="tns:OutletNotFoundException" name="OutletNotFoundException" wsam:Action="http://ws.session.ejb/PartnerReservationWebService/searchCarByModel/Fault/OutletNotFoundException"/>
 <fault message="tns:ModelNotFoundException" name="ModelNotFoundException" wsam:Action="http://ws.session.ejb/PartnerReservationWebService/searchCarByModel/Fault/ModelNotFoundException"/>
 </operation>
+<operation name="createNewPartner">
+<input wsam:Action="http://ws.session.ejb/PartnerReservationWebService/createNewPartnerRequest" message="tns:createNewPartner"/>
+<output wsam:Action="http://ws.session.ejb/PartnerReservationWebService/createNewPartnerResponse" message="tns:createNewPartnerResponse"/>
+<fault message="tns:PartnerNameExistException" name="PartnerNameExistException" wsam:Action="http://ws.session.ejb/PartnerReservationWebService/createNewPartner/Fault/PartnerNameExistException"/>
+<fault message="tns:UnknownPersistenceException" name="UnknownPersistenceException" wsam:Action="http://ws.session.ejb/PartnerReservationWebService/createNewPartner/Fault/UnknownPersistenceException"/>
+<fault message="tns:InputDataValidationException" name="InputDataValidationException" wsam:Action="http://ws.session.ejb/PartnerReservationWebService/createNewPartner/Fault/InputDataValidationException"/>
+</operation>
+<operation name="partnerLogin">
+<input wsam:Action="http://ws.session.ejb/PartnerReservationWebService/partnerLoginRequest" message="tns:partnerLogin"/>
+<output wsam:Action="http://ws.session.ejb/PartnerReservationWebService/partnerLoginResponse" message="tns:partnerLoginResponse"/>
+<fault message="tns:InvalidLoginCredentialException" name="InvalidLoginCredentialException" wsam:Action="http://ws.session.ejb/PartnerReservationWebService/partnerLogin/Fault/InvalidLoginCredentialException"/>
+</operation>
+<operation name="retrieveAllCarCategories">
+<input wsam:Action="http://ws.session.ejb/PartnerReservationWebService/retrieveAllCarCategoriesRequest" message="tns:retrieveAllCarCategories"/>
+<output wsam:Action="http://ws.session.ejb/PartnerReservationWebService/retrieveAllCarCategoriesResponse" message="tns:retrieveAllCarCategoriesResponse"/>
+</operation>
 <operation name="calculateTotalRentalFee">
 <input wsam:Action="http://ws.session.ejb/PartnerReservationWebService/calculateTotalRentalFeeRequest" message="tns:calculateTotalRentalFee"/>
 <output wsam:Action="http://ws.session.ejb/PartnerReservationWebService/calculateTotalRentalFeeResponse" message="tns:calculateTotalRentalFeeResponse"/>
 <fault message="tns:CarCategoryNotFoundException" name="CarCategoryNotFoundException" wsam:Action="http://ws.session.ejb/PartnerReservationWebService/calculateTotalRentalFee/Fault/CarCategoryNotFoundException"/>
 <fault message="tns:NoAvailableRentalRateException" name="NoAvailableRentalRateException" wsam:Action="http://ws.session.ejb/PartnerReservationWebService/calculateTotalRentalFee/Fault/NoAvailableRentalRateException"/>
 </operation>
-<operation name="cancelReservation">
-<input wsam:Action="http://ws.session.ejb/PartnerReservationWebService/cancelReservationRequest" message="tns:cancelReservation"/>
-<output wsam:Action="http://ws.session.ejb/PartnerReservationWebService/cancelReservationResponse" message="tns:cancelReservationResponse"/>
-<fault message="tns:RentalReservationNotFoundException" name="RentalReservationNotFoundException" wsam:Action="http://ws.session.ejb/PartnerReservationWebService/cancelReservation/Fault/RentalReservationNotFoundException"/>
+<operation name="retrieveAllRentalReservations">
+<input wsam:Action="http://ws.session.ejb/PartnerReservationWebService/retrieveAllRentalReservationsRequest" message="tns:retrieveAllRentalReservations"/>
+<output wsam:Action="http://ws.session.ejb/PartnerReservationWebService/retrieveAllRentalReservationsResponse" message="tns:retrieveAllRentalReservationsResponse"/>
 </operation>
-<operation name="retrieveModelByModelId">
-<input wsam:Action="http://ws.session.ejb/PartnerReservationWebService/retrieveModelByModelIdRequest" message="tns:retrieveModelByModelId"/>
-<output wsam:Action="http://ws.session.ejb/PartnerReservationWebService/retrieveModelByModelIdResponse" message="tns:retrieveModelByModelIdResponse"/>
-<fault message="tns:ModelNotFoundException" name="ModelNotFoundException" wsam:Action="http://ws.session.ejb/PartnerReservationWebService/retrieveModelByModelId/Fault/ModelNotFoundException"/>
+<operation name="retrieveAllModels">
+<input wsam:Action="http://ws.session.ejb/PartnerReservationWebService/retrieveAllModelsRequest" message="tns:retrieveAllModels"/>
+<output wsam:Action="http://ws.session.ejb/PartnerReservationWebService/retrieveAllModelsResponse" message="tns:retrieveAllModelsResponse"/>
 </operation>
 <operation name="retrieveOutletByOutletId">
 <input wsam:Action="http://ws.session.ejb/PartnerReservationWebService/retrieveOutletByOutletIdRequest" message="tns:retrieveOutletByOutletId"/>
 <output wsam:Action="http://ws.session.ejb/PartnerReservationWebService/retrieveOutletByOutletIdResponse" message="tns:retrieveOutletByOutletIdResponse"/>
 <fault message="tns:OutletNotFoundException" name="OutletNotFoundException" wsam:Action="http://ws.session.ejb/PartnerReservationWebService/retrieveOutletByOutletId/Fault/OutletNotFoundException"/>
-</operation>
-<operation name="retrieveAllRentalReservations">
-<input wsam:Action="http://ws.session.ejb/PartnerReservationWebService/retrieveAllRentalReservationsRequest" message="tns:retrieveAllRentalReservations"/>
-<output wsam:Action="http://ws.session.ejb/PartnerReservationWebService/retrieveAllRentalReservationsResponse" message="tns:retrieveAllRentalReservationsResponse"/>
-</operation>
-<operation name="searchCarByCategory">
-<input wsam:Action="http://ws.session.ejb/PartnerReservationWebService/searchCarByCategoryRequest" message="tns:searchCarByCategory"/>
-<output wsam:Action="http://ws.session.ejb/PartnerReservationWebService/searchCarByCategoryResponse" message="tns:searchCarByCategoryResponse"/>
-<fault message="tns:NoAvailableRentalRateException" name="NoAvailableRentalRateException" wsam:Action="http://ws.session.ejb/PartnerReservationWebService/searchCarByCategory/Fault/NoAvailableRentalRateException"/>
-<fault message="tns:CarCategoryNotFoundException" name="CarCategoryNotFoundException" wsam:Action="http://ws.session.ejb/PartnerReservationWebService/searchCarByCategory/Fault/CarCategoryNotFoundException"/>
-<fault message="tns:OutletNotFoundException" name="OutletNotFoundException" wsam:Action="http://ws.session.ejb/PartnerReservationWebService/searchCarByCategory/Fault/OutletNotFoundException"/>
 </operation>
 <operation name="createNewRentalReservation">
 <input wsam:Action="http://ws.session.ejb/PartnerReservationWebService/createNewRentalReservationRequest" message="tns:createNewRentalReservation"/>
@@ -199,6 +210,27 @@
 <output wsam:Action="http://ws.session.ejb/PartnerReservationWebService/retrievePartnerByPartnerIdResponse" message="tns:retrievePartnerByPartnerIdResponse"/>
 <fault message="tns:PartnerNotFoundException" name="PartnerNotFoundException" wsam:Action="http://ws.session.ejb/PartnerReservationWebService/retrievePartnerByPartnerId/Fault/PartnerNotFoundException"/>
 </operation>
+<operation name="cancelReservation">
+<input wsam:Action="http://ws.session.ejb/PartnerReservationWebService/cancelReservationRequest" message="tns:cancelReservation"/>
+<output wsam:Action="http://ws.session.ejb/PartnerReservationWebService/cancelReservationResponse" message="tns:cancelReservationResponse"/>
+<fault message="tns:RentalReservationNotFoundException" name="RentalReservationNotFoundException" wsam:Action="http://ws.session.ejb/PartnerReservationWebService/cancelReservation/Fault/RentalReservationNotFoundException"/>
+</operation>
+<operation name="retrieveModelByModelId">
+<input wsam:Action="http://ws.session.ejb/PartnerReservationWebService/retrieveModelByModelIdRequest" message="tns:retrieveModelByModelId"/>
+<output wsam:Action="http://ws.session.ejb/PartnerReservationWebService/retrieveModelByModelIdResponse" message="tns:retrieveModelByModelIdResponse"/>
+<fault message="tns:ModelNotFoundException" name="ModelNotFoundException" wsam:Action="http://ws.session.ejb/PartnerReservationWebService/retrieveModelByModelId/Fault/ModelNotFoundException"/>
+</operation>
+<operation name="searchCarByCategory">
+<input wsam:Action="http://ws.session.ejb/PartnerReservationWebService/searchCarByCategoryRequest" message="tns:searchCarByCategory"/>
+<output wsam:Action="http://ws.session.ejb/PartnerReservationWebService/searchCarByCategoryResponse" message="tns:searchCarByCategoryResponse"/>
+<fault message="tns:NoAvailableRentalRateException" name="NoAvailableRentalRateException" wsam:Action="http://ws.session.ejb/PartnerReservationWebService/searchCarByCategory/Fault/NoAvailableRentalRateException"/>
+<fault message="tns:CarCategoryNotFoundException" name="CarCategoryNotFoundException" wsam:Action="http://ws.session.ejb/PartnerReservationWebService/searchCarByCategory/Fault/CarCategoryNotFoundException"/>
+<fault message="tns:OutletNotFoundException" name="OutletNotFoundException" wsam:Action="http://ws.session.ejb/PartnerReservationWebService/searchCarByCategory/Fault/OutletNotFoundException"/>
+</operation>
+<operation name="retrieveAllOutlets">
+<input wsam:Action="http://ws.session.ejb/PartnerReservationWebService/retrieveAllOutletsRequest" message="tns:retrieveAllOutlets"/>
+<output wsam:Action="http://ws.session.ejb/PartnerReservationWebService/retrieveAllOutletsResponse" message="tns:retrieveAllOutletsResponse"/>
+</operation>
 <operation name="createNewCustomer">
 <input wsam:Action="http://ws.session.ejb/PartnerReservationWebService/createNewCustomerRequest" message="tns:createNewCustomer"/>
 <output wsam:Action="http://ws.session.ejb/PartnerReservationWebService/createNewCustomerResponse" message="tns:createNewCustomerResponse"/>
@@ -206,17 +238,15 @@
 <fault message="tns:UnknownPersistenceException" name="UnknownPersistenceException" wsam:Action="http://ws.session.ejb/PartnerReservationWebService/createNewCustomer/Fault/UnknownPersistenceException"/>
 <fault message="tns:InputDataValidationException" name="InputDataValidationException" wsam:Action="http://ws.session.ejb/PartnerReservationWebService/createNewCustomer/Fault/InputDataValidationException"/>
 </operation>
-<operation name="createNewPartner">
-<input wsam:Action="http://ws.session.ejb/PartnerReservationWebService/createNewPartnerRequest" message="tns:createNewPartner"/>
-<output wsam:Action="http://ws.session.ejb/PartnerReservationWebService/createNewPartnerResponse" message="tns:createNewPartnerResponse"/>
-<fault message="tns:PartnerNameExistException" name="PartnerNameExistException" wsam:Action="http://ws.session.ejb/PartnerReservationWebService/createNewPartner/Fault/PartnerNameExistException"/>
-<fault message="tns:UnknownPersistenceException" name="UnknownPersistenceException" wsam:Action="http://ws.session.ejb/PartnerReservationWebService/createNewPartner/Fault/UnknownPersistenceException"/>
-<fault message="tns:InputDataValidationException" name="InputDataValidationException" wsam:Action="http://ws.session.ejb/PartnerReservationWebService/createNewPartner/Fault/InputDataValidationException"/>
+<operation name="retrieveCarCategoryByCarCategoryId">
+<input wsam:Action="http://ws.session.ejb/PartnerReservationWebService/retrieveCarCategoryByCarCategoryIdRequest" message="tns:retrieveCarCategoryByCarCategoryId"/>
+<output wsam:Action="http://ws.session.ejb/PartnerReservationWebService/retrieveCarCategoryByCarCategoryIdResponse" message="tns:retrieveCarCategoryByCarCategoryIdResponse"/>
+<fault message="tns:CarCategoryNotFoundException" name="CarCategoryNotFoundException" wsam:Action="http://ws.session.ejb/PartnerReservationWebService/retrieveCarCategoryByCarCategoryId/Fault/CarCategoryNotFoundException"/>
 </operation>
-<operation name="partnerLogin">
-<input wsam:Action="http://ws.session.ejb/PartnerReservationWebService/partnerLoginRequest" message="tns:partnerLogin"/>
-<output wsam:Action="http://ws.session.ejb/PartnerReservationWebService/partnerLoginResponse" message="tns:partnerLoginResponse"/>
-<fault message="tns:InvalidLoginCredentialException" name="InvalidLoginCredentialException" wsam:Action="http://ws.session.ejb/PartnerReservationWebService/partnerLogin/Fault/InvalidLoginCredentialException"/>
+<operation name="retrieveRentalReservationByRentalReservationId">
+<input wsam:Action="http://ws.session.ejb/PartnerReservationWebService/retrieveRentalReservationByRentalReservationIdRequest" message="tns:retrieveRentalReservationByRentalReservationId"/>
+<output wsam:Action="http://ws.session.ejb/PartnerReservationWebService/retrieveRentalReservationByRentalReservationIdResponse" message="tns:retrieveRentalReservationByRentalReservationIdResponse"/>
+<fault message="tns:RentalReservationNotFoundException" name="RentalReservationNotFoundException" wsam:Action="http://ws.session.ejb/PartnerReservationWebService/retrieveRentalReservationByRentalReservationId/Fault/RentalReservationNotFoundException"/>
 </operation>
 <operation name="retrievePartnerRentalReservations">
 <input wsam:Action="http://ws.session.ejb/PartnerReservationWebService/retrievePartnerRentalReservationsRequest" message="tns:retrievePartnerRentalReservations"/>
@@ -236,30 +266,6 @@
 </portType>
 <binding name="PartnerReservationWebServicePortBinding" type="tns:PartnerReservationWebService">
 <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
-<operation name="retrieveCarCategoryByCarCategoryId">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-<fault name="CarCategoryNotFoundException">
-<soap:fault name="CarCategoryNotFoundException" use="literal"/>
-</fault>
-</operation>
-<operation name="retrieveRentalReservationByRentalReservationId">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-<fault name="RentalReservationNotFoundException">
-<soap:fault name="RentalReservationNotFoundException" use="literal"/>
-</fault>
-</operation>
 <operation name="searchCarByModel">
 <soap:operation soapAction=""/>
 <input>
@@ -281,6 +287,45 @@
 <soap:fault name="ModelNotFoundException" use="literal"/>
 </fault>
 </operation>
+<operation name="createNewPartner">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="PartnerNameExistException">
+<soap:fault name="PartnerNameExistException" use="literal"/>
+</fault>
+<fault name="UnknownPersistenceException">
+<soap:fault name="UnknownPersistenceException" use="literal"/>
+</fault>
+<fault name="InputDataValidationException">
+<soap:fault name="InputDataValidationException" use="literal"/>
+</fault>
+</operation>
+<operation name="partnerLogin">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="InvalidLoginCredentialException">
+<soap:fault name="InvalidLoginCredentialException" use="literal"/>
+</fault>
+</operation>
+<operation name="retrieveAllCarCategories">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
 <operation name="calculateTotalRentalFee">
 <soap:operation soapAction=""/>
 <input>
@@ -296,42 +341,6 @@
 <soap:fault name="NoAvailableRentalRateException" use="literal"/>
 </fault>
 </operation>
-<operation name="cancelReservation">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-<fault name="RentalReservationNotFoundException">
-<soap:fault name="RentalReservationNotFoundException" use="literal"/>
-</fault>
-</operation>
-<operation name="retrieveModelByModelId">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-<fault name="ModelNotFoundException">
-<soap:fault name="ModelNotFoundException" use="literal"/>
-</fault>
-</operation>
-<operation name="retrieveOutletByOutletId">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-<fault name="OutletNotFoundException">
-<soap:fault name="OutletNotFoundException" use="literal"/>
-</fault>
-</operation>
 <operation name="retrieveAllRentalReservations">
 <soap:operation soapAction=""/>
 <input>
@@ -341,7 +350,7 @@
 <soap:body use="literal"/>
 </output>
 </operation>
-<operation name="searchCarByCategory">
+<operation name="retrieveAllModels">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -349,12 +358,15 @@
 <output>
 <soap:body use="literal"/>
 </output>
-<fault name="NoAvailableRentalRateException">
-<soap:fault name="NoAvailableRentalRateException" use="literal"/>
-</fault>
-<fault name="CarCategoryNotFoundException">
-<soap:fault name="CarCategoryNotFoundException" use="literal"/>
-</fault>
+</operation>
+<operation name="retrieveOutletByOutletId">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
 <fault name="OutletNotFoundException">
 <soap:fault name="OutletNotFoundException" use="literal"/>
 </fault>
@@ -398,6 +410,57 @@
 <soap:fault name="PartnerNotFoundException" use="literal"/>
 </fault>
 </operation>
+<operation name="cancelReservation">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="RentalReservationNotFoundException">
+<soap:fault name="RentalReservationNotFoundException" use="literal"/>
+</fault>
+</operation>
+<operation name="retrieveModelByModelId">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="ModelNotFoundException">
+<soap:fault name="ModelNotFoundException" use="literal"/>
+</fault>
+</operation>
+<operation name="searchCarByCategory">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="NoAvailableRentalRateException">
+<soap:fault name="NoAvailableRentalRateException" use="literal"/>
+</fault>
+<fault name="CarCategoryNotFoundException">
+<soap:fault name="CarCategoryNotFoundException" use="literal"/>
+</fault>
+<fault name="OutletNotFoundException">
+<soap:fault name="OutletNotFoundException" use="literal"/>
+</fault>
+</operation>
+<operation name="retrieveAllOutlets">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
 <operation name="createNewCustomer">
 <soap:operation soapAction=""/>
 <input>
@@ -416,7 +479,7 @@
 <soap:fault name="InputDataValidationException" use="literal"/>
 </fault>
 </operation>
-<operation name="createNewPartner">
+<operation name="retrieveCarCategoryByCarCategoryId">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -424,17 +487,11 @@
 <output>
 <soap:body use="literal"/>
 </output>
-<fault name="PartnerNameExistException">
-<soap:fault name="PartnerNameExistException" use="literal"/>
-</fault>
-<fault name="UnknownPersistenceException">
-<soap:fault name="UnknownPersistenceException" use="literal"/>
-</fault>
-<fault name="InputDataValidationException">
-<soap:fault name="InputDataValidationException" use="literal"/>
+<fault name="CarCategoryNotFoundException">
+<soap:fault name="CarCategoryNotFoundException" use="literal"/>
 </fault>
 </operation>
-<operation name="partnerLogin">
+<operation name="retrieveRentalReservationByRentalReservationId">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -442,8 +499,8 @@
 <output>
 <soap:body use="literal"/>
 </output>
-<fault name="InvalidLoginCredentialException">
-<soap:fault name="InvalidLoginCredentialException" use="literal"/>
+<fault name="RentalReservationNotFoundException">
+<soap:fault name="RentalReservationNotFoundException" use="literal"/>
 </fault>
 </operation>
 <operation name="retrievePartnerRentalReservations">

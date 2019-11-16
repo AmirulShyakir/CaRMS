@@ -200,20 +200,35 @@ public class DataInitializationSessionBean {
             RentalRate standardSedanDefault = new RentalRate("Standard Sedan - Default", BigDecimal.valueOf(100.0));
             Date startDateTime = sdf.parse("06/12/2019 12:00");
             Date endDateTime = sdf.parse("08/12/2019 00:00");
-            RentalRate standardSedanWeekendPromo = new RentalRate("Standard Sedan - Weekend Promo", BigDecimal.valueOf(80.0), startDateTime, endDateTime);
+
+            RentalRate standardSedanWeekendPromo = new RentalRate("Standard Sedan - Weekend Promo", BigDecimal.valueOf(80.0));
+            standardSedanWeekendPromo.setStartDate(startDateTime);
+            standardSedanWeekendPromo.setEndDate(endDateTime);
             RentalRate familySedanDefault = new RentalRate("Family Sedan - Default", BigDecimal.valueOf(200.0));
+
             startDateTime = sdf.parse("02/12/2019 00:00");
             endDateTime = sdf.parse("02/12/2019 23:59");
-            RentalRate luxurySedanMonday = new RentalRate("Luxury Sedan - Monday", BigDecimal.valueOf(310.0), startDateTime, endDateTime);
+            RentalRate luxurySedanMonday = new RentalRate("Luxury Sedan - Monday", BigDecimal.valueOf(310.0));
+            luxurySedanMonday.setStartDate(startDateTime);
+            luxurySedanMonday.setEndDate(endDateTime);
+
             startDateTime = sdf.parse("03/12/2019 00:00");
             endDateTime = sdf.parse("03/12/2019 23:59");
-            RentalRate luxurySedanTuesday = new RentalRate("Luxury Sedan - Tuesday", BigDecimal.valueOf(320.0), startDateTime, endDateTime);
+            RentalRate luxurySedanTuesday = new RentalRate("Luxury Sedan - Tuesday", BigDecimal.valueOf(320.0));
+            luxurySedanTuesday.setStartDate(startDateTime);
+            luxurySedanTuesday.setEndDate(endDateTime);
+
             startDateTime = sdf.parse("04/12/2019 00:00");
             endDateTime = sdf.parse("04/12/2019 23:59");
-            RentalRate luxurySedanWednesday = new RentalRate("Luxury Sedan - Wednesday", BigDecimal.valueOf(330.0), startDateTime, endDateTime);
+            RentalRate luxurySedanWednesday = new RentalRate("Luxury Sedan - Wednesday", BigDecimal.valueOf(330.0));
+            luxurySedanWednesday.setStartDate(startDateTime);
+            luxurySedanWednesday.setEndDate(endDateTime);
+
             startDateTime = sdf.parse("04/12/2019 12:00");
             endDateTime = sdf.parse("05/12/2019 12:00");
-            RentalRate luxurySedanWeekdayPromo = new RentalRate("Luxury Sedan - Weekday Promo", BigDecimal.valueOf(250.0), startDateTime, endDateTime);
+            RentalRate luxurySedanWeekdayPromo = new RentalRate("Luxury Sedan - Weekday Promo", BigDecimal.valueOf(250.0));
+            luxurySedanWeekdayPromo.setStartDate(startDateTime);
+            luxurySedanWeekdayPromo.setEndDate(endDateTime);
 
             rentalRateSessionBeanLocal.createNewRentalRate(standardSedanId, standardSedanDefault);
             rentalRateSessionBeanLocal.createNewRentalRate(standardSedanId, standardSedanWeekendPromo);

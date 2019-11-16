@@ -5,7 +5,6 @@
  */
 package ejb.session.stateless;
 
-import entity.CarCategory;
 import entity.RentalRate;
 import java.util.Date;
 import java.util.List;
@@ -13,7 +12,6 @@ import javax.ejb.Local;
 import util.exception.CarCategoryNotFoundException;
 import util.exception.InputDataValidationException;
 import util.exception.NoAvailableRentalRateException;
-import util.exception.RentalRateNameExistException;
 import util.exception.RentalRateNotFoundException;
 import util.exception.UnknownPersistenceException;
 

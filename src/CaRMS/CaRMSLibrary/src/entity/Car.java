@@ -69,10 +69,8 @@ public class Car implements Serializable {
     }
 
     public Car(String licensePlate, String colour, CarStatusEnum carStatus) {
-        this();
+        this(licensePlate, colour);
 
-        this.licensePlate = licensePlate;
-        this.colour = colour;
         this.carStatus = carStatus;
     }
 

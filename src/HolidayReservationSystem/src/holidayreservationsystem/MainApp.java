@@ -42,7 +42,7 @@ class MainApp {
 
     private Long currentPartnerId = new Long(0);
 
-    void runApp() throws InvalidLoginCredentialException_Exception, OutletNotFoundException_Exception, CarCategoryNotFoundException_Exception, NoAvailableRentalRateException_Exception, ModelNotFoundException_Exception, DatatypeConfigurationException {
+    void runApp() {
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
 
@@ -99,19 +99,20 @@ class MainApp {
         }
     }
 
-    private void doSearchCar() throws OutletNotFoundException_Exception, CarCategoryNotFoundException_Exception, CarCategoryNotFoundException_Exception, NoAvailableRentalRateException_Exception, ModelNotFoundException_Exception, ModelNotFoundException_Exception, ModelNotFoundException_Exception, NoAvailableRentalRateException_Exception, ModelNotFoundException_Exception, ModelNotFoundException_Exception, DatatypeConfigurationException {
+    private void doSearchCar() {
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
         SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        Long carCategoryId = new Long(-1); // to avoid error
-        Long modelId = new Long(-1); // to avoid error
+        Long carCategoryId = new Long(0); // to avoid error
+        Long modelId = new Long(0); // to avoid error
         Date pickUpDateTime;
-        Long pickupOutletId;
+        Long pickupOutletId = new Long(0); // to avoid error
         Date returnDateTime;
-        Long returnOutletId;
+        Long returnOutletId = new Long(0); // to avoid error
         XMLGregorianCalendar pickUpGregorianCalendar = null;
         XMLGregorianCalendar returnGregorianCalendar = null;
         GregorianCalendar gc = new GregorianCalendar();
+        Boolean canReserve = false;
 
         System.out.println("*** Holiday Reservation System :: Search Car ***\n");
 
@@ -124,28 +125,104 @@ class MainApp {
             returnDateTime = inputDateFormat.parse(scanner.nextLine().trim());
             gc.setTime(returnDateTime);
             returnGregorianCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(gc);
+            List<Outlet> outlets = retrieveAllOutlets();
+            if (returnDateTime.before(pickUpDateTime)) {
+                throw new ReturnDateBeforePickupDateException();
+            }
+
+            System.out.printf("%4s%64s%20s%20s\n", "ID", "Outlet Name", "Opening Hour", "Closing Hour");
+            SimpleDateFormat operatingHours = new SimpleDateFormat("HH:mm");
+            for (Outlet outlet : outlets) {
+                String openingHourString = "24/7";
+                if (outlet.getOpeningHour() != null) {
+                    XMLGregorianCalendar startGregorianCalendar = outlet.getOpeningHour();
+                    Date openingHourDate = startGregorianCalendar.toGregorianCalendar().getTime();
+                    openingHourString = operatingHours.format(openingHourDate);
+                }
+                String closingHourString = "";
+                if (outlet.getClosingHour() != null) {
+                    XMLGregorianCalendar endGregorianCalendar = outlet.getClosingHour();
+                    Date closingHourDate = endGregorianCalendar.toGregorianCalendar().getTime();
+                    closingHourString = operatingHours.format(closingHourDate);
+                }
+                System.out.printf("%4s%64s%20s%20s\n", outlet.getOutletId(), outlet.getOutletName(),
+                        openingHourString, closingHourString);
+            }
+
             System.out.print("Enter Pickup Outlet ID> ");
             pickupOutletId = scanner.nextLong();
             System.out.print("Enter Return Outlet ID> ");
             returnOutletId = scanner.nextLong();
 
-            System.out.println("*** Search by Car Category or Car Model? ***\n");
-            System.out.println("1: Car Category");
-            System.out.println("2: Car Model");
-            System.out.println();
-            response = scanner.nextInt();
+            Outlet pickupOutlet = retrieveOutletByOutletId(pickupOutletId);
+            if (pickupOutlet.getOpeningHour() != null) {
+                Date pickupOutletOpeningHour = pickupOutlet.getOpeningHour().toGregorianCalendar().getTime();
+                Date pickupOutletClosingHour = pickupOutlet.getClosingHour().toGregorianCalendar().getTime();
+                if ((pickUpDateTime.getHours() < pickupOutletOpeningHour.getHours())
+                        || (pickUpDateTime.getHours() == pickupOutletOpeningHour.getHours()
+                        && pickUpDateTime.getMinutes() < pickupOutletOpeningHour.getMinutes())) {
+                    throw new OutsideOperatingHoursException("Pickup time is before opening hours of the pickup outlet");
+                } else if ((pickUpDateTime.getHours() > pickupOutletClosingHour.getHours())
+                        || (pickUpDateTime.getHours() == pickupOutletClosingHour.getHours()
+                        && pickUpDateTime.getMinutes() > pickupOutletClosingHour.getMinutes())) {
+                    throw new OutsideOperatingHoursException("Pickup time is after closing hours of the pickup outlet");
+                }
+            }
+            Outlet returnOutlet = retrieveOutletByOutletId(returnOutletId);
+            if (pickupOutlet.getOpeningHour() != null) {
+                Date returnOutletOpeningHour = returnOutlet.getOpeningHour().toGregorianCalendar().getTime();
+                Date returnOutletClosingHour = returnOutlet.getClosingHour().toGregorianCalendar().getTime();
+                if ((returnDateTime.getHours() < returnOutletOpeningHour.getHours())
+                        || (returnDateTime.getHours() == returnOutletOpeningHour.getHours()
+                        && returnDateTime.getMinutes() < returnOutletOpeningHour.getMinutes())) {
+                    throw new OutsideOperatingHoursException("Return time is before opening hours of the return outlet");
+                } else if ((returnDateTime.getHours() > returnOutletClosingHour.getHours())
+                        || (returnDateTime.getHours() == returnOutletClosingHour.getHours()
+                        && returnDateTime.getMinutes() > returnOutletClosingHour.getMinutes())) {
+                    throw new OutsideOperatingHoursException("Return time is after closing hours of the return outlet");
+                }
+            }
+            while (true) {
+                System.out.println("*** Search by Car Category or Car Model? ***\n");
+                System.out.println("1: Search by Car Category");
+                System.out.println("2: Search by Car Model");
+                response = 0;
 
-            Boolean canReserve = false;
+                while (response < 1 || response > 2) {
+                    System.out.print("> ");
+                    response = scanner.nextInt();
 
-            if (response == 1) {
-                System.out.print("Enter Car Category ID> ");
-                carCategoryId = scanner.nextLong();
-                canReserve = searchCarByCategory(pickUpGregorianCalendar, returnGregorianCalendar, pickupOutletId, returnOutletId, carCategoryId);
-            } else if (response == 2) {
-                System.out.print("Enter Car Model ID> ");
-                modelId = scanner.nextLong();
-                carCategoryId = retrieveModelByModelId(modelId).getCarCategory().getCarCategoryId();
-                canReserve = searchCarByModel(pickUpGregorianCalendar, returnGregorianCalendar, pickupOutletId, returnOutletId, modelId);
+                    if (response == 1) {
+                        List<CarCategory> carCategories = retrieveAllCarCategories();
+                        System.out.printf("%4s%64s\n", "ID", "Car Category Name");
+
+                        for (CarCategory carCategory : carCategories) {
+                            System.out.printf("%4s%64s\n",
+                                    carCategory.getCarCategoryId(), carCategory.getCarCategoryName());
+                        }
+                        System.out.print("Enter Car Category ID> ");
+                        carCategoryId = scanner.nextLong();
+                        canReserve = searchCarByCategory(pickUpGregorianCalendar, returnGregorianCalendar, pickupOutletId, returnOutletId, carCategoryId);
+                        break;
+                    } else if (response == 2) {
+                        List<Model> models = retrieveAllModels();
+                        System.out.printf("%4s%64s%32s%32s\n", "ID", "Car Category Name", "Make", "Model");
+                        
+                        for (Model model : models) {
+                            System.out.printf("%4s%64s%32s%32s\n",
+                                    model.getModelId(), model.getCarCategory().getCarCategoryName(),
+                                    model.getMakeName(), model.getModelName());
+                        }
+                        System.out.print("Enter Car Model ID> ");
+                        modelId = scanner.nextLong();
+                        carCategoryId = retrieveModelByModelId(modelId).getCarCategory().getCarCategoryId();
+                        canReserve = searchCarByModel(pickUpGregorianCalendar, returnGregorianCalendar, pickupOutletId, returnOutletId, modelId);
+                        break;
+                    }
+                }
+                if (response == 1 || response == 2) {
+                    break;
+                }
             }
             scanner.nextLine();
             if (!canReserve) {
@@ -171,12 +248,20 @@ class MainApp {
             System.out.println("Model not found!\n");
         } catch (OutletNotFoundException_Exception ex) {
             System.out.println("Outlet not found!\n");
+        } catch (DatatypeConfigurationException ex) {
+            System.out.println("DatatypeConfigurationException!\n");
+        } catch (NoAvailableRentalRateException_Exception ex) {
+            System.out.println("Outlet not found for ID: !" + pickupOutletId + " and/or " + returnOutletId + "\n");
+        } catch (ReturnDateBeforePickupDateException ex) {
+            System.out.println("Return Date is before Pickup Date!");
+        } catch (OutsideOperatingHoursException ex) {
+            System.out.println("Reservation is outside of outlet operating hours!");
         }
         System.out.print("Press any key to continue...> ");
         scanner.nextLine();
     }
 
-    private void menuMain() throws ModelNotFoundException_Exception, OutletNotFoundException_Exception, CarCategoryNotFoundException_Exception, CarCategoryNotFoundException_Exception, CarCategoryNotFoundException_Exception, CarCategoryNotFoundException_Exception, NoAvailableRentalRateException_Exception, NoAvailableRentalRateException_Exception, DatatypeConfigurationException {
+    private void menuMain() {
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
 
@@ -211,7 +296,7 @@ class MainApp {
         }
     }
 
-    private void doReserveCar(Integer response, Long carCategoryId, Long modelId, Date pickUpDateTime, Date returnDateTime, Long pickupOutletId, Long returnOutletId, BigDecimal totalRentalFee) throws DatatypeConfigurationException {
+    private void doReserveCar(Integer response, Long carCategoryId, Long modelId, Date pickUpDateTime, Date returnDateTime, Long pickupOutletId, Long returnOutletId, BigDecimal totalRentalFee) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("*** Holiday Reservation System :: Reserve Car ***\n");
 
@@ -266,7 +351,7 @@ class MainApp {
             System.out.println("Outlet not found!\n");
         } catch (PartnerNotFoundException_Exception ex) {
             System.out.println("Partner not found!\n");
-        } catch (InputDataValidationException_Exception | UnknownPersistenceException_Exception | CustomerNotFoundException_Exception ex) {
+        } catch (DatatypeConfigurationException | InputDataValidationException_Exception | UnknownPersistenceException_Exception | CustomerNotFoundException_Exception ex) {
             System.out.println(ex.getMessage());
         }
     }
@@ -432,7 +517,7 @@ class MainApp {
         ws.client.PartnerReservationWebService port = service.getPartnerReservationWebServicePort();
         return port.retrieveAllRentalReservations();
     }
-    
+
     private static java.util.List<ws.client.RentalReservation> retrievePartnerRentalReservations(java.lang.Long arg0) {
         ws.client.PartnerReservationWebService_Service service = new ws.client.PartnerReservationWebService_Service();
         ws.client.PartnerReservationWebService port = service.getPartnerReservationWebServicePort();
@@ -449,5 +534,35 @@ class MainApp {
         ws.client.PartnerReservationWebService_Service service = new ws.client.PartnerReservationWebService_Service();
         ws.client.PartnerReservationWebService port = service.getPartnerReservationWebServicePort();
         return port.searchCarByModel(arg0, arg1, arg2, arg3, arg4);
+    }
+
+    private static java.util.List<ws.client.CarCategory> retrieveAllCarCategories() {
+        ws.client.PartnerReservationWebService_Service service = new ws.client.PartnerReservationWebService_Service();
+        ws.client.PartnerReservationWebService port = service.getPartnerReservationWebServicePort();
+        return port.retrieveAllCarCategories();
+    }
+
+    private static java.util.List<ws.client.Model> retrieveAllModels() {
+        ws.client.PartnerReservationWebService_Service service = new ws.client.PartnerReservationWebService_Service();
+        ws.client.PartnerReservationWebService port = service.getPartnerReservationWebServicePort();
+        return port.retrieveAllModels();
+    }
+
+    private static java.util.List<ws.client.Outlet> retrieveAllOutlets() {
+        ws.client.PartnerReservationWebService_Service service = new ws.client.PartnerReservationWebService_Service();
+        ws.client.PartnerReservationWebService port = service.getPartnerReservationWebServicePort();
+        return port.retrieveAllOutlets();
+    }
+
+    private static class OutsideOperatingHoursException extends Exception {
+
+        public OutsideOperatingHoursException(String pickup_time_is_before_opening_hours_of_th) {
+        }
+    }
+
+    private static class ReturnDateBeforePickupDateException extends Exception {
+
+        public ReturnDateBeforePickupDateException() {
+        }
     }
 }

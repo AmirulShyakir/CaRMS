@@ -32,7 +32,6 @@ import util.exception.NoAvailableRentalRateException;
 import util.exception.OutletNotFoundException;
 import util.exception.OutsideOperatingHoursException;
 import util.exception.OwnCustomerUsernameExistException;
-import util.exception.PartnerNotFoundException;
 import util.exception.RentalReservationNotFoundException;
 import util.exception.UnknownPersistenceException;
 
@@ -80,9 +79,11 @@ public class MainApp {
             System.out.println("2: Register as customer");
             System.out.println("3: Search Car");
             System.out.println("4: Exit\n");
+            //System.out.println("5: Do Evaluation Test Part 2");
             response = 0;
 
-            while (response < 1 || response > 5) {
+            // remember to change response boundaries when removing evaluation test
+            while (response < 1 || response > 4) {
                 System.out.print("> ");
 
                 response = scanner.nextInt();
@@ -101,8 +102,8 @@ public class MainApp {
                     doSearchCar();
                 } else if (response == 4) {
                     break;
-                //} else if (response == 5) {
-                //    doCreateNewCustomer();
+                    //} else if (response == 5) {
+                    //    doEvaluationPartTwo();
                 } else {
                     System.out.println("Invalid option, please try again\n");
                 }
@@ -116,32 +117,25 @@ public class MainApp {
     // exception not thrown
     private void doRegisterCustomer() {
         Scanner scanner = new Scanner(System.in);
-        String username = "";
-        String password = "";
-        String firstName = "";
-        String lastName = "";
 
-        String email = "";
-        String phoneNumber = "";
-        String passportNumber = "";
-
+        OwnCustomer newOwnCustomer = new OwnCustomer();
         System.out.println("*** CarMS Reservation Client :: Register ***\n");
         System.out.print("Enter username> ");
-        username = scanner.nextLine().trim();
+        String username = scanner.nextLine().trim();
+        newOwnCustomer.setUsername(username);
         System.out.print("Enter password> ");
-        password = scanner.nextLine().trim();
+        newOwnCustomer.setPassword(scanner.nextLine().trim());
         System.out.print("Enter first name> ");
-        firstName = scanner.nextLine().trim();
+        newOwnCustomer.setFirstName(scanner.nextLine().trim());
         System.out.print("Enter last name> ");
-        lastName = scanner.nextLine().trim();
+        newOwnCustomer.setLastName(scanner.nextLine().trim());
         System.out.print("Enter email> ");
-        email = scanner.nextLine().trim();
+        newOwnCustomer.setEmail(scanner.nextLine().trim());
         System.out.print("Enter phone number> ");
-        phoneNumber = scanner.nextLine().trim();
+        newOwnCustomer.setPhoneNumber(scanner.nextLine().trim());
         System.out.print("Enter passport number> ");
-        passportNumber = scanner.nextLine().trim();
+        newOwnCustomer.setPassportNumber(scanner.nextLine().trim());
 
-        OwnCustomer newOwnCustomer = new OwnCustomer(firstName, lastName, username, password, email, phoneNumber, passportNumber);
         Long ownCustomerId;
 
         try {
@@ -193,16 +187,19 @@ public class MainApp {
             System.out.print("Enter Return Date & Time (DD/MM/YYYY HH:MM)> ");
             returnDateTime = inputDateFormat.parse(scanner.nextLine().trim());
 
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            if (returnDateTime.before(pickUpDateTime)) {
+                throw new ReturnDateBeforePickupDateException();
+            }
+
             List<Outlet> outlets = outletSessionBeanRemote.retrieveAllOutlets();
             System.out.printf("%4s%64s%20s%20s\n", "ID", "Outlet Name", "Opening Hour", "Closing Hour");
             SimpleDateFormat operatingHours = new SimpleDateFormat("HH:mm");
             for (Outlet outlet : outlets) {
-                String openingHour = "null";
+                String openingHour = "24/7";
                 if (outlet.getOpeningHour() != null) {
                     openingHour = operatingHours.format(outlet.getOpeningHour());
                 }
-                String closingHour = "null";
+                String closingHour = "";
                 if (outlet.getClosingHour() != null) {
                     closingHour = operatingHours.format(outlet.getClosingHour());
                 }
@@ -220,23 +217,23 @@ public class MainApp {
                 if ((pickUpDateTime.getHours() < pickupOutlet.getOpeningHour().getHours())
                         || (pickUpDateTime.getHours() == pickupOutlet.getOpeningHour().getHours()
                         && pickUpDateTime.getMinutes() < pickupOutlet.getOpeningHour().getMinutes())) {
-                    throw new OutsideOperatingHoursException("Pickup time is before opening hours of the outlet");
-                } else if ((returnDateTime.getHours() < pickupOutlet.getOpeningHour().getHours())
-                        || (returnDateTime.getHours() == pickupOutlet.getOpeningHour().getHours()
-                        && returnDateTime.getMinutes() < pickupOutlet.getOpeningHour().getMinutes())) {
-                    throw new OutsideOperatingHoursException("Return time is before opening hours of the outlet");
+                    throw new OutsideOperatingHoursException("Pickup time is before opening hours of the pickup outlet");
+                } else if ((pickUpDateTime.getHours() > pickupOutlet.getClosingHour().getHours())
+                        || (pickUpDateTime.getHours() == pickupOutlet.getClosingHour().getHours()
+                        && pickUpDateTime.getMinutes() > pickupOutlet.getClosingHour().getMinutes())) {
+                    throw new OutsideOperatingHoursException("Pickup time is after closing hours of the pickup outlet");
                 }
             }
             Outlet returnOutlet = outletSessionBeanRemote.retrieveOutletByOutletId(returnOutletId);
             if (returnOutlet.getClosingHour() != null) {
-                if ((pickUpDateTime.getHours() > pickupOutlet.getClosingHour().getHours())
-                        || (pickUpDateTime.getHours() == pickupOutlet.getClosingHour().getHours()
-                        && pickUpDateTime.getMinutes() > pickupOutlet.getClosingHour().getMinutes())) {
-                    throw new OutsideOperatingHoursException("Return time is after operating hours of the outlet");
-                } else if ((returnDateTime.getHours() > pickupOutlet.getClosingHour().getHours())
-                        || (returnDateTime.getHours() == pickupOutlet.getClosingHour().getHours()
-                        && returnDateTime.getMinutes() > pickupOutlet.getClosingHour().getMinutes())) {
-                    throw new OutsideOperatingHoursException("Pickup time is after operating hours of the outlet");
+                if ((returnDateTime.getHours() > returnOutlet.getClosingHour().getHours())
+                        || (returnDateTime.getHours() == returnOutlet.getClosingHour().getHours()
+                        && returnDateTime.getMinutes() > returnOutlet.getClosingHour().getMinutes())) {
+                    throw new OutsideOperatingHoursException("Return time is after operating hours of the pickup outlet");
+                } else if ((returnDateTime.getHours() < returnOutlet.getClosingHour().getHours())
+                        || (returnDateTime.getHours() == returnOutlet.getClosingHour().getHours()
+                        && returnDateTime.getMinutes() < returnOutlet.getClosingHour().getMinutes())) {
+                    throw new OutsideOperatingHoursException("Return time is before operating hours of the pickup outlet");
                 }
             }
             while (true) {
@@ -247,7 +244,6 @@ public class MainApp {
 
                 while (response < 1 || response > 2) {
                     System.out.print("> ");
-
                     response = scanner.nextInt();
 
                     if (response == 1) {
@@ -466,37 +462,93 @@ public class MainApp {
         scanner.nextLine();
     }
 
-    private void doCreateNewCustomer() {
-        Scanner scanner = new Scanner(System.in);
-        String firstName;
-        String lastName;
-        String email;
-        Customer newCustomer = new Customer();
-        System.out.print("Enter customer first name> ");
-        firstName = scanner.nextLine().trim();
-        System.out.print("Enter customer last name> ");
-        lastName = scanner.nextLine().trim();
-        System.out.print("Enter email> ");
-        email = scanner.nextLine().trim();
-        newCustomer.setFirstName(firstName);
-        newCustomer.setLastName(lastName);
-        newCustomer.setEmail(email);
-
-        System.out.print("Would you like to pay now? (Enter 'Y' to enter payment details)> ");
-        String input = scanner.nextLine().trim();
-        if (input.equals("Y")) {
-            System.out.print("Enter credit card number> ");
-            String creditCardNumber = scanner.nextLine().trim();
-            newCustomer.setCreditCardNumber(creditCardNumber);
-        }
+    private void doEvaluationPartTwo() {
         try {
-            System.out.println("new customer: " + customerSessionBeanRemote.createNewCustomer(new Long(1), newCustomer));
-        } catch (InputDataValidationException ex) {
-            System.out.println("customer creation exception: InputDataValidationException");
-        } catch (PartnerNotFoundException ex) {
-            System.out.println("customer creation exception: PartnerNotFoundException");
-        } catch (UnknownPersistenceException ex) {
-            System.out.println("customer creation exception: UnknownPersistenceException");
+            OwnCustomer alice = new OwnCustomer();
+            alice.setUsername("alice");
+            alice.setPassword("123");
+            alice.setFirstName("Alice");
+            alice.setLastName("Tan");
+            alice.setEmail("alicetan@gmail.com");
+            alice.setPhoneNumber("999");
+            alice.setPassportNumber("ABCDEFGHI");
+            Long aliceCustomerId = ownCustomerSessionBeanRemote.createNewOwnCustomer(alice);
+            System.out.println("Created new Customer Alice with ID: " + aliceCustomerId);
+
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            RentalReservation rentalReservation1 = new RentalReservation();
+            Date startDate = sdf.parse("03/12/2019 14:00");
+            Date endDate = sdf.parse("07/12/2019 12:00");
+            rentalReservation1.setStartDate(startDate);
+            rentalReservation1.setEndDate(endDate);
+            rentalReservation1.setPrice(BigDecimal.valueOf(380));
+            rentalReservation1.setPaid(Boolean.FALSE);
+            Long rentalReservation1Id = rentalReservationSessionBeanRemote.createNewRentalReservation(
+                    new Long("3"), new Long("1"), aliceCustomerId, new Long("1"), new Long("1"), rentalReservation1);
+            System.out.println("Reserved Toyota Corolla"
+                    + "\n Pickup: 03/12/2019 14:00 Outlet A"
+                    + "\n Return: 07/12/2019 12:00 Outlet A"
+                    + "\n ID: " + rentalReservation1Id);
+
+            OwnCustomer bob = new OwnCustomer();
+            bob.setUsername("bob");
+            bob.setPassword("123");
+            bob.setFirstName("Bob");
+            bob.setLastName("Lee");
+            bob.setEmail("boblee@gmail.com");
+            bob.setPhoneNumber("995");
+            bob.setPassportNumber("A0123456789B");
+            Long bobCustomerId = ownCustomerSessionBeanRemote.createNewOwnCustomer(bob);
+            System.out.println("Created new Customer Bob with ID: " + bobCustomerId);
+
+            RentalReservation rentalReservation2 = new RentalReservation();
+            startDate = sdf.parse("02/12/2019 10:00");
+            endDate = sdf.parse("05/12/2019 10:00");
+            rentalReservation2.setStartDate(startDate);
+            rentalReservation2.setEndDate(endDate);
+            rentalReservation2.setPrice(BigDecimal.valueOf(300));
+            rentalReservation2.setPaid(Boolean.FALSE);
+            Long rentalReservation2Id = rentalReservationSessionBeanRemote.createNewRentalReservation(
+                    new Long("3"), new Long("1"), bobCustomerId, new Long("1"), new Long("1"), rentalReservation2);
+            System.out.println("Reserved Toyota Corolla"
+                    + "\n Pickup: 02/12/2019 10:00 Outlet A"
+                    + "\n Return: 05/12/2019 10:00 Outlet A"
+                    + "\n ID: " + rentalReservation2Id);
+
+            OwnCustomer charles = new OwnCustomer();
+            charles.setUsername("charles");
+            charles.setPassword("123");
+            charles.setFirstName("Charles");
+            charles.setLastName("Chua");
+            charles.setEmail("charleschua@gmail.com");
+            charles.setPhoneNumber("1777");
+            charles.setPassportNumber("A9876543210C");
+            Long charlesCustomerId = ownCustomerSessionBeanRemote.createNewOwnCustomer(charles);
+            System.out.println("Created new Customer Charles with ID: " + charlesCustomerId);
+
+            RentalReservation rentalReservation3 = new RentalReservation();
+            startDate = sdf.parse("06/12/2019 10:00");
+            endDate = sdf.parse("08/12/2019 10:00");
+            rentalReservation3.setStartDate(startDate);
+            rentalReservation3.setEndDate(endDate);
+            rentalReservation3.setPrice(BigDecimal.valueOf(180));
+            rentalReservation3.setPaid(Boolean.FALSE);
+            Long rentalReservation3Id = rentalReservationSessionBeanRemote.createNewRentalReservation(
+                    new Long("3"), new Long("1"), charlesCustomerId, new Long("2"), new Long("2"), rentalReservation3);
+            System.out.println("Reserved Toyota Corolla"
+                    + "\n Pickup: 06/12/2019 10:00 Outlet B"
+                    + "\n Return: 08/12/2019 10:00 Outlet B"
+                    + "\n ID: " + rentalReservation3Id);
+
+            System.out.println("Search Car for Standard Sedan with Dates"
+                    + "\n Pickup: 03/12/2019 14:00 Outlet A"
+                    + "\n Return: 07/12/2019 12:00 Outlet A"
+                    + "\n Car Category : Standard Sedan, ID = 3"
+                    + "\n should return Cars Available with price 380");
+            doSearchCar();
+            System.out.println("Please run part three in the management client");
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
         }
     }
 }

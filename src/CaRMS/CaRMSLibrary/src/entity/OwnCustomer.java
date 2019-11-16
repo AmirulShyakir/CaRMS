@@ -40,18 +40,6 @@ public class OwnCustomer extends Customer implements Serializable {
     public OwnCustomer() {
     }
 
-    public OwnCustomer(String firstName, String lastName, String username, String password, String email, String phoneNumber, String passportNumber) {
-        this();
-
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.passportNumber = passportNumber;
-    }
-
     public String getUsername() {
         return username;
     }

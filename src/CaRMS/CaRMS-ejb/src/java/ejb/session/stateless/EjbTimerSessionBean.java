@@ -7,6 +7,7 @@ package ejb.session.stateless;
 
 import entity.Car;
 import entity.RentalReservation;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -63,6 +64,7 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
         query.setParameter("inStartDate", start);
         query.setParameter("inEndDate", end);
         List<RentalReservation> rentalReservationsToBeAllocated = query.getResultList();
+        List<RentalReservation> rentalReservationsThatRequiresTransit = new ArrayList<>();
         for (RentalReservation rentalReservation : rentalReservationsToBeAllocated) {
             boolean isAllocated = false;
             if (rentalReservation.getModel() != null) {
@@ -85,6 +87,7 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
                         rentalReservation.setCar(car);
                         car.setRentalReservation(rentalReservation);
                         isAllocated = true;
+                        rentalReservationsThatRequiresTransit.add(rentalReservation);
                         break;
                     }
                 }
@@ -111,11 +114,12 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
                                 car.getRentalReservation().getEndDate().getMonth(),
                                 car.getRentalReservation().getEndDate().getDate(),
                                 start.getHours(), start.getMinutes(), start.getSeconds());
-                        calendar.add(Calendar.HOUR, 2);
-                        Date transitEndTime = calendar.getTime();
+                        transitCalendar.add(Calendar.HOUR, 2);
+                        Date transitEndTime = transitCalendar.getTime();
                         if (rentalReservation.getStartDate().after(transitEndTime)) {
                             rentalReservation.setCar(car);
                             isAllocated = true;
+                            rentalReservationsThatRequiresTransit.add(rentalReservation);
                             break;
                         }
                     }
@@ -148,6 +152,7 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
                         rentalReservation.setCar(car);
                         car.setRentalReservation(rentalReservation);
                         isAllocated = true;
+                        rentalReservationsThatRequiresTransit.add(rentalReservation);
                         break;
                     }
                 }
@@ -183,6 +188,7 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
                         if (rentalReservation.getStartDate().after(transitEndTime)) {
                             rentalReservation.setCar(car);
                             isAllocated = true;
+                            rentalReservationsThatRequiresTransit.add(rentalReservation);
                             break;
                         }
                     }
@@ -192,41 +198,27 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
                 }
             }
         }
-        generateTransitDriverDispatchRecords(date, rentalReservationsToBeAllocated);
+        generateTransitDriverDispatchRecords(date, rentalReservationsThatRequiresTransit);
     }
 
     public void generateTransitDriverDispatchRecords(Date date, List<RentalReservation> rentalReservationsToBeAllocated) {
         try {
             for (RentalReservation rentalReservation : rentalReservationsToBeAllocated) {
                 Date transitStartDate = date;
-                Long rentalReservationId = rentalReservation.getRentalReservationId();
-                RentalReservation newRentalReservation = rentalReservationSessionBeanLocal.retrieveRentalReservationByRentalReservationId(rentalReservationId);
-                if (rentalReservation.getCar().getOutlet() != null) { // car is currently in outlet
-                    if (!(rentalReservation.getPickupOutlet().equals(rentalReservation.getCar().getOutlet()))) {
-                        GregorianCalendar transitCalendar = new GregorianCalendar(
-                                rentalReservation.getEndDate().getYear() + 1900,
-                                rentalReservation.getEndDate().getMonth(),
-                                rentalReservation.getEndDate().getDate(),
-                                rentalReservation.getEndDate().getHours(),
-                                rentalReservation.getEndDate().getMinutes(),
-                                rentalReservation.getEndDate().getSeconds());
-                        transitCalendar.add(Calendar.HOUR, -2);
-                        transitStartDate = transitCalendar.getTime();
-                    }
-                } else { // car is currently going to be returned to another outlet
-                    transitStartDate = rentalReservation.getCar().getRentalReservation().getEndDate();
-                }
-                try {
-                    transitDriverDispatchRecordSessionBeanLocal.
-                            createNewTranspatchDriverRecord(rentalReservation.getPickupOutlet().getOutletId(),
-                                    rentalReservation.getRentalReservationId(), transitStartDate);
-                } catch (OutletNotFoundException ex) {
-                    System.out.println(ex.getMessage());
-                } catch (RentalReservationNotFoundException ex) {
-                    System.out.println(ex.getMessage());
-                }
+                GregorianCalendar transitCalendar = new GregorianCalendar(
+                        rentalReservation.getEndDate().getYear() + 1900,
+                        rentalReservation.getEndDate().getMonth(),
+                        rentalReservation.getEndDate().getDate(),
+                        rentalReservation.getEndDate().getHours(),
+                        rentalReservation.getEndDate().getMinutes(),
+                        rentalReservation.getEndDate().getSeconds());
+                transitCalendar.add(Calendar.HOUR, -2);
+                transitStartDate = transitCalendar.getTime();
+                transitDriverDispatchRecordSessionBeanLocal.
+                        createNewTranspatchDriverRecord(rentalReservation.getPickupOutlet().getOutletId(),
+                                rentalReservation.getRentalReservationId(), transitStartDate);
             }
-        } catch (RentalReservationNotFoundException ex) {
+        } catch (RentalReservationNotFoundException | OutletNotFoundException ex) {
             System.out.println(ex.getMessage());
         }
     }

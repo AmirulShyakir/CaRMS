@@ -5,7 +5,6 @@
  */
 package ejb.session.stateless;
 
-import entity.CarCategory;
 import entity.RentalRate;
 import java.util.Date;
 import java.util.List;

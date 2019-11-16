@@ -50,6 +50,18 @@
 
 <xs:element name="partnerLoginResponse" type="tns:partnerLoginResponse"/>
 
+<xs:element name="retrieveAllCarCategories" type="tns:retrieveAllCarCategories"/>
+
+<xs:element name="retrieveAllCarCategoriesResponse" type="tns:retrieveAllCarCategoriesResponse"/>
+
+<xs:element name="retrieveAllModels" type="tns:retrieveAllModels"/>
+
+<xs:element name="retrieveAllModelsResponse" type="tns:retrieveAllModelsResponse"/>
+
+<xs:element name="retrieveAllOutlets" type="tns:retrieveAllOutlets"/>
+
+<xs:element name="retrieveAllOutletsResponse" type="tns:retrieveAllOutletsResponse"/>
+
 <xs:element name="retrieveAllRentalReservations" type="tns:retrieveAllRentalReservations"/>
 
 <xs:element name="retrieveAllRentalReservationsResponse" type="tns:retrieveAllRentalReservationsResponse"/>
@@ -225,6 +237,16 @@
 </xs:sequence>
 </xs:complexType>
 
+<xs:complexType name="retrieveAllRentalReservations">
+<xs:sequence/>
+</xs:complexType>
+
+<xs:complexType name="retrieveAllRentalReservationsResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:rentalReservation" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
 <xs:complexType name="retrieveModelByModelId">
 <xs:sequence>
 <xs:element name="arg0" type="xs:long" minOccurs="0"/>
@@ -286,16 +308,6 @@
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="retrieveAllRentalReservations">
-<xs:sequence/>
-</xs:complexType>
-
-<xs:complexType name="retrieveAllRentalReservationsResponse">
-<xs:sequence>
-<xs:element name="return" type="tns:rentalReservation" minOccurs="0" maxOccurs="unbounded"/>
-</xs:sequence>
-</xs:complexType>
-
 <xs:complexType name="searchCarByModel">
 <xs:sequence>
 <xs:element name="arg0" type="xs:dateTime" minOccurs="0"/>
@@ -330,6 +342,26 @@
 </xs:sequence>
 </xs:complexType>
 
+<xs:complexType name="retrieveAllCarCategories">
+<xs:sequence/>
+</xs:complexType>
+
+<xs:complexType name="retrieveAllCarCategoriesResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:carCategory" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="retrieveAllModels">
+<xs:sequence/>
+</xs:complexType>
+
+<xs:complexType name="retrieveAllModelsResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:model" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
 <xs:complexType name="retrieveOutletByOutletId">
 <xs:sequence>
 <xs:element name="arg0" type="xs:long" minOccurs="0"/>
@@ -344,38 +376,11 @@
 
 <xs:complexType name="outlet">
 <xs:sequence>
-<xs:element name="cars" type="tns:car" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
 <xs:element name="closingHour" type="xs:dateTime" minOccurs="0"/>
-<xs:element name="employees" type="tns:employee" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
 <xs:element name="openingHour" type="xs:dateTime" minOccurs="0"/>
 <xs:element name="outletAddress" type="xs:string" minOccurs="0"/>
 <xs:element name="outletId" type="xs:long" minOccurs="0"/>
 <xs:element name="outletName" type="xs:string" minOccurs="0"/>
-<xs:element name="transitDriverDispatchRecords" type="tns:transitDriverDispatchRecord" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="employee">
-<xs:sequence>
-<xs:element name="employeeId" type="xs:long" minOccurs="0"/>
-<xs:element name="employeeRole" type="tns:employeeRoleEnum" minOccurs="0"/>
-<xs:element name="firstName" type="xs:string" minOccurs="0"/>
-<xs:element name="lastName" type="xs:string" minOccurs="0"/>
-<xs:element name="outlet" type="tns:outlet" minOccurs="0"/>
-<xs:element name="password" type="xs:string" minOccurs="0"/>
-<xs:element name="transitDriverDispatchRecords" type="tns:transitDriverDispatchRecord" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
-<xs:element name="username" type="xs:string" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="transitDriverDispatchRecord">
-<xs:sequence>
-<xs:element name="destinationOutlet" type="tns:outlet" minOccurs="0"/>
-<xs:element name="dispatchDriver" type="tns:employee" minOccurs="0"/>
-<xs:element name="isCompleted" type="xs:boolean" minOccurs="0"/>
-<xs:element name="rentalReservation" type="tns:rentalReservation" minOccurs="0"/>
-<xs:element name="transitDate" type="xs:dateTime" minOccurs="0"/>
-<xs:element name="transitDriverDispatchRecordId" type="xs:long" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 
@@ -413,6 +418,16 @@
 <xs:complexType name="PartnerNameExistException">
 <xs:sequence>
 <xs:element name="message" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="retrieveAllOutlets">
+<xs:sequence/>
+</xs:complexType>
+
+<xs:complexType name="retrieveAllOutletsResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:outlet" minOccurs="0" maxOccurs="unbounded"/>
 </xs:sequence>
 </xs:complexType>
 
@@ -456,18 +471,6 @@
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="cancelReservation">
-<xs:sequence>
-<xs:element name="arg0" type="xs:long" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="cancelReservationResponse">
-<xs:sequence>
-<xs:element name="return" type="xs:decimal" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
 <xs:complexType name="createNewRentalReservation">
 <xs:sequence>
 <xs:element name="arg0" type="xs:long" minOccurs="0"/>
@@ -485,20 +488,23 @@
 </xs:sequence>
 </xs:complexType>
 
+<xs:complexType name="cancelReservation">
+<xs:sequence>
+<xs:element name="arg0" type="xs:long" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="cancelReservationResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:decimal" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
 <xs:simpleType name="carStatusEnum">
 <xs:restriction base="xs:string">
 <xs:enumeration value="AVAILABLE"/>
 <xs:enumeration value="ON_RENT"/>
 <xs:enumeration value="REPAIR"/>
-</xs:restriction>
-</xs:simpleType>
-
-<xs:simpleType name="employeeRoleEnum">
-<xs:restriction base="xs:string">
-<xs:enumeration value="SALES_MANAGER"/>
-<xs:enumeration value="OPERATIONS_MANAGER"/>
-<xs:enumeration value="CUSTOMER_EXECUTIVE"/>
-<xs:enumeration value="EMPLOYEE"/>
 </xs:restriction>
 </xs:simpleType>
 </xs:schema>

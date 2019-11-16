@@ -5,7 +5,6 @@
  */
 package ejb.session.stateless;
 
-import entity.Car;
 import entity.RentalReservation;
 import java.math.BigDecimal;
 import java.util.Date;
