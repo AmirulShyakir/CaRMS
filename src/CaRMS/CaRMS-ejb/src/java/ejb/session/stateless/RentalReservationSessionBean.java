@@ -222,7 +222,7 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
 
     @Override
     public List<RentalReservation> retrieveCustomerRentalReservationsByPickupOutletId(Long outletId) {
-        Query query = em.createQuery("SELECT r FROM RentalReservation r WHERE r.isReturned = FALSE"
+        Query query = em.createQuery("SELECT r FROM RentalReservation r WHERE r.isPicked = FALSE"
                 + " AND r.car IS NOT NULL"
                 + " AND r.pickupOutlet.outletId = :inOutletId ");
         query.setParameter("inOutletId", outletId);
@@ -231,9 +231,10 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
 
     @Override
     public List<RentalReservation> retrieveCustomerRentalReservationsByReturnOutletId(Long outletId) {
-        Query query = em.createQuery("SELECT r FROM RentalReservation r WHERE r.isReturned = FALSE"
+        Query query = em.createQuery("SELECT r FROM RentalReservation r WHERE r.isComplete = FALSE"
+                + " AND r.isPicked = TRUE"
                 + " AND r.car IS NOT NULL"
-                + " AND r.returnOutlet = :inOutletId");
+                + " AND r.returnOutlet.outletId = :inOutletId");
         query.setParameter("inOutletId", outletId);
         return query.getResultList();
     }
@@ -276,6 +277,7 @@ public class RentalReservationSessionBean implements RentalReservationSessionBea
             car.setOutlet(null);
             car.setRentalReservation(rentalReservation);
             rentalReservation.setPaid(Boolean.TRUE);
+            rentalReservation.setIsPicked(Boolean.TRUE);
             rentalReservation.getPickupOutlet().removeCar(car);
         } catch (RentalReservationNotFoundException ex) {
             throw new RentalReservationNotFoundException("Rental Reservation ID: " + rentalReservationId + "not found!");

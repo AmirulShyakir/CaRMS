@@ -75,33 +75,37 @@ public class CustomerServiceModule {
         System.out.println("*** CarMS Management Client :: Sales Management :: Pickup Car***\n");
         List<RentalReservation> rentalReservations = rentalReservationSessionBeanRemote.
                 retrieveCustomerRentalReservationsByPickupOutletId(currentEmployee.getOutlet().getOutletId());
-        System.out.printf("%4s%20s%20s\n", "ID", "Start Date", "End Date");
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        for (RentalReservation rentalReservation : rentalReservations) {
-            System.out.printf("%4s%20s%20s\n", rentalReservation.getRentalReservationId(),
-                    sdf.format(rentalReservation.getStartDate()),
-                    sdf.format(rentalReservation.getEndDate()));
-        }
-        System.out.print("Enter Rental Reservation ID> ");
-        Long rentalReservationId = scanner.nextLong();
-        scanner.nextLine();
-        try {
-            RentalReservation rentalReservation = rentalReservationSessionBeanRemote.retrieveRentalReservationByRentalReservationId(rentalReservationId);
-            if (!rentalReservation.getPaid()) {
-                System.out.print("Pay rental fee? (Enter 'Y' to pay)> ");
-                String input = scanner.nextLine().trim();
-                if (!input.equals("Y")) {
-                    throw new UnpaidRentalReservationException("Please pay for the rental reservation before!");
-                } else {
-                    System.out.println("Charged " + rentalReservation.getPrice().toString() + " to credit card: " + rentalReservation.getCreditCardNumber());
+        if (rentalReservations.isEmpty()) {
+            System.out.println("No cars to be picked up!");
+        } else {
+            try {
+                System.out.printf("%4s%20s%20s\n", "ID", "Start Date", "End Date");
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                for (RentalReservation rentalReservation : rentalReservations) {
+                    System.out.printf("%4s%20s%20s\n", rentalReservation.getRentalReservationId(),
+                            sdf.format(rentalReservation.getStartDate()),
+                            sdf.format(rentalReservation.getEndDate()));
                 }
+                System.out.print("Enter Rental Reservation ID> ");
+                Long rentalReservationId = scanner.nextLong();
+                scanner.nextLine();
+                RentalReservation rentalReservation = rentalReservationSessionBeanRemote.retrieveRentalReservationByRentalReservationId(rentalReservationId);
+                if (!rentalReservation.getPaid()) {
+                    System.out.print("Pay rental fee? (Enter 'Y' to pay)> ");
+                    String input = scanner.nextLine().trim();
+                    if (!input.equals("Y")) {
+                        throw new UnpaidRentalReservationException("Please pay for the rental reservation ID: " + rentalReservationId + " !");
+                    } else {
+                        System.out.println("Charged " + rentalReservation.getPrice().toString() + " to credit card: " + rentalReservation.getCreditCardNumber());
+                    }
+                }
+                rentalReservationSessionBeanRemote.pickupCar(rentalReservationId);
+                System.out.println("Car successfully picked up by customer");
+            } catch (RentalReservationNotFoundException ex) {
+                System.out.println(ex.getMessage());
+            } catch (UnpaidRentalReservationException ex) {
+                System.out.println(ex.getMessage());
             }
-            rentalReservationSessionBeanRemote.pickupCar(rentalReservationId);
-            System.out.println("Car successfully picked up by customer");
-        } catch (RentalReservationNotFoundException ex) {
-            System.out.println("No Rental Reservation of ID: " + rentalReservationId);
-        } catch (UnpaidRentalReservationException ex) {
-            System.out.println("Rental Reservation of ID: " + rentalReservationId + " is not paid for");
         }
         System.out.print("Press any key to continue...> ");
         scanner.nextLine();
@@ -112,24 +116,29 @@ public class CustomerServiceModule {
         System.out.println("*** CarMS Management Client :: Sales Management :: Return Car***\n");
         List<RentalReservation> rentalReservations = rentalReservationSessionBeanRemote.
                 retrieveCustomerRentalReservationsByReturnOutletId(currentEmployee.getOutlet().getOutletId());
-        System.out.printf("%4s%20s%20s\n", "ID", "Start Date", "End Date");
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        for (RentalReservation rentalReservation : rentalReservations) {
-            System.out.printf("%4s%20s%20s\n", rentalReservation.getRentalReservationId(),
-                    sdf.format(rentalReservation.getStartDate()),
-                    sdf.format(rentalReservation.getEndDate()));
-        }
 
-        System.out.print("Enter Rental Reservation ID> ");
-        Long rentalReservationId = scanner.nextLong();
-        scanner.nextLine();
-        try {
-            rentalReservationSessionBeanRemote.returnCar(rentalReservationId);
-            System.out.println("Car returned by customer");
-        } catch (RentalReservationNotFoundException ex) {
-            System.out.println("No Rental Reservation of ID: " + rentalReservationId);
+        if (rentalReservations.isEmpty()) {
+            System.out.println("No cars to be returned!");
+        } else {
+            System.out.printf("%4s%20s%20s\n", "ID", "Start Date", "End Date");
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            for (RentalReservation rentalReservation : rentalReservations) {
+                System.out.printf("%4s%20s%20s\n", rentalReservation.getRentalReservationId(),
+                        sdf.format(rentalReservation.getStartDate()),
+                        sdf.format(rentalReservation.getEndDate()));
+            }
+            System.out.print("Enter Rental Reservation ID> ");
+            Long rentalReservationId = scanner.nextLong();
+            scanner.nextLine();
+
+            try {
+                rentalReservationSessionBeanRemote.returnCar(rentalReservationId);
+                System.out.println("Car returned by customer");
+            } catch (RentalReservationNotFoundException ex) {
+                System.out.println("No Rental Reservation of ID: " + rentalReservationId);
+            }
+            System.out.print("Press any key to continue...> ");
+            scanner.nextLine();
         }
-        System.out.print("Press any key to continue...> ");
-        scanner.nextLine();
     }
 }

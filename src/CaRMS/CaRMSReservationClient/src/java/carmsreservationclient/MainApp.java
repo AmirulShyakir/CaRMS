@@ -6,7 +6,6 @@
 package carmsreservationclient;
 
 import ejb.session.stateless.CarCategorySessionBeanRemote;
-import ejb.session.stateless.CustomerSessionBeanRemote;
 import ejb.session.stateless.ModelSessionBeanRemote;
 import ejb.session.stateless.OutletSessionBeanRemote;
 import ejb.session.stateless.OwnCustomerSessionBeanRemote;
@@ -81,7 +80,7 @@ public class MainApp {
             response = 0;
 
             // remember to change response boundaries when removing evaluation test
-            while (response < 1 || response > 5) {
+            while (response < 1 || response > 4) {
                 System.out.print("> ");
 
                 response = scanner.nextInt();
@@ -100,8 +99,8 @@ public class MainApp {
                     doSearchCar();
                 } else if (response == 4) {
                     break;
-                } else if (response == 5) {
-                    doEvaluationPartTwo();
+                //} else if (response == 5) {
+                //    doEvaluationPartTwo();
                 } else {
                     System.out.println("Invalid option, please try again\n");
                 }

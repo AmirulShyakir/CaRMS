@@ -89,7 +89,7 @@ public class MainApp {
             response = 0;
 
             // remember to change response boundaries when removing evaluation test
-            while (response < 1 || response > 5) {
+            while (response < 1 || response > 3) {
                 System.out.print("> ");
 
                 response = scanner.nextInt();
@@ -111,12 +111,12 @@ public class MainApp {
                     }
                 } else if (response == 3) {
                     break;
-                
+                /*
                 } else if (response == 4) {
                     doEvaluationPartOne();
                 } else if (response == 5) {
                     doEvaluationPartThree();
-                
+                */
                 } else {
                     System.out.println("Invalid option, please try again!\n");
                 }
