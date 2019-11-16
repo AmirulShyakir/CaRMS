@@ -33,6 +33,7 @@ import util.exception.OutletNotFoundException;
 import util.exception.OutsideOperatingHoursException;
 import util.exception.OwnCustomerUsernameExistException;
 import util.exception.RentalReservationNotFoundException;
+import util.exception.ReturnDateBeforePickupDateException;
 import util.exception.UnknownPersistenceException;
 
 /**
@@ -307,6 +308,8 @@ public class MainApp {
             System.out.println("Outlet not found!\n");
         } catch (OutsideOperatingHoursException ex) {
             System.out.println(ex.getMessage());
+        } catch (ReturnDateBeforePickupDateException ex) {
+            System.out.println("ReturnDateBeforePickupDateException");
         }
         System.out.print("Press any key to continue...> ");
         scanner.nextLine();
@@ -359,13 +362,15 @@ public class MainApp {
             rentalReservation.setEndDate(returnDateTime);
             rentalReservation.setPrice(totalRentalFee);
 
+            System.out.print("Enter Credit Card Number> ");
+            String creditCardNumber = scanner.nextLine().trim();
+            rentalReservation.setCreditCardNumber(creditCardNumber);
+            
             System.out.print("Would you like to pay now? (Enter 'Y' to enter payment details)> ");
             String input = scanner.nextLine().trim();
             if (input.equals("Y")) {
-                System.out.print("Enter Credit Card Number> ");
-                String creditCardNumber = scanner.nextLine().trim();
-                currentCustomer.setCreditCardNumber(creditCardNumber);
                 rentalReservation.setPaid(Boolean.TRUE);
+                System.out.println("Charged " + totalRentalFee.toString() + " to credit card: " + creditCardNumber);
             } else {
                 rentalReservation.setPaid(Boolean.FALSE);
             }
@@ -398,9 +403,12 @@ public class MainApp {
             System.out.println("Reservation successfully cancelled!");
 
             if (rentalReservation.getPaid()) {
-                System.out.println("You have been refunded SGD $" + rentalReservation.getPrice().subtract(penalty) + " after deducting cancellation penalty of SGD" + penalty + ".");
-            } else if (!rentalReservation.getPaid()) {
-                System.out.println("Your card has been charged SGD $" + penalty + " as a cancellation penalty.");
+                System.out.println("You have been refunded SGD $"
+                        + rentalReservation.getPrice().subtract(penalty) + " to your card " 
+                        + rentalReservation.getCreditCardNumber() + 
+                        " after deducting cancellation penalty of SGD" + penalty + ".");
+            } else {
+                System.out.println("Your card : " + rentalReservation.getCreditCardNumber() + " has been charged SGD $" + penalty + " as a cancellation penalty.");
             }
 
         } catch (RentalReservationNotFoundException ex) {

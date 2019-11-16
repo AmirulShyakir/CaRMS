@@ -45,10 +45,6 @@ public class Customer implements Serializable {
     @Size(max = 32)
     protected String email;
 
-    @Column(nullable = true, length = 32)
-    @Size(max = 32)
-    protected String creditCardNumber;
-
     @ManyToOne(optional = true)
     @JoinColumn(nullable = true)
     private Partner partner;
@@ -89,14 +85,6 @@ public class Customer implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getCreditCardNumber() {
-        return creditCardNumber;
-    }
-
-    public void setCreditCardNumber(String creditCardNumber) {
-        this.creditCardNumber = creditCardNumber;
     }
 
     public Partner getPartner() {

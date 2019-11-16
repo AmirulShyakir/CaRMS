@@ -22,6 +22,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
@@ -58,7 +59,10 @@ public class RentalReservation implements Serializable {
     @Column(nullable = false)
     @NotNull
     private Boolean isComplete;
-
+    @Column(nullable = false, length = 32)
+    @Size(max = 32)
+    private String creditCardNumber;
+    
     @OneToOne(optional = true)
     private Car car;
     @OneToOne(optional = true)
@@ -214,6 +218,14 @@ public class RentalReservation implements Serializable {
 
     public void setIsComplete(Boolean isComplete) {
         this.isComplete = isComplete;
+    }
+
+    public String getCreditCardNumber() {
+        return creditCardNumber;
+    }
+
+    public void setCreditCardNumber(String creditCardNumber) {
+        this.creditCardNumber = creditCardNumber;
     }
 
     @Override

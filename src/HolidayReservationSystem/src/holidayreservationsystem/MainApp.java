@@ -207,7 +207,7 @@ class MainApp {
                     } else if (response == 2) {
                         List<Model> models = retrieveAllModels();
                         System.out.printf("%4s%64s%32s%32s\n", "ID", "Car Category Name", "Make", "Model");
-                        
+
                         for (Model model : models) {
                             System.out.printf("%4s%64s%32s%32s\n",
                                     model.getModelId(), model.getCarCategory().getCarCategoryName(),
@@ -328,14 +328,15 @@ class MainApp {
             newCustomer.setFirstName(firstName);
             newCustomer.setLastName(lastName);
             newCustomer.setEmail(email);
+            System.out.print("Enter credit card number> ");
+            String creditCardNumber = scanner.nextLine().trim();
+            rentalReservation.setCreditCardNumber(creditCardNumber);
 
             System.out.print("Would you like to pay now? (Enter 'Y' to enter payment details)> ");
             String input = scanner.nextLine().trim();
             if (input.equals("Y")) {
-                System.out.print("Enter credit card number> ");
-                String creditCardNumber = scanner.nextLine().trim();
-                newCustomer.setCreditCardNumber(creditCardNumber);
                 rentalReservation.setPaid(Boolean.TRUE);
+                System.out.println("Charged " + totalRentalFee.toString() + " to credit card: " + creditCardNumber);
             } else {
                 rentalReservation.setPaid(Boolean.FALSE);
             }
@@ -369,9 +370,12 @@ class MainApp {
             System.out.println("Reservation successfully cancelled!");
 
             if (rentalReservation.isPaid()) {
-                System.out.println("You have been refunded SGD $" + rentalReservation.getPrice().subtract(penalty) + " after deducting cancellation penalty of SGD" + penalty + ".");
-            } else if (!rentalReservation.isPaid()) {
-                System.out.println("Your card has been charged SGD $" + penalty + " as a cancellation penalty.");
+                System.out.println("You have been refunded SGD $"
+                        + rentalReservation.getPrice().subtract(penalty) + " to your card " 
+                        + rentalReservation.getCreditCardNumber() + 
+                        " after deducting cancellation penalty of SGD" + penalty + ".");
+            } else {
+                System.out.println("Your card : " + rentalReservation.getCreditCardNumber() + " has been charged SGD $" + penalty + " as a cancellation penalty.");
             }
 
         } catch (RentalReservationNotFoundException_Exception ex) {
